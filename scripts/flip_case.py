@@ -1,15 +1,11 @@
-from __future__ import with_statement
-
 import wingapi
 
-import _shared
-
-
-def arg_to_attr(editor=wingapi.kArgEditor):
+def flip_case(editor=wingapi.kArgEditor):
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
-    with _shared.UndoableAction(document):
+    document.BeginUndoAction()
+    try:
         editor.ExecuteCommand('backward-word')
         editor.ExecuteCommand('forward-word')
         editor.ExecuteCommand('backward-word')
@@ -22,5 +18,6 @@ def arg_to_attr(editor=wingapi.kArgEditor):
         editor.SetSelection(start + len(result_string),
                             start + len(result_string))
         editor.ExecuteCommand('new-line')
-    
+    finally:
+        document.EndUndoAction()
         
