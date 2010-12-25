@@ -14,15 +14,16 @@ class UndoableAction(object):
         
 def select_current_word(editor=wingapi.kArgEditor):
     assert isinstance(editor, wingapi.CAPIEditor)
-    document = editor.GetDocument
+    document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
     editor.ExecuteCommand('backward-word')
     start, _ = editor.GetSelection()
     assert start == _
     length = 0
-    while length < 1000:
-        character = document.GetCharRange(start + length + 1,
+    for length in range(1000): 
+        character = document.GetCharRange(start + length,
                                           start + length + 1)
+        assert len(character) == 1
         if character.isalnum() or character == '_':
             continue
         else:
