@@ -10,3 +10,8 @@ class UndoableAction(object):
         self.document.EndUndoAction()
         
         
+def select_current_word(editor=wingapi.kArgEditor):
+    editor.ExecuteCommand('backward-word')
+    editor.ExecuteCommand('forward-word')
+    editor.ExecuteCommand('backward-word')
+    editor.ExecuteCommand('forward-word-extend')
