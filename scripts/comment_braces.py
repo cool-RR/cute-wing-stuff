@@ -31,9 +31,10 @@ def _get_indent_size_in_pos(editor, pos):
     
 
 
-def comment_braces(title, editor=wingapi.kArgEditor):
+def comment_braces(title, editor=wingapi.kArgEditor):    
     assert isinstance(title, basestring)
     assert isinstance(editor, wingapi.CAPIEditor)
+    print(type(editor), editor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
     with shared.UndoableAction(document):
@@ -43,7 +44,7 @@ def comment_braces(title, editor=wingapi.kArgEditor):
         
         if title:
             raw_start_title = (' %s: ' % title.capitalize())
-            raw_end_title = (' Finished %s. ' % _decapitalize(title)
+            raw_end_title = (' Finished %s. ' % _decapitalize(title))
         else:
             assert title == ''
             raw_start_title = ''
