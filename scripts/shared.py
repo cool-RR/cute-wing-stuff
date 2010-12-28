@@ -5,13 +5,28 @@ import wingapi
 
 _ignore_scripts = True
 
+class SelectionRestorer(object):
+    
+    def __init__(self, editor):
+        assert isinstance(editor, wingapi.CAPIEditor)
+        self.editor = editor
+        
+    def __enter__(self):
+        self.start, self.end = self.editor.GetSelection()
+                
+    def __exit__(self, *args, **kwargs):
+        self.editor.SetSelection(self.start, self.end)
 
+        
 class UndoableAction(object):
+    
     def __init__(self, document):
         assert isinstance(document, wingapi.CAPIDocument)
         self.document = document
+        
     def __enter__(self):
         self.document.BeginUndoAction()
+        
     def __exit__(self, *args, **kwargs):
         self.document.EndUndoAction()
         
