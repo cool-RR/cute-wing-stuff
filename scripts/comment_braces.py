@@ -8,13 +8,26 @@ import wingapi
 
 import shared
 
+def _get_indent_size_in_pos(editor, pos):
+    assert isinstance(editor, wingapi.CAPIEditor)
+    document = editor.GetDocument()
+    assert isinstance(document, wingapi.CAPIDocument)
+    start, end = 
+    line_number
+    
+    document.GetLineNumberFromPosition(pos)
+    
 
-def comment_braces(editor=wingapi.kArgEditor):
+
+def comment_braces(title, editor=wingapi.kArgEditor):
+    assert isinstance(title, basestring)
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
     with shared.UndoableAction(document):
         start, end = editor.GetSelection()
+        editor.ExecuteCommand('beginning-of-screen-line-text')
+        
         variable_name = document.GetCharRange(start, end)
         result_string = 'self.%s = %s' % (variable_name, variable_name)
         document.DeleteChars(start, end - 1)
