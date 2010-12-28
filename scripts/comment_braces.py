@@ -63,17 +63,10 @@ def comment_braces(title, editor=wingapi.kArgEditor):
         start_line_first_char = document.GetLineStart(start_line_number)
         document.InsertChars(start_line_first_char, start_title + tips_string)
         
-        new_end = original_end + (document.GetLength() - original_document_length)
-        
-        
-        editor.ExecuteCommand('beginning-of-screen-line-text')
-        
-        variable_name = document.GetCharRange(start, end)
-        result_string = 'self.%s = %s' % (variable_name, variable_name)
-        document.DeleteChars(start, end - 1)
-        document.InsertChars(start, result_string)
-        editor.SetSelection(start + len(result_string),
-                            start + len(result_string))
-        editor.ExecuteCommand('new-line')
+        new_end = \
+            original_end + (document.GetLength() - original_document_length)
+        end_line_number = document.GetLineNumberFromPosition(new_end)
+        end_line_first_char = document.GetLineStart(end_line_number)
+        document.InsertChars(end_line_first_char, tips_string + end_title)
     
         
