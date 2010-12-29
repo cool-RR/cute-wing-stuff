@@ -2,6 +2,10 @@ import re
 
 import wingapi
 
+
+_ignore_scripts = True
+
+
 class UndoableAction(object):
     def __init__(self, document):
         assert isinstance(document, wingapi.CAPIDocument)
