@@ -12,7 +12,7 @@ import shared
 def _decapitalize(string):
     if not string:
         return string
-    return string[0].lower + string[0:]
+    return string[0].lower() + string[1:]
 
 
 def _get_indent_size_in_pos(editor, pos):
@@ -24,25 +24,29 @@ def _get_indent_size_in_pos(editor, pos):
         line_number = document.GetLineNumberFromPosition(pos)
         line_start_pos = document.GetLineStart(line_number)
         editor.SetSelection(pos, pos)
-        editor.ExecuteCommand('tab-key')
+        editor.ExecuteCommand('indent-to-match')
         line_text_start_pos = editor.GetSelection()[0]
         
         return line_text_start_pos - line_start_pos
     
 
 
-def comment_braces(title, editor=wingapi.kArgEditor):
-    if not editor:
-        editor = wingapi.gApplication.GetActiveEditor()
+def comment_braces(title):
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(title, basestring)
     assert isinstance(editor, wingapi.CAPIEditor)
     print(type(editor), editor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
     with shared.UndoableAction(document):
+        
         original_start, original_end = editor.GetSelection()
+        original_end_line_number = \
+                document.GetLineNumberFromPosition(original_end)
         original_document_length = document.GetLength()
-        indent_size = _get_indent_size_in_pos(original_start)
+        original_line_count = document.GetLineCount()
+        
+        indent_size = _get_indent_size_in_pos(editor, original_start)
         
         if title:
             raw_start_title = (' %s: ' % title.capitalize())
@@ -60,15 +64,14 @@ def comment_braces(title, editor=wingapi.kArgEditor):
         end_title = \
             end_title_head + '#' * (79 - len(end_title_head)) + '\n'        
         tips_string = \
-            (' ' * indent_size) + '#' + (' ' * (79 - indent_size - 2)) + '#'
+            (' ' * indent_size) + '#' + (' ' * (79 - indent_size - 2)) + '#\n'
         
         start_line_number = document.GetLineNumberFromPosition(original_start)
         start_line_first_char = document.GetLineStart(start_line_number)
         document.InsertChars(start_line_first_char, start_title + tips_string)
         
-        new_end = \
-            original_end + (document.GetLength() - original_document_length)
-        end_line_number = document.GetLineNumberFromPosition(new_end)
+        end_line_number = original_end_line_number + \
+            (document.GetLineCount() - original_line_count) + 1
         end_line_first_char = document.GetLineStart(end_line_number)
         document.InsertChars(end_line_first_char, tips_string + end_title)
     
