@@ -31,7 +31,9 @@ def _get_indent_size_in_pos(editor, pos):
     
 
 
-def comment_braces(title, editor=wingapi.kArgEditor):    
+def comment_braces(title, editor=wingapi.kArgEditor):
+    if not editor:
+        editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(title, basestring)
     assert isinstance(editor, wingapi.CAPIEditor)
     print(type(editor), editor)
