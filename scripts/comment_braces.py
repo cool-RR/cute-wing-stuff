@@ -16,6 +16,9 @@ def _decapitalize(string):
 
 
 def _get_indent_size_in_pos(editor, pos):
+    # blocktodo: figure out something like `indent-to-match` except it looks at
+    # the lines *below* the current one.
+    
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
@@ -32,12 +35,17 @@ def _get_indent_size_in_pos(editor, pos):
 
 
 def comment_braces(title):
+    
     editor = wingapi.gApplication.GetActiveEditor()
-    assert isinstance(title, basestring)
     assert isinstance(editor, wingapi.CAPIEditor)
-    print(type(editor), editor)
+    
     document = editor.GetDocument()
-    assert isinstance(document, wingapi.CAPIDocument)
+    assert isinstance(document, wingapi.CAPIDocument)    
+    
+    assert isinstance(title, basestring)
+    if title.endswith(':') or title.endswith('.'):
+        title = title[:-1]
+    
     with shared.UndoableAction(document):
         
         original_start, original_end = editor.GetSelection()
@@ -76,3 +84,30 @@ def comment_braces(title):
         document.InsertChars(end_line_first_char, tips_string + end_title)
     
         
+def comment_hr(editor=wingapi.kArgEditor):
+    
+    # todo: deal with non-clear lines
+    
+    assert isinstance(editor, wingapi.CAPIEditor)
+    
+    document = editor.GetDocument()
+    assert isinstance(document, wingapi.CAPIDocument)
+    
+    with shared.UndoableAction(document):
+        
+        original_start, original_end = editor.GetSelection()
+        original_end_line_number = \
+                document.GetLineNumberFromPosition(original_end)
+        original_document_length = document.GetLength()
+        original_line_count = document.GetLineCount()
+        
+        indent_size = _get_indent_size_in_pos(editor, original_start)
+        
+        string_to_write = (' ' * indent_size) + ('#' * (79 - indent_size))
+        
+        assert len(string_to_write) == 79
+        
+        start_line_number = document.GetLineNumberFromPosition(original_start)
+        start_line_first_char = document.GetLineStart(start_line_number)
+        document.InsertChars(start_line_first_char, string_to_write)
+    
