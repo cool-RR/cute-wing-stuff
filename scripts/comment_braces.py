@@ -1,3 +1,12 @@
+# Copyright 2009-2011 Ram Rachum.
+# This program is distributed under the LGPL2.1 license.
+
+'''
+This module defines the `comment_braces` script.
+
+See its documentation for more information.
+'''
+
 from __future__ import with_statement
 
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
@@ -10,14 +19,20 @@ import shared
 
 
 def _decapitalize(string):
+    '''Decapitalize a string's first letter.'''
     if not string:
         return string
     return string[0].lower() + string[1:]
 
 
 def _get_indent_size_in_pos(editor, pos):
-    # blocktodo: figure out something like `indent-to-match` except it looks at
-    # the lines *below* the current one.
+    '''
+    Get the size of the indent, in spaces, in position `pos` in `editor`.
+    
+    Returns an `int` like 4, 8, 12, etc.
+    '''    
+    # todo: figure out something like `indent-to-match` except it looks at the
+    # lines *below* the current one.
     
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
@@ -35,6 +50,27 @@ def _get_indent_size_in_pos(editor, pos):
 
 
 def comment_braces(title):
+    '''
+    Create "comment braces" with a title around a piece of code.
+    
+    For example, if you have this code:
+    
+        do_something()
+        do_something_else()
+        meow = frr + 7
+        do_something_again()
+        
+    asdf
+    
+        
+        do_something()
+        do_something_else()
+        meow = frr + 7
+        do_something_again()
+        
+
+    
+    '''
     
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
