@@ -17,7 +17,7 @@ do that in `Edit` -> `Preferences` -> `Keyboard` -> `Custom Key Bindings`.)
 # What do the scripts do? #
 
 
-## `arg-to-attr` ##
+## arg-to-attr ##
 
 Turn an argument to `__init__` into an instance attribute.
     
@@ -45,7 +45,7 @@ have the cursor ready in the next line.
 Suggested key combination: `Ctrl-Insert A`.
 
 
-## `flip_case` ##
+## flip-case ##
 
 Flip the case of the current word between undercase and camelcase.
 
@@ -53,4 +53,47 @@ For example, if the cursor is on `something_like_this` and you activate
 this script, you'll get `SomethingLikeThis`. Do it again and you'll get
 `something_like_this` again.
 
+Suggested key combination: `Ctrl-Insert C`.
 
+
+## comment-braces ##
+
+Create "comment braces" with a title around a piece of code.
+
+For example, if you have this code:
+
+    do_something()
+    do_something_else()
+    meow = frr + 7
+    do_something_again()
+    
+You can select it, then run the `comment_braces` script with a title of
+"doing inane stuff", to get this:
+    
+    ### Doing inane stuff: ####################################################
+    #                                                                         #
+    do_something()
+    do_something_else()
+    meow = frr + 7
+    do_something_again()
+    #                                                                         #
+    ### Finished doing inane stuff. ###########################################
+    
+(Don't try this inside a docstring, it works only in real code.)
+
+The title usually has a first word ending with "ing". Don't bother capitalizing
+the first letter or ending the sentence with any punctuation mark. You may also
+use an empty title to get a title-less comment line.
+
+Suggested key combination: `Ctrl-Insert B`.
+
+
+## comment-hr ##
+
+Enter a horizontal line of "#" characters going until character 79.
+
+Example:
+
+    #######################################################################
+    
+Suggested key combination: `Ctrl-Insert H`.

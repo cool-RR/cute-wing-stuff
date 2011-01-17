@@ -20,7 +20,7 @@ import shared
 
 def comment_hr(editor=wingapi.kArgEditor):
     '''
-    Enter a line of "#" characters going until character 79.
+    Enter a horizontal line of "#" characters going until character 79.
     
     Example:
     
