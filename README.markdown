@@ -37,7 +37,7 @@ require you to make around 20 keystrokes. I don't know about you, but I'm just
 not ready for that kind of a commitment.
 
 Instead, type `crunchiness`. (You'll get autocompletion because it exists as an
-argument.) Then run this `arg_to_attr` script.
+argument.) Then run this `arg-to-attr` script.
 
 The final result is that you'll get a `self.crunchiness = crunchiness` line and
 have the cursor ready in the next line.
@@ -67,7 +67,7 @@ For example, if you have this code:
     meow = frr + 7
     do_something_again()
     
-You can select it, then run the `comment_braces` script with a title of
+You can select it, then run the `comment-braces` script with a title of
 "doing inane stuff", to get this:
     
     ### Doing inane stuff: ####################################################
