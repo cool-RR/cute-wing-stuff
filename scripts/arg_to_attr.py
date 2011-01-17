@@ -1,3 +1,13 @@
+# Copyright 2009-2011 Ram Rachum.
+# This program is distributed under the LGPL2.1 license.
+
+'''
+This module defines the `arg_to_attr` script.
+
+See its documentation for more information.
+'''
+
+
 from __future__ import with_statement
 
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
@@ -10,6 +20,31 @@ import shared
 
 
 def arg_to_attr(editor=wingapi.kArgEditor):
+    '''
+    Turn an argument to `__init__` into an instance attribute.
+    
+    For example, you have just typed this:
+    
+        class MyObject(object):
+            def __init__(self, crunchiness):
+                <Cursor is here>
+                
+    (Of course, you can substitute `crunchiness` for whatever your argument's
+    name is.)
+    
+    Now, you might want to put a `self.crunchiness = crunchiness` line in that
+    `__init__` method. But that would take so much typing, because
+    `self.crunchiness` doesn't exist yet, and won't be autocompleted. That
+    would require you to make around 20 keystrokes. I don't know about you, but
+    I'm just not ready for that kind of a commitment.
+    
+    Instead, type `crunchiness`. (You'll get autocompletion because it exists
+    as an argument.) Then run this `arg_to_attr` script. (I personally use
+    `Ctrl-Insert A` for it.)
+    
+    The final result is that you'll get a `self.crunchiness = crunchiness` line
+    and have the cursor ready in the next line.
+    '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
