@@ -16,7 +16,8 @@ do that in `Edit` -> `Preferences` -> `Keyboard` -> `Custom Key Bindings`.)
 
 # What do the scripts do? #
 
-## arg-to-attr ##
+
+## `arg-to-attr` ##
 
 Turn an argument to `__init__` into an instance attribute.
     
@@ -36,8 +37,20 @@ require you to make around 20 keystrokes. I don't know about you, but I'm just
 not ready for that kind of a commitment.
 
 Instead, type `crunchiness`. (You'll get autocompletion because it exists as an
-argument.) Then run this `arg_to_attr` script. (I personally use `Ctrl-Insert
-A` for it.)
+argument.) Then run this `arg_to_attr` script.
 
 The final result is that you'll get a `self.crunchiness = crunchiness` line and
 have the cursor ready in the next line.
+
+Suggested key combination: `Ctrl-Insert A`.
+
+
+## `flip_case` ##
+
+Flip the case of the current word between undercase and camelcase.
+
+For example, if the cursor is on `something_like_this` and you activate
+this script, you'll get `SomethingLikeThis`. Do it again and you'll get
+`something_like_this` again.
+
+
