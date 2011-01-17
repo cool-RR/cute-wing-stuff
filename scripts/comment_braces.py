@@ -25,30 +25,6 @@ def _decapitalize(string):
     return string[0].lower() + string[1:]
 
 
-def _get_indent_size_in_pos(editor, pos):
-    '''
-    Get the size of the indent, in spaces, in position `pos` in `editor`.
-    
-    Returns an `int` like 4, 8, 12, etc.
-    '''    
-    # todo: figure out something like `indent-to-match` except it looks at the
-    # lines *below* the current one.
-    
-    assert isinstance(editor, wingapi.CAPIEditor)
-    document = editor.GetDocument()
-    assert isinstance(document, wingapi.CAPIDocument)
-    
-    with shared.SelectionRestorer(editor):
-        line_number = document.GetLineNumberFromPosition(pos)
-        line_start_pos = document.GetLineStart(line_number)
-        editor.SetSelection(pos, pos)
-        editor.ExecuteCommand('indent-to-match')
-        line_text_start_pos = editor.GetSelection()[0]
-        
-        return line_text_start_pos - line_start_pos
-    
-
-
 def comment_braces(title):
     '''
     Create "comment braces" with a title around a piece of code.
@@ -60,16 +36,23 @@ def comment_braces(title):
         meow = frr + 7
         do_something_again()
         
-    asdf
-    
+    You can select it, then run the `comment_braces` script with a title of
+    "doing inane stuff", to get this:
         
+        ### Doing inane stuff: ################################################
+        #                                                                     #
         do_something()
         do_something_else()
         meow = frr + 7
         do_something_again()
+        #                                                                     #
+        ### Finished doing inane stuff. #######################################
         
-
+    (Don't try this inside a docstring, it works only in real code.)
     
+    The title usually has a first word ending with "ing". Don't bother
+    capitalizing the first letter or ending the sentence with any punctuation
+    mark. You may also use an empty title to get a title-less comment line.
     '''
     
     editor = wingapi.gApplication.GetActiveEditor()
@@ -90,7 +73,7 @@ def comment_braces(title):
         original_document_length = document.GetLength()
         original_line_count = document.GetLineCount()
         
-        indent_size = _get_indent_size_in_pos(editor, original_start)
+        indent_size = shared.get_indent_size_in_pos(editor, original_start)
         
         if title:
             raw_start_title = (' %s: ' % title.capitalize())
@@ -120,30 +103,4 @@ def comment_braces(title):
         document.InsertChars(end_line_first_char, tips_string + end_title)
     
         
-def comment_hr(editor=wingapi.kArgEditor):
-    
-    # todo: deal with non-clear lines
-    
-    assert isinstance(editor, wingapi.CAPIEditor)
-    
-    document = editor.GetDocument()
-    assert isinstance(document, wingapi.CAPIDocument)
-    
-    with shared.UndoableAction(document):
-        
-        original_start, original_end = editor.GetSelection()
-        original_end_line_number = \
-                document.GetLineNumberFromPosition(original_end)
-        original_document_length = document.GetLength()
-        original_line_count = document.GetLineCount()
-        
-        indent_size = _get_indent_size_in_pos(editor, original_start)
-        
-        string_to_write = (' ' * indent_size) + ('#' * (79 - indent_size))
-        
-        assert len(string_to_write) == 79
-        
-        start_line_number = document.GetLineNumberFromPosition(original_start)
-        start_line_first_char = document.GetLineStart(start_line_number)
-        document.InsertChars(start_line_first_char, string_to_write)
     
