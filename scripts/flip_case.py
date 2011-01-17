@@ -1,7 +1,15 @@
+# Copyright 2009-2011 Ram Rachum.
+# This program is distributed under the LGPL2.1 license.
+
+'''
+This module defines the `flip_case` script.
+
+See its documentation for more information.
+'''
+
 from __future__ import with_statement
 
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
-
 
 import wingapi
 
@@ -9,6 +17,13 @@ import shared
 
 
 def flip_case(editor=wingapi.kArgEditor):
+    '''
+    Flip the case of the current word between undercase and camelcase.
+    
+    For example, if the cursor is on `something_like_this` and you activate
+    this script, you'll get `SomethingLikeThis`. Do it again and you'll get
+    `something_like_this` again.
+    '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
