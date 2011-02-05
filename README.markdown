@@ -42,7 +42,7 @@ argument.) Then run this `arg-to-attr` script.
 The final result is that you'll get a `self.crunchiness = crunchiness` line and
 have the cursor ready in the next line.
 
-Suggested key combination: `Ctrl-Insert A`.
+Suggested key combination: `Alt-Insert A`.
 
 
 ## flip-case ##
@@ -53,7 +53,7 @@ For example, if the cursor is on `something_like_this` and you activate
 this script, you'll get `SomethingLikeThis`. Do it again and you'll get
 `something_like_this` again.
 
-Suggested key combination: `Ctrl-Insert C`.
+Suggested key combination: `Alt-Insert C`.
 
 
 ## comment-braces ##
@@ -85,7 +85,7 @@ The title usually has a first word ending with "ing". Don't bother capitalizing
 the first letter or ending the sentence with any punctuation mark. You may also
 use an empty title to get a title-less comment line.
 
-Suggested key combination: `Ctrl-Insert B`.
+Suggested key combination: `Alt-Insert B`.
 
 
 ## comment-hr ##
@@ -96,4 +96,4 @@ Example:
 
     #######################################################################
     
-Suggested key combination: `Ctrl-Insert H`.
+Suggested key combination: `Alt-Insert H`.
