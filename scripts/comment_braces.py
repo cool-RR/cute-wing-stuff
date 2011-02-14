@@ -25,6 +25,13 @@ def _decapitalize(string):
     return string[0].lower() + string[1:]
 
 
+def _capitalize(string):
+    '''Capitalize a string's first letter.'''
+    if not string:
+        return string
+    return string[0].upper() + string[1:]
+
+
 def comment_braces(title):
     '''
     Create "comment braces" with a title around a piece of code.
@@ -76,7 +83,7 @@ def comment_braces(title):
         indent_size = shared.get_indent_size_in_pos(editor, original_start)
         
         if title:
-            raw_start_title = (' %s: ' % title.capitalize())
+            raw_start_title = (' %s: ' % _capitalize(title))
             raw_end_title = (' Finished %s. ' % _decapitalize(title))
         else:
             assert title == ''
