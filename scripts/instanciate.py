@@ -20,7 +20,10 @@ def instanciate(editor=wingapi.kArgEditor):
     '''
     Write `my_class_name = MyClassName()`.
     
-    The cursor will be places in the parentheses.
+    This is used to quickly instanciate a class. Write your class name, like
+    `CatNip`. It will usually be autocompleted. Then execute this script, and
+    you'll have `cat_nip = CatNip()`, with the cursor positioned inside the
+    parentheses for you to write the arguments.
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)
@@ -54,7 +57,4 @@ def instanciate(editor=wingapi.kArgEditor):
             )
         )
         
-        
-        
-    
         
