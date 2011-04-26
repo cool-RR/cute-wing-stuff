@@ -46,12 +46,24 @@ def instanciate(editor=wingapi.kArgEditor):
 
         almost_final_position = end + len(segment_to_insert)
         
-        document.InsertChars(almost_final_position, '()')
+        #document.InsertChars(almost_final_position, '()')
+        #indent_size = \
+            #shared.get_indent_size_in_pos(editor, almost_final_position)
+        #indent = ' ' * indent_size
+        editor.SetSelection(almost_final_position, almost_final_position)
+        editor.PasteTemplate(
+            '()',
+            (
+                (1, 1),
+            )
+        )
         
-        final_position = almost_final_position + 1
+        #final_position = almost_final_position + 1
         
-        editor.SetSelection(final_position, final_position)
+        #editor.SetSelection(final_position, final_position)
         
         #editor.ExecuteCommand('new-line')
+        
+        
     
         
