@@ -56,11 +56,11 @@ this script, you'll get `SomethingLikeThis`. Do it again and you'll get
 Suggested key combination: `Alt-Insert C`.
 
 
-## instanciate ##
+## instantiate ##
     
 Write `my_class_name = MyClassName()`.
     
-This is used to quickly instanciate a class. Write your class name, like
+This is used to quickly instantiate a class. Write your class name, like
 `CatNip`. It will usually be autocompleted. Then execute this script, and
 you'll have `cat_nip = CatNip()`, with the cursor positioned inside the
 parentheses for you to write the arguments.

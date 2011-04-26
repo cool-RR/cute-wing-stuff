@@ -2,7 +2,7 @@
 # This program is distributed under the LGPL2.1 license.
 
 '''
-This module defines the `instanciate` script.
+This module defines the `instantiate` script.
 
 See its documentation for more information.
 '''
@@ -16,11 +16,11 @@ import wingapi
 import shared
 
 
-def instanciate(editor=wingapi.kArgEditor):
+def instantiate(editor=wingapi.kArgEditor):
     '''
     Write `my_class_name = MyClassName()`.
     
-    This is used to quickly instanciate a class. Write your class name, like
+    This is used to quickly instantiate a class. Write your class name, like
     `CatNip`. It will usually be autocompleted. Then execute this script, and
     you'll have `cat_nip = CatNip()`, with the cursor positioned inside the
     parentheses for you to write the arguments.
@@ -36,7 +36,7 @@ def instanciate(editor=wingapi.kArgEditor):
         word = document.GetCharRange(start, end)
         
         if '_' in word:
-            raise Exception("Must use `instanciate` when the current word is "
+            raise Exception("Must use `instantiate` when the current word is "
                             "the CamelCase class name. The current word is "
                             "`%s`, and it has an underscore in it, so it's "
                             "not CamelCase.")
