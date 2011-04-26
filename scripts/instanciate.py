@@ -18,7 +18,9 @@ import shared
 
 def instanciate(editor=wingapi.kArgEditor):
     '''
+    Write `my_class_name = MyClassName()`.
     
+    The cursor will be places in the parentheses.
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)
@@ -40,17 +42,11 @@ def instanciate(editor=wingapi.kArgEditor):
         
         segment_to_insert = '%s = ' % lower_case_word
             
-        
-        #document.DeleteChars(start, end-1)
         document.InsertChars(start, segment_to_insert)
 
-        almost_final_position = end + len(segment_to_insert)
+        position = end + len(segment_to_insert)
         
-        #document.InsertChars(almost_final_position, '()')
-        #indent_size = \
-            #shared.get_indent_size_in_pos(editor, almost_final_position)
-        #indent = ' ' * indent_size
-        editor.SetSelection(almost_final_position, almost_final_position)
+        editor.SetSelection(position, position)
         editor.PasteTemplate(
             '()',
             (
@@ -58,11 +54,6 @@ def instanciate(editor=wingapi.kArgEditor):
             )
         )
         
-        #final_position = almost_final_position + 1
-        
-        #editor.SetSelection(final_position, final_position)
-        
-        #editor.ExecuteCommand('new-line')
         
         
     
