@@ -16,7 +16,7 @@ import wingapi
 import shared
 
 
-def instanciate(title):
+def instanciate(editor=wingapi.kArgEditor):
     '''
     
     '''
@@ -42,9 +42,16 @@ def instanciate(title):
             
         
         #document.DeleteChars(start, end-1)
-        document.InsertChars(start, )
-        editor.SetSelection(start + len(new_word),
-                            start + len(new_word))
+        document.InsertChars(start, segment_to_insert)
+
+        almost_final_position = end + len(segment_to_insert)
+        
+        document.InsertChars(almost_final_position, '()')
+        
+        final_position = almost_final_position + 1
+        
+        editor.SetSelection(final_position, final_position)
+        
         #editor.ExecuteCommand('new-line')
     
         
