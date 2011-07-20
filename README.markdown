@@ -123,4 +123,10 @@ line to make the end of the line exactly coincide with the right border of the
 editor. (Whose width can be configured in the `TARGET_LINE_LENGTH` constant in
 the script's module.)
 
+This is useful for creating lines of this style:
+    
+    if first_long_condition(foo, foobar) and \
+                                          second_long_condition(fubaz, bazbar):
+                                          
+
 Suggested key combination: `Alt-Insert P`.

@@ -34,6 +34,12 @@ def push_line_to_end(editor=wingapi.kArgEditor):
     the line to make the end of the line exactly coincide with the right border
     of the editor. (Whose width can be configured in the `TARGET_LINE_LENGTH`
     constant in this module.)
+    
+    This is useful for creating lines of this style:
+    
+        if first_long_condition(foo, foobar) and \
+                                          second_long_condition(fubaz, bazbar):
+                                          
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
