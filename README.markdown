@@ -112,3 +112,15 @@ Example:
     #######################################################################
     
 Suggested key combination: `Alt-Insert H`.
+
+
+## push-line-to-end ##
+
+Push the current line to the end, aligning it to right border of editor.
+    
+This inserts or deletes as many spaces as necessary from the beginning of the
+line to make the end of the line exactly coincide with the right border of the
+editor. (Whose width can be configured in the `TARGET_LINE_LENGTH` constant in
+the script's module.)
+
+Suggested key combination: `Alt-Insert P`.
