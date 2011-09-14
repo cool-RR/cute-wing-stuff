@@ -59,24 +59,35 @@ class UndoableAction(object):
     def __exit__(self, *args, **kwargs):
         self.document.EndUndoAction()
         
-        
+
+def get_cursor_position(editor):
+    '''
+    Get the cursor position in the given editor, assuming no text is selected.
+    '''
+    start, _ = editor.GetSelection()
+    assert start == _
+    return start        
+
+
 def select_current_word(editor=wingapi.kArgEditor):
     '''Select the current word that the cursor is on.'''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
     editor.ExecuteCommand('backward-word')
-    start, _ = editor.GetSelection()
-    assert start == _
+    start = get_cursor_position(editor)
     length = 0
     for length in range(1000): 
-        character = document.GetCharRange(start + length,
-                                          start + length + 1)
-        assert len(character) == 1
-        if character.isalnum() or character == '_':
-            continue
-        else:
+        if start + length == document.GetLength():
             break
+        else:
+            character = document.GetCharRange(start + length,
+                                              start + length + 1)
+            assert len(character) == 1
+            if character.isalnum() or character == '_':
+                continue
+            else:
+                break
     end = start + length
     editor.SetSelection(start, end)
     return start, end
