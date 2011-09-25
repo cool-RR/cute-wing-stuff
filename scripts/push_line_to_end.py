@@ -17,23 +17,14 @@ import wingapi
 import shared
 
 
-TARGET_LINE_LENGTH = 79
-'''
-The maximum number of characters that should be in one line.
-
-The user-customized number is available through Wing settings, but because of
-an off-by-one bug in Wing, it is hard-coded here.
-'''
-
-
 def push_line_to_end(editor=wingapi.kArgEditor):
     '''
     Push the current line to the end, aligning it to right border of editor.
     
     This inserts or deletes as many spaces as necessary from the beginning of
     the line to make the end of the line exactly coincide with the right border
-    of the editor. (Whose width can be configured in the `TARGET_LINE_LENGTH`
-    constant in this module.)
+    of the editor. (Whose width can be configured in Wing's "Preferences" ->
+    "Line Wrapping" -> "Reformatting Wrap Column".)
     
     This is useful for creating lines of this style:
     
@@ -49,7 +40,9 @@ def push_line_to_end(editor=wingapi.kArgEditor):
     line_start = document.GetLineStart(line)
     line_end = document.GetLineEnd(line)
     current_line_length = line_end - line_start
-    n_spaces_to_add = TARGET_LINE_LENGTH - current_line_length
+    n_spaces_to_add = \
+        wingapi.gApplication.GetPreference('edit.text-wrap-column') - \
+                                                            current_line_length
     if n_spaces_to_add == 0:
         return
     elif n_spaces_to_add > 0:
