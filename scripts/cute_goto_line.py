@@ -9,6 +9,8 @@ See its documentation for more information.
 
 from __future__ import with_statement
 
+import threading
+import time
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
 
 import wingapi
@@ -18,23 +20,25 @@ import guiutils.formbuilder
 import shared
 
 
-def cute_goto_line():
+def cute_goto_line(line_number):
     '''blocktododoc'''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
     
-    line_number = 7    
-    line_number = int(line_number)
     original_show_line_numbers_setting = \
                    wingapi.gApplication.GetPreference('edit.show-line-numbers')
     #try:
     wingapi.gApplication.SetPreference('edit.show-line-numbers', True)
-    editor.ExecuteCommand('goto-line', gotoline=7)
+    #editor.ExecuteCommand('goto-line', gotoline=7)
+    editor.ScrollToLine(line_number, select=1)
     #finally:
-    wingapi.gApplication.SetPreference('edit.show-line-numbers',
-                                       original_show_line_numbers_setting)
+    wingapi.gApplication.ShowMessageDialog
+    wingapi.gApplication.InstallTimeout(3000, lambda: wingapi.gApplication.SetPreference('edit.show-line-numbers',
+                                       original_show_line_numbers_setting))
+
+    
     
         
 #cute_goto_line.arginfo = {
