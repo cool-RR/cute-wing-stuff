@@ -20,35 +20,25 @@ import guiutils.formbuilder
 import shared
 
 
-def cute_goto_line(line_number):
+def cute_goto_line():
     '''blocktododoc'''
+
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
-    document = editor.GetDocument()
-    assert isinstance(document, wingapi.CAPIDocument)
-    
+    #document = editor.GetDocument()
+    #assert isinstance(document, wingapi.CAPIDocument)
+
     original_show_line_numbers_setting = \
                    wingapi.gApplication.GetPreference('edit.show-line-numbers')
-    #try:
     wingapi.gApplication.SetPreference('edit.show-line-numbers', True)
-    #editor.ExecuteCommand('goto-line', gotoline=7)
-    editor.ScrollToLine(line_number, select=1)
-    #finally:
-    wingapi.gApplication.ShowMessageDialog
-    wingapi.gApplication.InstallTimeout(3000, lambda: wingapi.gApplication.SetPreference('edit.show-line-numbers',
-                                       original_show_line_numbers_setting))
-
     
-    
+    def hide_if_was_hidden():
+        ''' '''
+        wingapi.gApplication.SetPreference(
+            'edit.show-line-numbers',
+            original_show_line_numbers_setting
+        )
         
-#cute_goto_line.arginfo = {
-    #'line_number': wingapi.CArgInfo('Line number',
-                                    #wingutils.datatype.CType(1),
-                                    #guiutils.formbuilder.CNumberGui(
-                                        #0,
-                                        #1000000,
-                                        #5,
-                                        #0
-                                    #),
-                                    #'Line number',),
-#}
+    wingapi.gApplication.ExecuteCommand('goto-line')
+    wingapi.gApplication.InstallTimeout(3000, hide_if_was_hidden)
+    #editor.connect('selection-changed', hide_if_was_hidden)
