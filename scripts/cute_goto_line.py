@@ -9,36 +9,41 @@ See its documentation for more information.
 
 from __future__ import with_statement
 
-import threading
 import time
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
 
 import wingapi
-import wingutils.datatype
-import guiutils.formbuilder 
  
 import shared
 
 
-def cute_goto_line():
-    '''blocktododoc'''
-
-    editor = wingapi.gApplication.GetActiveEditor()
+def cute_goto_line(editor=wingapi.kArgEditor):
+    '''
+    Go to a specified line number in editor, temporarily showing line numbers.
+    
+    This script is intended for people who don't like Wing to always show line
+    numbers in the editors, but who *do* want to see them temporarily when
+    using Wing's `goto-line` command, usually invoked by Ctrl-L, to go to a
+    specific line.
+    
+    Using this script you can see exactly which line you're going to before
+    issuing the command; and if usually keep line numbers hidden, then they
+    will be hidden automatically after Wing has moved to the specified line.
+    '''
     assert isinstance(editor, wingapi.CAPIEditor)
-    #document = editor.GetDocument()
-    #assert isinstance(document, wingapi.CAPIDocument)
 
     original_show_line_numbers_setting = \
                    wingapi.gApplication.GetPreference('edit.show-line-numbers')
     wingapi.gApplication.SetPreference('edit.show-line-numbers', True)
     
-    def hide_if_was_hidden():
-        ''' '''
+    def hide_if_was_hidden(*args, **kwargs):
+        '''Restore the `show-line-numbers` setting to its original value.'''
         wingapi.gApplication.SetPreference(
             'edit.show-line-numbers',
             original_show_line_numbers_setting
         )
+        editor.disconnect(binding_tag)
         
     wingapi.gApplication.ExecuteCommand('goto-line')
-    wingapi.gApplication.InstallTimeout(3000, hide_if_was_hidden)
-    #editor.connect('selection-changed', hide_if_was_hidden)
+    binding_tag = editor.connect('selection-changed', hide_if_was_hidden)
+    print(binding_tag)

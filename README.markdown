@@ -130,3 +130,19 @@ This is useful for creating lines of this style:
                                           
 
 Suggested key combination: `Alt-Insert P`.
+
+
+## cute-goto-line ##
+
+Go to a specified line number in editor, temporarily showing line numbers.
+
+This script is intended for people who don't like Wing to always show line
+numbers in the editors, but who *do* want to see them temporarily when using
+Wing's `goto-line` command, usually invoked by Ctrl-L, to go to a specific
+line.
+
+Using this script you can see exactly which line you're going to before issuing
+the command; and if usually keep line numbers hidden, then they will be hidden
+automatically after Wing has moved to the specified line.
+
+Suggested key combination: `Ctrl-L`.
