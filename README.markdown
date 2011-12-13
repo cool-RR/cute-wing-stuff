@@ -144,6 +144,9 @@ line.
 Using this script you can see exactly which line you're going to before issuing
 the command; and if usually keep line numbers hidden, then they will be hidden
 automatically after Wing has moved to the specified line.
+    
+Also, the caret will go to the beginning of the text on the line instead of
+Wing's default of going to column 0.
 
 Suggested key combination: `Ctrl-L`.
 
