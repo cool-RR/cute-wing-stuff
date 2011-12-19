@@ -127,7 +127,8 @@ This is useful for creating lines of this style:
     
     if first_long_condition(foo, foobar) and \
                                           second_long_condition(fubaz, bazbar):
-                                          
+
+Also deletes trailing spaces.                                          
 
 Suggested key combination: `Alt-Insert P`.
 
