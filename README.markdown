@@ -130,7 +130,7 @@ This is useful for creating lines of this style:
 
 Also deletes trailing spaces.                                          
 
-Suggested key combination: `Alt-Insert P`.
+Suggested key combination: `Alt-Insert End`.
 
 
 ## cute-goto-line ##
