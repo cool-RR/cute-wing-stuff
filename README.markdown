@@ -162,3 +162,17 @@ first deleting a line, then sending the caret to the beginning of the text
 on the next line.
 
 Suggested key combination: `Ctrl-Shift-C`.
+
+
+## slash_line ##
+
+Slash a long line into 2 lines, putting a `\` character as a separator.
+    
+This is good for automatically formatting long lines into this style:
+
+    has_corresponding_source_file = \
+                               os.path.exists(corresponding_python_source_file)
+    nose.selector.Selector.wantFile = \
+    types.MethodType(wantFile, None, nose.selector.Selector)
+    
+Suggested key combination: `Alt-Insert L`.

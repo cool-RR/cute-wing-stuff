@@ -71,7 +71,7 @@ def push_line_to_end(editor=wingapi.kArgEditor):
     n_trailing_spaces = _get_n_identical_edge_characters(line_content,
                                                          character=' ',
                                                          head=False)
-    
+    print ('Meow')
     current_line_length = line_end - line_start   
     n_spaces_to_add = \
         wingapi.gApplication.GetPreference('edit.text-wrap-column') - \
