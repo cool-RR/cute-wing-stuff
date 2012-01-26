@@ -152,7 +152,7 @@ Wing's default of going to column 0.
 Suggested key combination: `Ctrl-L`.
 
 
-## delete_line_and_home ##
+## delete-line-and-home ##
 
 Delete the current line and send caret to beginning of text in next line.
     
@@ -164,7 +164,7 @@ on the next line.
 Suggested key combination: `Ctrl-Shift-C`.
 
 
-## slash_line ##
+## slash-line ##
 
 Slash a long line into 2 lines, putting a `\` character as a separator.
     
@@ -176,3 +176,22 @@ This is good for automatically formatting long lines into this style:
                        types.MethodType(wantFile, None, nose.selector.Selector)
     
 Suggested key combination: `Alt-Insert L`.
+
+
+## backward-half-page ##
+    
+Move half a page up.
+    
+This is essentially one half of Page-Up.
+
+Suggested key combination: `Alt-Page_up` (As long as you don't use Wing's folding.)
+
+
+## forward-half-page ##
+    
+Move half a page down.
+    
+This is essentially one half of Page-Down.
+
+Suggested key combination: `Alt-Page_down` (As long as you don't use Wing's
+folding.)

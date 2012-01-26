@@ -171,3 +171,48 @@ def get_n_identical_edge_characters(string, character=None, head=True):
             return i
     else:
         return len(string)
+    
+    
+def _clip_to_document_range(position, document):
+    '''Correct `position` to be within the confines of the `document`.'''
+    assert isinstance(document, wingapi.CAPIDocument)
+    if position < 0:
+        return 0
+    elif position > document.GetLength():
+        return length
+    else:
+        return position
+
+    
+def _move_half_page(direction, editor=wingapi.kArgEditor):
+    '''
+    Move half a page, either up or down.
+    
+    If `direction=-1`, moves up, and if `direction=1`, moves down.
+    
+    This is essentially one half of Page-Down or Page-Up.
+    '''
+    assert isinstance(editor, wingapi.CAPIEditor)
+    document = editor.GetDocument()
+    
+    lines_to_move = editor.GetNumberOfVisibleLines() // 2
+    
+    # Determining current location: ###########################################
+    current_position, _ = editor.GetSelection()
+    current_line = document.GetLineNumberFromPosition(current_position)
+    column = current_position - document.GetLineStart(current_line)
+    ###########################################################################
+    
+    # Determining new location to go to: ######################################
+    new_line = current_line + (lines_to_move * direction)
+    length_of_new_line = \
+                document.GetLineEnd(new_line) - document.GetLineStart(new_line)
+    new_column = min((column, length_of_new_line))
+    new_position = _clip_to_document_range(
+        document.GetLineStart(new_line) + new_column,
+        document=document
+    )
+    ###########################################################################
+
+    with UndoableAction(document):
+        editor.SetSelection(new_position, new_position)
