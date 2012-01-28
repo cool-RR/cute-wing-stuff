@@ -195,3 +195,19 @@ This is essentially one half of Page-Down.
 
 Suggested key combination: `Alt-Page_down` (As long as you don't use Wing's
 folding.)
+
+
+## cute-open-line ##
+
+Open a new line, but don't move the caret down to the new line.
+    
+Running this command is like pressing Enter, except your caret doesn't move into the
+new line that was created, but stays exactly where it was.
+
+The advantage of this over Wing's built-in `open-line` is that `cute-open-line`
+doesn't just insert a newline character like `open-line` does; it runs Wing's
+`new-line` command, which does various intelligent things like auto-indenting your
+code to the right level, opening your parentheses *just so* if you're doing function
+invocation, and a bunch of other goodies.
+
+Suggested key combination: `Ctrl-Return`
