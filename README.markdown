@@ -58,12 +58,12 @@ Suggested key combination: `Alt-Insert C`.
 
 ## instantiate ##
     
-Write `my_class_name = MyClassName()`.
+Write `my_class_name = MyClassName`.
     
 This is used to quickly instantiate a class. Write your class name, like
 `CatNip`. It will usually be autocompleted. Then execute this script, and
-you'll have `cat_nip = CatNip()`, with the cursor positioned inside the
-parentheses for you to write the arguments.
+you'll have `cat_nip = CatNip`, with the cursor positioned at the end. Then
+just press `(`, type in the arguments, and you're set.
 
 This saves a lot of typing, because normally you don't have autocompletion for
 the new instance name `cat_nip` because it doesn't exist yet.
