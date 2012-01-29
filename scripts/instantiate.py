@@ -32,6 +32,7 @@ def instantiate(editor=wingapi.kArgEditor):
     assert isinstance(document, wingapi.CAPIDocument)
     
     with shared.UndoableAction(document):
+        editor.ExecuteCommand('end-of-line')
         start, end = shared.select_current_word(editor)
         word = document.GetCharRange(start, end)
         
@@ -44,17 +45,17 @@ def instantiate(editor=wingapi.kArgEditor):
         lower_case_word = shared.camel_case_to_lower_case(word)
         
         segment_to_insert = '%s = ' % lower_case_word
-            
-        document.InsertChars(start, segment_to_insert)
-
-        position = end + len(segment_to_insert)
         
-        editor.SetSelection(position, position)
-        editor.PasteTemplate(
-            '()',
-            (
-                (1, 1),
-            )
-        )
+        editor.ExecuteCommand('beginning-of-line-text')
+        
+        current_position, _ = editor.GetSelection()
+        
+        document.InsertChars(current_position, segment_to_insert)
+
+        editor.ExecuteCommand('end-of-line')
+        
+        current_position, _ = editor.GetSelection()
+        
+        document.InsertChars(current_position, '(')
         
         
