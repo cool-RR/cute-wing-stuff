@@ -11,7 +11,7 @@ get Wing to see them for the first time.)
 After you do that, the commands will become available in Wing; For example you
 could do `Ctrl-F12` and then type `flip-case` to activate the `flip_case`
 script. But you probably want to bind these commands to some key combination;
-do that in `Edit` -> `Preferences` -> `Keyboard` -> `Custom Key Bindings`.)
+do that in `Edit` -> `Preferences` -> `Keyboard` -> `Custom Key Bindings`.
 
 
 # What do the scripts do? #
