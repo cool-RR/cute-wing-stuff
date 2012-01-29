@@ -11,7 +11,7 @@ get Wing to see them for the first time.)
 After you do that, the commands will become available in Wing; For example you
 could do `Ctrl-F12` and then type `flip-case` to activate the `flip_case`
 script. But you probably want to bind these commands to some key combination;
-do that in `Edit` -> `Preferences` -> `Keyboard` -> `Custom Key Bindings`.)
+do that in `Edit` -> `Preferences` -> `Keyboard` -> `Custom Key Bindings`.
 
 
 # What do the scripts do? #
@@ -127,9 +127,10 @@ This is useful for creating lines of this style:
     
     if first_long_condition(foo, foobar) and \
                                           second_long_condition(fubaz, bazbar):
-                                          
 
-Suggested key combination: `Alt-Insert P`.
+Also deletes trailing spaces.                                          
+
+Suggested key combination: `Alt-Insert End`.
 
 
 ## cute-goto-line ##
@@ -144,11 +145,14 @@ line.
 Using this script you can see exactly which line you're going to before issuing
 the command; and if usually keep line numbers hidden, then they will be hidden
 automatically after Wing has moved to the specified line.
+    
+Also, the caret will go to the beginning of the text on the line instead of
+Wing's default of going to column 0.
 
 Suggested key combination: `Ctrl-L`.
 
 
-## delete_line_and_home ##
+## delete-line-and-home ##
 
 Delete the current line and send caret to beginning of text in next line.
     
@@ -158,3 +162,52 @@ first deleting a line, then sending the caret to the beginning of the text
 on the next line.
 
 Suggested key combination: `Ctrl-Shift-C`.
+
+
+## slash-line ##
+
+Slash a long line into 2 lines, putting a `\` character as a separator.
+    
+This is good for automatically formatting long lines into this style:
+
+    has_corresponding_source_file = \
+                               os.path.exists(corresponding_python_source_file)
+    nose.selector.Selector.wantFile = \
+                       types.MethodType(wantFile, None, nose.selector.Selector)
+    
+Suggested key combination: `Alt-Insert L`.
+
+
+## backward-half-page ##
+    
+Move half a page up.
+    
+This is essentially one half of Page-Up.
+
+Suggested key combination: `Alt-Page_up` (As long as you don't use Wing's folding.)
+
+
+## forward-half-page ##
+    
+Move half a page down.
+    
+This is essentially one half of Page-Down.
+
+Suggested key combination: `Alt-Page_down` (As long as you don't use Wing's
+folding.)
+
+
+## cute-open-line ##
+
+Open a new line, but don't move the caret down to the new line.
+    
+Running this command is like pressing Enter, except your caret doesn't move into the
+new line that was created, but stays exactly where it was.
+
+The advantage of this over Wing's built-in `open-line` is that `cute-open-line`
+doesn't just insert a newline character like `open-line` does; it runs Wing's
+`new-line` command, which does various intelligent things like auto-indenting your
+code to the right level, opening your parentheses *just so* if you're doing function
+invocation, and a bunch of other goodies.
+
+Suggested key combination: `Ctrl-Return`
