@@ -44,7 +44,7 @@ def _get_n_identical_edge_characters(string, character=None, head=True):
         return len(string)
 
 
-def push_line_to_end(editor=wingapi.kArgEditor):
+def push_line_to_end(editor=wingapi.kArgEditor, line_offset=0):
     '''
     Push the current line to the end, aligning it to right border of editor.
     
@@ -64,7 +64,7 @@ def push_line_to_end(editor=wingapi.kArgEditor):
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
     position, _ = editor.GetSelection()
-    line = document.GetLineNumberFromPosition(position)
+    line = document.GetLineNumberFromPosition(position) + line_offset
     line_start = document.GetLineStart(line)
     line_end = document.GetLineEnd(line)
     line_content = document.GetCharRange(line_start, line_end)
