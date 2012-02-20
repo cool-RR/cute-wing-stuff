@@ -211,3 +211,15 @@ code to the right level, opening your parentheses *just so* if you're doing func
 invocation, and a bunch of other goodies.
 
 Suggested key combination: `Ctrl-Return`
+
+
+## frame-show-and-home ##
+
+Go to the line of the current frame and send caret to beginning of text.
+
+When you use Wing's default `frame-show` command to go to the line of the
+current frame, it sends the caret to column 0, which is annoying. This script
+fixes that by first doing `frame-show`, then sending the caret to the beginning
+of the text.
+
+Suggested key combination: `Shift-F11`
