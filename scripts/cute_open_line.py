@@ -31,9 +31,8 @@ def cute_open_line(editor=wingapi.kArgEditor):
     parentheses *just so* if you're doing function invocation, and a bunch of
     other goodies.
     '''
-    assert isinstance(editor, wingapi.CAPIEditor)
     
-    original_position, _ = editor.GetSelection()
-    wingapi.gApplication.ExecuteCommand('new-line')
-    editor.SetSelection(original_position, original_position)
+    assert isinstance(editor, wingapi.CAPIEditor)
+    with shared.SelectionRestorer(editor):
+        wingapi.gApplication.ExecuteCommand('new-line')
     
