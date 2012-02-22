@@ -27,15 +27,44 @@ class SelectionRestorer(object):
     editor.
     '''
     
-    def __init__(self, editor):
+    def __init__(self, editor, line_wise=False, line_offset=0):
         assert isinstance(editor, wingapi.CAPIEditor)
+        if not line_wise:
+            assert not line_offset
         self.editor = editor
+        self.document = editor.GetDocument()
+        self.line_wise = line_wise
+        self.line_offset = line_offset
+        
         
     def __enter__(self):
-        self.start, self.end = self.editor.GetSelection()
+        start, end = self.editor.GetSelection()
+        if self.line_wise:
+            self.start_line_wise = character_position_to_line_position(
+                self.document,
+                start,
+                line_offset=self.line_offset
+            )
+            self.end_line_wise = character_position_to_line_position(
+                self.document,
+                end,
+                line_offset=self.line_offset
+            )
+        else:
+            self.start = start
+            self.end = end
+
                 
     def __exit__(self, *args, **kwargs):
-        self.editor.SetSelection(self.start, self.end)
+        if self.line_wise:
+            start = line_position_to_character_position(self.document,
+                                                        *self.start_line_wise)
+            end = line_position_to_character_position(self.document,
+                                                      *self.end_line_wise)
+        else:
+            start = self.start
+            end = self.end
+        self.editor.SetSelection(start, end)
 
         
 class UndoableAction(object):
@@ -216,3 +245,19 @@ def _move_half_page(direction, editor=wingapi.kArgEditor):
 
     with UndoableAction(document):
         editor.SetSelection(new_position, new_position)
+        
+
+def character_position_to_line_position(document, character_position,
+                                        line_offset=0):
+    ''' '''
+    assert isinstance(document, wingapi.CAPIDocument)
+    line_number = document.GetLineNumberFromPosition(character_position)
+    line_position = character_position - document.GetLineStart(line_number)
+    return (line_number+line_offset, line_position)
+    
+    
+def line_position_to_character_position(document, line_number, line_position):
+    ''' '''
+    assert isinstance(document, wingapi.CAPIDocument)
+    return document.GetLineStart(line_number) + line_position
+    

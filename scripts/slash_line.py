@@ -17,7 +17,7 @@ import wingapi
 import shared
 
 
-def slash_line(editor=wingapi.kArgEditor):
+def slash_line(editor=wingapi.kArgEditor, line_offset=0):
     '''
     Slash a long line into 2 lines, putting a `\` character as a separator.
     
@@ -36,7 +36,7 @@ def slash_line(editor=wingapi.kArgEditor):
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
     position, _ = editor.GetSelection()
-    line = document.GetLineNumberFromPosition(position)
+    line = document.GetLineNumberFromPosition(position) + line_offset
     line_start = document.GetLineStart(line)
     line_end = document.GetLineEnd(line)
     line_content = document.GetCharRange(line_start, line_end)
@@ -60,8 +60,9 @@ def slash_line(editor=wingapi.kArgEditor):
     absolute_slash_position = slash_position + line_start
     
     with shared.UndoableAction(document):
-        document.InsertChars(absolute_slash_position, '\\')
-        editor.SetSelection(absolute_slash_position + 1,
-                            absolute_slash_position + 1)
-        editor.ExecuteCommand('new-line')
-        wingapi.gApplication.ExecuteCommand('push-line-to-end')
+        with shared.SelectionRestorer(editor, line_wise=True, line_offset=1):
+            document.InsertChars(absolute_slash_position, '\\')
+            editor.SetSelection(absolute_slash_position + 1,
+                                absolute_slash_position + 1)
+            editor.ExecuteCommand('new-line')
+            wingapi.gApplication.ExecuteCommand('push-line-to-end')
