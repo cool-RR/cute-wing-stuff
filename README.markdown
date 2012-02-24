@@ -223,3 +223,10 @@ fixes that by first doing `frame-show`, then sending the caret to the beginning
 of the text.
 
 Suggested key combination: `Shift-F11`
+
+
+## flip ##
+
+Flip between `True` and `False`.
+
+Suggested key combination: `Alt-Insert P`
