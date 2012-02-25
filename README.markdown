@@ -42,7 +42,7 @@ argument.) Then run this `arg-to-attr` script.
 The final result is that you'll get a `self.crunchiness = crunchiness` line and
 have the cursor ready in the next line.
 
-Suggested key combination: `Alt-Insert A`.
+Suggested key combination: `Alt-Insert A`
 
 
 ## backward-half-page ##
@@ -83,7 +83,7 @@ The title usually has a first word ending with "ing". Don't bother capitalizing
 the first letter or ending the sentence with any punctuation mark. You may also
 use an empty title to get a title-less comment line.
 
-Suggested key combination: `Alt-Insert B`.
+Suggested key combination: `Alt-Insert B`
 
 
 ## comment-hr ##
@@ -94,7 +94,7 @@ Example:
 
     #######################################################################
     
-Suggested key combination: `Alt-Insert H`.
+Suggested key combination: `Alt-Insert H`
 
 
 ## cute-goto-line ##
@@ -113,7 +113,7 @@ automatically after Wing has moved to the specified line.
 Also, the caret will go to the beginning of the text on the line instead of
 Wing's default of going to column 0.
 
-Suggested key combination: `Ctrl-L`.
+Suggested key combination: `Ctrl-L`
 
 
 ## cute-open-line ##
@@ -172,7 +172,7 @@ sends the caret to column 0, which is annoying. This script fixes that by
 first deleting a line, then sending the caret to the beginning of the text
 on the next line.
 
-Suggested key combination: `Ctrl-Shift-C`.
+Suggested key combination: `Ctrl-Shift-C`
 
 
 ## flip ##
@@ -190,7 +190,7 @@ For example, if the cursor is on `something_like_this` and you activate
 this script, you'll get `SomethingLikeThis`. Do it again and you'll get
 `something_like_this` again.
 
-Suggested key combination: `Alt-Insert C`.
+Suggested key combination: `Alt-Insert C`
 
 
 ## forward-half-page ##
@@ -227,7 +227,7 @@ just press `(`, type in the arguments, and you're set.
 This saves a lot of typing, because normally you don't have autocompletion for
 the new instance name `cat_nip` because it doesn't exist yet.
 
-Suggested key combination: `Alt-Insert I`.
+Suggested key combination: `Alt-Insert I`
 
 
 ## push-line-to-end ##
@@ -246,7 +246,7 @@ This is useful for creating lines of this style:
 
 Also deletes trailing spaces.                                          
 
-Suggested key combination: `Alt-Insert End`.
+Suggested key combination: `Alt-Insert End`
 
 
 ## slash-line ##
@@ -260,4 +260,4 @@ This is good for automatically formatting long lines into this style:
     nose.selector.Selector.wantFile = \
                        types.MethodType(wantFile, None, nose.selector.Selector)
     
-Suggested key combination: `Alt-Insert L`.
+Suggested key combination: `Alt-Insert L`
