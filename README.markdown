@@ -45,30 +45,13 @@ have the cursor ready in the next line.
 Suggested key combination: `Alt-Insert A`.
 
 
-## flip-case ##
-
-Flip the case of the current word between undercase and camelcase.
-
-For example, if the cursor is on `something_like_this` and you activate
-this script, you'll get `SomethingLikeThis`. Do it again and you'll get
-`something_like_this` again.
-
-Suggested key combination: `Alt-Insert C`.
-
-
-## instantiate ##
+## backward-half-page ##
     
-Write `my_class_name = MyClassName`.
+Move half a page up.
     
-This is used to quickly instantiate a class. Write your class name, like
-`CatNip`. It will usually be autocompleted. Then execute this script, and
-you'll have `cat_nip = CatNip`, with the cursor positioned at the end. Then
-just press `(`, type in the arguments, and you're set.
+This is essentially one half of Page-Up.
 
-This saves a lot of typing, because normally you don't have autocompletion for
-the new instance name `cat_nip` because it doesn't exist yet.
-
-Suggested key combination: `Alt-Insert I`.
+Suggested key combination: `Alt-Page_up` (As long as you don't use Wing's folding.)
 
 
 ## comment-braces ##
@@ -114,25 +97,6 @@ Example:
 Suggested key combination: `Alt-Insert H`.
 
 
-## push-line-to-end ##
-
-Push the current line to the end, aligning it to right border of editor.
-    
-This inserts or deletes as many spaces as necessary from the beginning of the
-line to make the end of the line exactly coincide with the right border of the
-editor. (Whose width can be configured in the `TARGET_LINE_LENGTH` constant in
-the script's module.)
-
-This is useful for creating lines of this style:
-    
-    if first_long_condition(foo, foobar) and \
-                                          second_long_condition(fubaz, bazbar):
-
-Also deletes trailing spaces.                                          
-
-Suggested key combination: `Alt-Insert End`.
-
-
 ## cute-goto-line ##
 
 Go to a specified line number in editor, temporarily showing line numbers.
@@ -152,6 +116,53 @@ Wing's default of going to column 0.
 Suggested key combination: `Ctrl-L`.
 
 
+## cute-open-line ##
+
+Open a new line, but don't move the caret down to the new line.
+    
+Running this command is like pressing Enter, except your caret doesn't move into the
+new line that was created, but stays exactly where it was.
+
+The advantage of this over Wing's built-in `open-line` is that `cute-open-line`
+doesn't just insert a newline character like `open-line` does; it runs Wing's
+`new-line` command, which does various intelligent things like auto-indenting
+your code to the right level, opening your parentheses *just so* if you're
+doing function invocation, and a bunch of other goodies.
+
+Suggested key combination: `Ctrl-Return`
+
+
+## deep_to_var ##
+    
+Create a variable from a deep expression.
+
+When you're programming, you're often writing lines like these:
+
+    html_color = self._style_handler.html_color
+    
+Or:
+
+    location = context_data['location']
+    
+Or:
+    
+    event_handler = super(Foobsnicator, self).get_event_handler()
+    
+What's common to all these lines is that you're accessing some expression,
+sometimes a deep one, and then getting an object, and making a variable for
+that object with the same name that it has in the deep expression.
+
+What this `deep-to-var` script will do for you is save you from having to write
+the `html_color = ` part, which is annoying to type because you don't have
+autocompletion for it.
+
+Just write your deep expression, like `self._style_handler.html_color`, invoke
+this `deep-to-var` script, and you'll get the full line and have the caret put
+on the next line.
+
+Suggested key combination: `Alt-Insert E`
+
+
 ## delete-line-and-home ##
 
 Delete the current line and send caret to beginning of text in next line.
@@ -164,27 +175,22 @@ on the next line.
 Suggested key combination: `Ctrl-Shift-C`.
 
 
-## slash-line ##
+## flip ##
 
-Slash a long line into 2 lines, putting a `\` character as a separator.
-    
-This is good for automatically formatting long lines into this style:
+Flip between `True` and `False`.
 
-    has_corresponding_source_file = \
-                               os.path.exists(corresponding_python_source_file)
-    nose.selector.Selector.wantFile = \
-                       types.MethodType(wantFile, None, nose.selector.Selector)
-    
-Suggested key combination: `Alt-Insert L`.
+Suggested key combination: `Alt-Insert P`
 
 
-## backward-half-page ##
-    
-Move half a page up.
-    
-This is essentially one half of Page-Up.
+## flip-case ##
 
-Suggested key combination: `Alt-Page_up` (As long as you don't use Wing's folding.)
+Flip the case of the current word between undercase and camelcase.
+
+For example, if the cursor is on `something_like_this` and you activate
+this script, you'll get `SomethingLikeThis`. Do it again and you'll get
+`something_like_this` again.
+
+Suggested key combination: `Alt-Insert C`.
 
 
 ## forward-half-page ##
@@ -195,22 +201,6 @@ This is essentially one half of Page-Down.
 
 Suggested key combination: `Alt-Page_down` (As long as you don't use Wing's
 folding.)
-
-
-## cute-open-line ##
-
-Open a new line, but don't move the caret down to the new line.
-    
-Running this command is like pressing Enter, except your caret doesn't move into the
-new line that was created, but stays exactly where it was.
-
-The advantage of this over Wing's built-in `open-line` is that `cute-open-line`
-doesn't just insert a newline character like `open-line` does; it runs Wing's
-`new-line` command, which does various intelligent things like auto-indenting your
-code to the right level, opening your parentheses *just so* if you're doing function
-invocation, and a bunch of other goodies.
-
-Suggested key combination: `Ctrl-Return`
 
 
 ## frame-show-and-home ##
@@ -225,8 +215,49 @@ of the text.
 Suggested key combination: `Shift-F11`
 
 
-## flip ##
+## instantiate ##
+    
+Write `my_class_name = MyClassName`.
+    
+This is used to quickly instantiate a class. Write your class name, like
+`CatNip`. It will usually be autocompleted. Then execute this script, and
+you'll have `cat_nip = CatNip`, with the cursor positioned at the end. Then
+just press `(`, type in the arguments, and you're set.
 
-Flip between `True` and `False`.
+This saves a lot of typing, because normally you don't have autocompletion for
+the new instance name `cat_nip` because it doesn't exist yet.
 
-Suggested key combination: `Alt-Insert P`
+Suggested key combination: `Alt-Insert I`.
+
+
+## push-line-to-end ##
+
+Push the current line to the end, aligning it to right border of editor.
+    
+This inserts or deletes as many spaces as necessary from the beginning of the
+line to make the end of the line exactly coincide with the right border of the
+editor. (Whose width can be configured in the `TARGET_LINE_LENGTH` constant in
+the script's module.)
+
+This is useful for creating lines of this style:
+    
+    if first_long_condition(foo, foobar) and \
+                                          second_long_condition(fubaz, bazbar):
+
+Also deletes trailing spaces.                                          
+
+Suggested key combination: `Alt-Insert End`.
+
+
+## slash-line ##
+
+Slash a long line into 2 lines, putting a `\` character as a separator.
+    
+This is good for automatically formatting long lines into this style:
+
+    has_corresponding_source_file = \
+                               os.path.exists(corresponding_python_source_file)
+    nose.selector.Selector.wantFile = \
+                       types.MethodType(wantFile, None, nose.selector.Selector)
+    
+Suggested key combination: `Alt-Insert L`.

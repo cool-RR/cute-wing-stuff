@@ -10,7 +10,6 @@ See its documentation for more information.
 from __future__ import division
 from __future__ import with_statement
 
-import time
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
 
 import wingapi
