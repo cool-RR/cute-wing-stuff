@@ -132,7 +132,7 @@ doing function invocation, and a bunch of other goodies.
 Suggested key combination: `Ctrl-Return`
 
 
-## deep_to_var ##
+## deep-to-var ##
     
 Create a variable from a deep expression.
 
