@@ -18,7 +18,7 @@ import wingapi
 
 import shared
 
-getter_pattern = re.compile(r'\.get_?([a-zA-Z_][0-9a-zA-Z_]*)\(.*\)$')
+getter_pattern = re.compile(r'\get_?([a-zA-Z_][0-9a-zA-Z_]*)\(.*\)$')
 attribute_pattern = re.compile(r'\.([a-zA-Z_][0-9a-zA-Z_]*)$')
 getitem_pattern = re.compile(r'''\[['"]([a-zA-Z_][0-9a-zA-Z_]*)['"]\]$''')
 
