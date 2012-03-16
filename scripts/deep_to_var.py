@@ -18,13 +18,14 @@ import wingapi
 
 import shared
 
-getter_pattern = re.compile(r'\get_?([a-zA-Z_][0-9a-zA-Z_]*)\(.*\)$')
-calculator_pattern = re.compile(r'\calculate_?([a-zA-Z_][0-9a-zA-Z_]*)\(.*\)$')
+getter_pattern = re.compile(r'[gG]et_?([a-zA-Z_][0-9a-zA-Z_]*)\(.*\)$')
+calculator_pattern = re.compile(r'calculate_?([a-zA-Z_][0-9a-zA-Z_]*)\(.*\)$')
 attribute_pattern = re.compile(r'\.([a-zA-Z_][0-9a-zA-Z_]*)$')
 getitem_pattern = re.compile(r'''\[['"]([a-zA-Z_][0-9a-zA-Z_]*)['"]\]$''')
 
 patterns = [getter_pattern, calculator_pattern, attribute_pattern,
             getitem_pattern]
+
 
 
 def deep_to_var(editor=wingapi.kArgEditor):
@@ -75,6 +76,10 @@ def deep_to_var(editor=wingapi.kArgEditor):
             break
         
     if match:
+        if variable_name != variable_name.lower():
+            # `variable_name` has an uppercase letter, and thus is probably
+            # camel-case. Let's flip it to underscore:
+            variable_name = shared.camel_case_to_lower_case(variable_name)
         string_to_insert = '%s = ' % variable_name
         actual_line_start = line_start + \
                     shared.get_n_identical_edge_characters(line, character=' ')
