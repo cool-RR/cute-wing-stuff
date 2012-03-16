@@ -270,3 +270,32 @@ This is good for automatically formatting long lines into this style:
                        types.MethodType(wantFile, None, nose.selector.Selector)
     
 Suggested key combination: `Alt-Insert L`
+
+
+## start-debug-with-preset-args ##
+
+Start debugging with preset arguments.
+
+You need to have a git-ignored file `cute_wing_stuff_local_settings.py`
+right in this `scripts` folder, which defines a `dict` like this:
+
+    all_debug_argument_presets = {
+        'my_django_app.wpr': ['runserver --noreload', 'test']
+        'other_django_app.wpr': ['runserver 80 --noreload', 'test',
+                                 'syncdb']
+        None: ['runserver 80 --noreload', 'test'], 
+    }
+   
+What does this file mean? For each of your projects, you define the
+different presets for debug arguments that will be used for your main debug
+file. `None` is used as the default for any Wing projects that are not
+listed.
+
+Then you call this `start-debug-with-preset-args` with the `i_preset`
+argument equal to the preset index number, and debug will start with those
+arguments.
+
+Suggested key combinations: `Alt-Insert F5` for preset 0
+                            `Alt-Insert Shift-F5` for preset 1
+                            `Alt-Insert Ctrl-F5` for preset 2
+                            `Alt-Insert Ctrl-Shift-F5` for preset 3

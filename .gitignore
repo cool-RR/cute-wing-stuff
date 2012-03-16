@@ -5,3 +5,5 @@
 
 *.coverage
 htmlcov
+
+scripts/cute_wing_stuff_local_settings.py
