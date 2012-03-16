@@ -249,6 +249,15 @@ Also deletes trailing spaces.
 Suggested key combination: `Alt-Insert End`
 
 
+## show-file-in-explorer ##
+
+Open the currently-edited file's folder in Explorer.
+
+Implementd only for Windows.
+
+Suggested key combination: `Alt-Insert Ctrl-J`
+
+
 ## slash-line ##
 
 Slash a long line into 2 lines, putting a `\` character as a separator.
