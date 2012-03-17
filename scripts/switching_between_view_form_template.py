@@ -70,7 +70,10 @@ def switch_to_form(editor=wingapi.kArgEditor):
     assert isinstance(document, wingapi.CAPIDocument)
     
     file_path = document.GetFilename()
-    if _identify_file_kind(editor)
+    file_kind = _identify_file_kind(editor)
+    if not file_kind:
+        return
+    I WAS HERE
     
 
 #def comment_hr(editor=wingapi.kArgEditor):
