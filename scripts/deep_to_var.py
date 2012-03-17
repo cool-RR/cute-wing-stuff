@@ -18,13 +18,21 @@ import wingapi
 
 import shared
 
-getter_pattern = re.compile(r'[gG]et_?([a-zA-Z_][0-9a-zA-Z_]*)\(.*\)$')
-calculator_pattern = re.compile(r'calculate_?([a-zA-Z_][0-9a-zA-Z_]*)\(.*\)$')
+getter_verbs = ('get', 'calculate', 'identify', 'fetch')
+
+getter_verb = '(?:%s)' % (
+    '|'.join(
+        '[%s%s]%s' % (verb[0], verb[0].upper(), verb[1:]) for verb in
+        getter_verbs
+    )
+)
+
+getter_pattern = re.compile(r'%s_?([a-zA-Z_][0-9a-zA-Z_]*)\(.*\)$' %
+                                                                   getter_verb)
 attribute_pattern = re.compile(r'\.([a-zA-Z_][0-9a-zA-Z_]*)$')
 getitem_pattern = re.compile(r'''\[['"]([a-zA-Z_][0-9a-zA-Z_]*)['"]\]$''')
 
-patterns = [getter_pattern, calculator_pattern, attribute_pattern,
-            getitem_pattern]
+patterns = [getter_pattern, attribute_pattern, getitem_pattern]
 
 
 
