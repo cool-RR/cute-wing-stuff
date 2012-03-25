@@ -18,7 +18,8 @@ import wingapi
 
 import shared
 
-getter_verbs = ('get', 'calculate', 'identify', 'fetch', 'make', 'create')
+getter_verbs = ('get', 'calculate', 'identify', 'fetch', 'make', 'create',
+                'grant')
 
 getter_verb = '(?:%s)' % (
     '|'.join(
