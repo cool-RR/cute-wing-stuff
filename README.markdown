@@ -295,7 +295,4 @@ Then you call this `start-debug-with-preset-args` with the `i_preset`
 argument equal to the preset index number, and debug will start with those
 arguments.
 
-Suggested key combinations: `Alt-Insert F5` for preset 0
-                            `Alt-Insert Shift-F5` for preset 1
-                            `Alt-Insert Ctrl-F5` for preset 2
-                            `Alt-Insert Ctrl-Shift-F5` for preset 3
+Suggested key combinations: `Alt-Insert F5` for preset 0, `Alt-Insert Shift-F5` for preset 1, `Alt-Insert Ctrl-F5` for preset 2, `Alt-Insert Ctrl-Shift-F5` for preset 3
