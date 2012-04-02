@@ -265,3 +265,12 @@ def line_position_to_character_position(document, line_number, line_position):
     assert isinstance(document, wingapi.CAPIDocument)
     return document.GetLineStart(line_number) + line_position
     
+    
+def plural_word_to_singular_word(plural_word):
+    ''' '''
+    assert isinstance(plural_word, (str, unicode))
+    assert plural_word.endswith('s')
+    if plural_word.endswith('ies'):
+        return plural_word[:-3] + 'y'
+    else:
+        return plural_word[:-1]

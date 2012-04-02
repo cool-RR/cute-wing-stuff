@@ -193,6 +193,16 @@ this script, you'll get `SomethingLikeThis`. Do it again and you'll get
 Suggested key combination: `Alt-Insert C`
 
 
+## for-thing-in-things ##
+
+Turn 'things' into 'for thing in things'.
+
+Type any pluarl word, like 'bananas' or 'directories'. Then run this
+script, and you get `for directory in directories`.
+
+Suggested key combination: `Alt-Insert Ctrl-F`
+
+
 ## forward-half-page ##
     
 Move half a page down.
