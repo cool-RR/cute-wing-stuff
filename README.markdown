@@ -195,9 +195,9 @@ Suggested key combination: `Alt-Insert C`
 
 ## for-thing-in-things ##
 
-Turn 'things' into 'for thing in things'.
+Turn `things` into `for thing in things`.
 
-Type any pluarl word, like 'bananas' or 'directories'. Then run this
+Type any pluarl word, like `bananas` or `directories`. Then run this
 script, and you get `for directory in directories`.
 
 Suggested key combination: `Alt-Insert Ctrl-F`
