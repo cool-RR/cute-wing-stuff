@@ -46,18 +46,19 @@ def select_expression(editor=wingapi.kArgEditor):
     last_expression_end = None
     
     last_start, last_end = editor.GetSelection()
-    
-    with shared.SelectionRestorer(editor):
-        for i in range(SAFETY_LIMIT):
-            select_more()
-            current_start, current_end = editor.GetSelection()
-            if (current_start == last_start) and (current_end == last_end):
-                break
-            if is_selection_an_expression():
-                last_expression_start, last_expression_end = \
+    with shared.ScrollRestorer(editor):
+        with shared.SelectionRestorer(editor):
+            for i in range(SAFETY_LIMIT):
+                select_more()
+                current_start, current_end = editor.GetSelection()
+                if (current_start == last_start) and (current_end == last_end):
+                    break
+                if is_selection_an_expression():
+                    last_expression_start, last_expression_end = \
                                                      current_start, current_end
-            last_start, last_end = current_start, current_end
+                last_start, last_end = current_start, current_end
     
-    assert (last_expression_start is None) == (last_expression_start is None)
-    if last_expression_start is not None:
-        editor.SetSelection(last_expression_start, last_expression_end)
+        assert (last_expression_start is None) == \
+                                                (last_expression_start is None)
+        if last_expression_start is not None:
+            editor.SetSelection(last_expression_start, last_expression_end)

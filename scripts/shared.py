@@ -66,6 +66,23 @@ class SelectionRestorer(object):
             end = self.end
         self.editor.SetSelection(start, end)
 
+
+class ScrollRestorer(object):
+    def __init__(self, editor):
+        assert isinstance(editor, wingapi.CAPIEditor)
+        self.editor = editor
+        self.document = editor.GetDocument()
+        
+    def __enter__(self):
+        self.first_line = self.editor.GetFirstVisibleLine()
+        print (self.first_line)
+        return self
+                
+    def __exit__(self, *args, **kwargs):
+        print (self.first_line)
+        self.editor.ScrollToLine(self.first_line, pos='top')
+        print (self.editor.GetFirstVisibleLine())
+        
         
 class UndoableAction(object):
     '''
@@ -274,3 +291,5 @@ def plural_word_to_singular_word(plural_word):
         return plural_word[:-3] + 'y'
     else:
         return plural_word[:-1]
+    
+    
