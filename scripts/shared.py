@@ -69,7 +69,7 @@ class SelectionRestorer(object):
 
 
 def scroll_to_line(editor, line_number):
-    ''' '''
+    '''Scroll the `editor` to `line_number`.'''
     assert isinstance(editor, wingapi.CAPIEditor)
     file_path = editor.GetDocument().GetFilename()
     
@@ -99,6 +99,9 @@ scroll_to_line.last_offset = collections.defaultdict(lambda: 0)
 
 
 class ScrollRestorer(object):
+    '''
+    Context manager for restoring scroll position to what it was before suite.
+    '''
     def __init__(self, editor):
         assert isinstance(editor, wingapi.CAPIEditor)
         self.editor = editor
@@ -112,7 +115,9 @@ class ScrollRestorer(object):
         
 
 def strip_selection_if_single_line(editor):
-    ''' '''
+    '''
+    If selection is on a single line, strip it, removing whitespace from edges.
+    '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     start, end = editor.GetSelection()

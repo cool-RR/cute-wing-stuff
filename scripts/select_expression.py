@@ -19,14 +19,15 @@ import shared
 
 
 SAFETY_LIMIT = 40
+'''The maximum number of times we'll do `select-more` before giving up.'''
 
 def _ast_parse(string):
-    ''' '''
     return compile(string, '<unknown>', 'exec', _ast.PyCF_ONLY_AST)
     
 
 def _is_expression(string):
-    ''' '''
+    '''Is `string` a Python expression?'''
+    
     # Throwing out '\r' characters because `ast` can't process them for some
     # reason:
     string = string.replace('\r', '')
@@ -43,7 +44,12 @@ def _is_expression(string):
     
 
 def select_expression(editor=wingapi.kArgEditor):
+    '''
+    Select the Python expression that the cursor is currently on.
     
+    This does `select-more` until the biggest possible legal Python expression
+    is selected.
+    '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     select_more = lambda: wingapi.gApplication.ExecuteCommand('select-more')
