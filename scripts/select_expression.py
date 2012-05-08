@@ -31,10 +31,15 @@ def _is_expression(string):
     # reason:
     string = string.replace('\r', '')
     try:
-        (node,) = _ast_parse(string).body
-        return type(node) == _ast.Expr
+        nodes = _ast_parse(string).body
     except SyntaxError:
         return False
+    else:
+        if len(nodes) >= 2:
+            return False
+        else:
+            (node,) = nodes
+            return type(node) == _ast.Expr
     
 
 def select_expression(editor=wingapi.kArgEditor):
@@ -66,3 +71,5 @@ def select_expression(editor=wingapi.kArgEditor):
                                                 (last_expression_start is None)
         if last_expression_start is not None:
             editor.SetSelection(last_expression_start, last_expression_end)
+            shared.strip_selection_if_single_line(editor)
+            

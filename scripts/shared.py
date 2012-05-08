@@ -70,10 +70,13 @@ class SelectionRestorer(object):
 def scroll_to_line(editor, line_number):
     ''' '''
     assert isinstance(editor, wingapi.CAPIEditor)
-    editor.ScrollToLine(line_number, pos='top')
+    editor.ScrollToLine(line_number - scroll_to_line.last_offset, pos='top')
     offset = editor.GetFirstVisibleLine() - line_number
     if offset:
+        scroll_to_line.last_offset = offset
         editor.ScrollToLine(line_number - offset, pos='top')
+        
+scroll_to_line.last_offset = 0
 
 
 class ScrollRestorer(object):
@@ -88,6 +91,22 @@ class ScrollRestorer(object):
     def __exit__(self, *args, **kwargs):
         scroll_to_line(self.editor, self.first_line_number)
         
+
+def strip_selection_if_single_line(editor):
+    ''' '''
+    assert isinstance(editor, wingapi.CAPIEditor)
+    document = editor.GetDocument()
+    start, end = editor.GetSelection()
+    start_line_number = document.GetLineNumberFromPosition(start)
+    end_line_number = document.GetLineNumberFromPosition(end - 1)
+    if start_line_number == end_line_number:
+        selection = document.GetCharRange(start, end)
+        left_strip_size = len(selection) - len(selection.lstrip())
+        right_strip_size = len(selection) - len(selection.rstrip())
+        new_start = start + left_strip_size
+        new_end = end - right_strip_size
+        editor.SetSelection(new_start, new_end)
+    
         
 class UndoableAction(object):
     '''
