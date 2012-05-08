@@ -5,6 +5,7 @@
 
 from  __future__ import with_statement
 
+import collections
 import re
 
 import wingapi
@@ -70,13 +71,31 @@ class SelectionRestorer(object):
 def scroll_to_line(editor, line_number):
     ''' '''
     assert isinstance(editor, wingapi.CAPIEditor)
-    editor.ScrollToLine(line_number - scroll_to_line.last_offset, pos='top')
-    offset = editor.GetFirstVisibleLine() - line_number
-    if offset:
-        scroll_to_line.last_offset = offset
-        editor.ScrollToLine(line_number - offset, pos='top')
+    file_path = editor.GetDocument().GetFilename()
+    
+    #print('Trying to reach line number %s...' % line_number)
+    first_line_number_guess = line_number - \
+                                          scroll_to_line.last_offset[file_path]
+    #print("Last time there was an offset of %s, so we're gonna ask to scroll "
+          #"to %s" % (scroll_to_line.last_offset[file_path],
+                     #first_line_number_guess))
+    editor.ScrollToLine(first_line_number_guess, pos='top')
+    first_visible_line = editor.GetFirstVisibleLine()
+    #print('We were scrolled to %s.' % first_visible_line)
+    offset_to_target = first_visible_line - line_number
+    offset_to_first_guess = \
+                         first_visible_line - first_line_number_guess
+    if offset_to_target:
+        #print ('Got offset of %s, correcting...' % offset_to_target)
+        editor.ScrollToLine(first_line_number_guess - offset_to_target,
+                            pos='top')
+    
+    scroll_to_line.last_offset[file_path] = offset_to_first_guess
+    
+    #print('Function ended with us scrolled to %s' %
+                                                 #editor.GetFirstVisibleLine())
         
-scroll_to_line.last_offset = 0
+scroll_to_line.last_offset = collections.defaultdict(lambda: 0)
 
 
 class ScrollRestorer(object):
