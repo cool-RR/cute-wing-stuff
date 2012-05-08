@@ -27,6 +27,9 @@ def _ast_parse(string):
 
 def _is_expression(string):
     ''' '''
+    # Throwing out '\r' characters because `ast` can't process them for some
+    # reason:
+    string = string.replace('\r', '')
     try:
         (node,) = _ast_parse(string).body
         return type(node) == _ast.Expr
@@ -57,6 +60,8 @@ def select_expression(editor=wingapi.kArgEditor):
                 if is_selection_an_expression():
                     last_expression_start, last_expression_end = \
                                                      current_start, current_end
+                else:
+                    print ('%s is not an expression' % repr(document.GetCharRange(*editor.GetSelection()).strip()))
                 last_start, last_end = current_start, current_end
     
         assert (last_expression_start is None) == \
