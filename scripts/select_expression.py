@@ -60,8 +60,6 @@ def select_expression(editor=wingapi.kArgEditor):
                 if is_selection_an_expression():
                     last_expression_start, last_expression_end = \
                                                      current_start, current_end
-                else:
-                    print ('%s is not an expression' % repr(document.GetCharRange(*editor.GetSelection()).strip()))
                 last_start, last_end = current_start, current_end
     
         assert (last_expression_start is None) == \
