@@ -275,6 +275,16 @@ Implementd only for Windows.
 Suggested key combination: `Alt-Insert Ctrl-J`
 
 
+## select-expression ##
+
+Select the Python expression that the cursor is currently on.
+
+This does `select-more` until the biggest possible legal Python expression is
+selected.
+    
+Suggested key combination: `Ctrl-Alt Plus`
+
+    
 ## slash-line ##
 
 Slash a long line into 2 lines, putting a `\` character as a separator.
