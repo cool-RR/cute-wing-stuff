@@ -39,8 +39,9 @@ def select_expression(editor=wingapi.kArgEditor):
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     select_more = lambda: wingapi.gApplication.ExecuteCommand('select-more')
-    is_selection_an_expression = \
-          lambda: _is_expression(document.GetCharRange(*editor.GetSelection()))
+    is_selection_an_expression = lambda: _is_expression(
+        document.GetCharRange(*editor.GetSelection()).strip()
+    )
 
     last_expression_start = None
     last_expression_end = None
