@@ -73,7 +73,6 @@ def scroll_to_line(editor, line_number):
     editor.ScrollToLine(line_number, pos='top')
     offset = editor.GetFirstVisibleLine() - line_number
     if offset:
-        print('Found offset of %s, correcting...' % offset)
         editor.ScrollToLine(line_number - offset, pos='top')
 
 
@@ -84,18 +83,10 @@ class ScrollRestorer(object):
         
     def __enter__(self):
         self.first_line_number = self.editor.GetFirstVisibleLine()
-        print (self.first_line_number)
         return self
                 
     def __exit__(self, *args, **kwargs):
-        print (self.first_line_number)
-        #self.editor.ScrollToLine(self.first_line, pos='top')
         scroll_to_line(self.editor, self.first_line_number)
-        print (self.editor.GetFirstVisibleLine())
-        #self.editor.ScrollToLine(self.first_line-1, pos='top')
-        #print (self.editor.GetFirstVisibleLine())
-        #self.editor.ScrollToLine(self.first_line-2, pos='top')
-        #print (self.editor.GetFirstVisibleLine())
         
         
 class UndoableAction(object):
