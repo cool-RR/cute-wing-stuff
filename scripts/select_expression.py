@@ -36,7 +36,7 @@ def _is_expression(string):
     except SyntaxError:
         return False
     else:
-        if len(nodes) >= 2:
+        if len(nodes) != 1:
             return False
         else:
             (node,) = nodes
