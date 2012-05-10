@@ -334,10 +334,12 @@ def line_position_to_character_position(document, line_number, line_position):
 def plural_word_to_singular_word(plural_word):
     ''' '''
     assert isinstance(plural_word, (str, unicode))
-    assert plural_word.endswith('s')
     if plural_word.endswith('ies'):
         return plural_word[:-3] + 'y'
+    elif plural_word.endswith('sses'):
+        return plural_word[:-2]
     else:
+        assert plural_word.endswith('s')
         return plural_word[:-1]
     
     
