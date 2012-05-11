@@ -21,23 +21,27 @@ def frame_up_to_project():
     application = wingapi.gApplication
     project = application.GetProject()
     debugger = application.GetDebugger()
-    all_project_files = project.GetAllFiles()
+    all_project_files = set(project.GetAllFiles())
     _current_run_state = debugger.GetCurrentRunState()
     _thread_id, _frame_index = _current_run_state.GetStackFrame()
     _stack = _current_run_state.GetStack()
     
-    file_paths = [file_path for file_path, _, _, _, _ in
-                  stack[:_stack_frame+1]]
+    print (all_project_files)
+    
+    file_paths = [file_path for file_path, _, _, _, _ in _stack]
+    print (file_paths)
+    print (file_paths[0] in all_project_files)
     
     file_paths_in_project = filter(
-        lambda _, file_path: file_path in all_project_files,
+        lambda (_, file_path): file_path in all_project_files,
         enumerate(file_paths)
     )
-    
+    print (file_paths_in_project)
     if not file_paths_in_project:
         return 
     index_of_last_file_path_in_project = file_paths_in_project[-1][0]
     
+    print ('Going from %s to %s' % (_frame_index, index_of_last_file_path_in_project))
     _current_run_state.SetStackFrame(_thread_id,
                                      index_of_last_file_path_in_project)
     
