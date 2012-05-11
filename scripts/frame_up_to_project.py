@@ -29,14 +29,14 @@ def frame_up_to_project():
     application = wingapi.gApplication
     project = application.GetProject()
     debugger = application.GetDebugger()
-    all_project_files = set(map(os.path.realpath, project.GetAllFiles()))
+    all_project_files = set(map(_normalize_path, project.GetAllFiles()))
     _current_run_state = debugger.GetCurrentRunState()
     _thread_id, _frame_index = _current_run_state.GetStackFrame()
     _stack = _current_run_state.GetStack()
     
     print (all_project_files)
     
-    file_paths = [os.path.realpath(file_path) for file_path, _, _, _, _ in
+    file_paths = [_normalize_path(file_path) for file_path, _, _, _, _ in
                   _stack]
     print (file_paths)
     print (file_paths[0] in all_project_files)
