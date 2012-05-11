@@ -2,7 +2,7 @@
 # This program is distributed under the LGPL2.1 license.
 
 '''
-This module defines the `frame_up_to_project` script.
+This module defines the `go_to_lowest_project_frame` script.
 
 See its documentation for more information.
 '''
@@ -24,9 +24,11 @@ def _normalize_path(path):
         return os.path.realpath(path).lower()
 
 
-def frame_up_to_project():
+def go_to_lowest_project_frame(application=wingapi.gApplication):
+    '''
+    Go to the lowest frame that's on project file rather than external module.
     
-    application = wingapi.gApplication
+    '''
     project = application.GetProject()
     debugger = application.GetDebugger()
     all_project_files = set(map(_normalize_path, project.GetAllFiles()))
@@ -34,23 +36,26 @@ def frame_up_to_project():
     _thread_id, _frame_index = _current_run_state.GetStackFrame()
     _stack = _current_run_state.GetStack()
     
-    print (all_project_files)
-    
     file_paths = [_normalize_path(file_path) for file_path, _, _, _, _ in
                   _stack]
-    print (file_paths)
-    print (file_paths[0] in all_project_files)
     
     file_paths_in_project = filter(
         lambda (_, file_path): file_path in all_project_files,
         enumerate(file_paths)
     )
-    print (file_paths_in_project)
     if not file_paths_in_project:
         return 
     index_of_last_file_path_in_project = file_paths_in_project[-1][0]
     
-    print ('Going from %s to %s' % (_frame_index, index_of_last_file_path_in_project))
     _current_run_state.SetStackFrame(_thread_id,
                                      index_of_last_file_path_in_project)
-    
+
+
+def _available(application=wingapi.gApplication):
+    ''' '''
+    return bool(
+        wingapi.gApplication.GetDebugger().GetCurrentRunState().GetStack()
+    )
+
+go_to_lowest_project_frame.available = _available
+
