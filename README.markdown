@@ -282,15 +282,6 @@ Also deletes trailing spaces.
 Suggested key combination: `Alt-Insert End`
 
 
-## show-file-in-explorer ##
-
-Open the currently-edited file's folder in Explorer.
-
-Implementd only for Windows.
-
-Suggested key combination: `Alt-Insert Ctrl-J`
-
-
 ## select-expression ##
 
 Select the Python expression that the cursor is currently on.
