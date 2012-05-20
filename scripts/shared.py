@@ -338,6 +338,8 @@ def plural_word_to_singular_word(plural_word):
         return plural_word[:-3] + 'y'
     elif plural_word.endswith('sses'):
         return plural_word[:-2]
+    elif plural_word.endswith('ches'):
+        return plural_word[:-2]
     else:
         assert plural_word.endswith('s')
         return plural_word[:-1]
