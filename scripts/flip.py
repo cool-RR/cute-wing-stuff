@@ -30,9 +30,10 @@ all_words = sum(flip_pairs, ())
 
 def _is_any_word_on_caret(document_text, caret_position, words):
     ''' '''
-    max_word_length = max(words, len)
+    max_word_length = len(max(words, len))
     first_cut_point = max(caret_position - max_word_length, 0)
-    second_cut_point = min(caret_position + max_word_length, len(document_text))
+    second_cut_point = min(caret_position + max_word_length,
+                           len(document_text))
     cut_text = document_text[first_cut_point:second_cut_point]
     caret_position_in_cut_text = caret_position - first_cut_point
     words_in_cut_text = [word for word in words if word in cut_text]
@@ -75,7 +76,7 @@ def flip(editor=wingapi.kArgEditor):
             raise RuntimeError
         
         document.DeleteChars(word_start_position,
-                             word_start_position + len(word))
-        document.InsertChars(start_position, new_word)
+                             word_start_position + len(word) - 1)
+        document.InsertChars(word_start_position, new_word)
     
         
