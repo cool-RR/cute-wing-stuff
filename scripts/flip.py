@@ -20,8 +20,32 @@ flip_pairs = (
     ('start', 'end'), 
     ('head', 'tail'), 
     ('left', 'right'), 
+    ('early', 'late'), 
+    ('earliest', 'latest'),
+    ('new', 'old')
 )
 
+all_words = sum(flip_pairs, ())
+
+
+def _is_any_word_on_caret(document_text, caret_position, words):
+    ''' '''
+    max_word_length = max(words, len)
+    first_cut_point = max(caret_position - max_word_length, 0)
+    second_cut_point = min(caret_position + max_word_length, len(document_text))
+    cut_text = document_text[first_cut_point:second_cut_point]
+    caret_position_in_cut_text = caret_position - first_cut_point
+    words_in_cut_text = [word for word in words if word in cut_text]
+    for word in words_in_cut_text:
+        word_start_position_in_cut_text = cut_text.find(word)
+        word_end_position_in_cut_text = cut_text.find(word) + len(word)
+        if word_start_position_in_cut_text <= caret_position_in_cut_text <= \
+                                                 word_end_position_in_cut_text:
+            word_start_position = word_start_position_in_cut_text + \
+                                                                first_cut_point
+            return (word, word_start_position)
+    else:
+        return (None, None)
 
 def flip(editor=wingapi.kArgEditor):
     '''Flip between `True` and `False`.'''
@@ -30,10 +54,14 @@ def flip(editor=wingapi.kArgEditor):
     assert isinstance(document, wingapi.CAPIDocument)
     
     with shared.UndoableAction(document):
-        start, end = shared.select_current_word(editor)
-        word = document.GetCharRange(start, end)
+        word, word_start_position = _is_any_word_on_caret(
+            document.GetText(), 
+            editor.GetSelection()[0], 
+            all_words
+        )
+        if not word:
+            return
         
-        new_word = None
         for first_word, second_word in flip_pairs:
             if first_word == word:
                 new_word = second_word
@@ -43,11 +71,11 @@ def flip(editor=wingapi.kArgEditor):
                 break
             else:
                 continue
-            
-        if new_word:
-            document.DeleteChars(start, end-1)
-            document.InsertChars(start, new_word)
-            editor.SetSelection(start + len(new_word),
-                                start + len(new_word))
+        else:
+            raise RuntimeError
         
-            
+        document.DeleteChars(word_start_position,
+                             word_start_position + len(word))
+        document.InsertChars(start_position, new_word)
+    
+        
