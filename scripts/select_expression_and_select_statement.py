@@ -43,7 +43,23 @@ def _is_expression(string):
             return type(node) == _ast.Expr
     
 
-def select_expression(editor=wingapi.kArgEditor):
+def _is_statement(string):
+    '''Is `string` a Python statement?'''
+    
+    # Throwing out '\r' characters because `ast` can't process them for some
+    # reason:
+    string = '%s\n' % string
+    string = string.replace('\r', '')
+    try:
+        nodes = _ast_parse(string).body
+    except SyntaxError:
+        print(string)
+        return False
+    else:
+        return len(nodes) == 1
+    
+
+def _select_until(condition, editor=wingapi.kArgEditor):
     '''
     Select the Python expression that the cursor is currently on.
     
@@ -53,7 +69,7 @@ def select_expression(editor=wingapi.kArgEditor):
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     select_more = lambda: wingapi.gApplication.ExecuteCommand('select-more')
-    is_selection_an_expression = lambda: _is_expression(
+    is_selection_good = lambda: condition(
         document.GetCharRange(*editor.GetSelection()).strip()
     )
 
@@ -68,7 +84,7 @@ def select_expression(editor=wingapi.kArgEditor):
                 current_start, current_end = editor.GetSelection()
                 if (current_start == last_start) and (current_end == last_end):
                     break
-                if is_selection_an_expression():
+                if is_selection_good():
                     last_expression_start, last_expression_end = \
                                                      current_start, current_end
                 last_start, last_end = current_start, current_end
@@ -79,3 +95,26 @@ def select_expression(editor=wingapi.kArgEditor):
             editor.SetSelection(last_expression_start, last_expression_end)
             shared.strip_selection_if_single_line(editor)
             
+            
+def select_expression(editor=wingapi.kArgEditor):
+    '''
+    Select the Python expression that the cursor is currently on.
+    
+    This does `select-more` until the biggest possible legal Python expression
+    is selected.
+    '''
+    print('expression')
+    _select_until(_is_expression, editor)
+            
+            
+def select_statement(editor=wingapi.kArgEditor):
+    '''
+    Select the Python expression that the cursor is currently on.
+    
+    This does `select-more` until the biggest possible legal Python expression
+    is selected.
+    '''
+    print('statement')
+    _select_until(_is_statement, editor)
+    
+    

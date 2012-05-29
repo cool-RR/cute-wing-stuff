@@ -18,7 +18,7 @@ import shared
 
 def cute_evaluate_sel_in_debug_probe(editor=wingapi.kArgEditor):
     '''
-    Evaluate selection in debug probe, doing `select-more` if nothing selected.
+    Evaluate selection in debug probe, do `select-statement` if no selection.
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)
