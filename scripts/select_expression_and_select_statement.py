@@ -2,7 +2,7 @@
 # This program is distributed under the LGPL2.1 license.
 
 '''
-This module defines the `select_expression` script.
+This module defines the `select_expression` and `select_statement` scripts.
 
 See its documentation for more information.
 '''
@@ -46,26 +46,20 @@ def _is_expression(string):
 def _is_statement(string):
     '''Is `string` a Python statement?'''
     
+    string = '%s\n' % string
     # Throwing out '\r' characters because `ast` can't process them for some
     # reason:
-    string = '%s\n' % string
     string = string.replace('\r', '')
     try:
         nodes = _ast_parse(string).body
     except SyntaxError:
-        print(string)
         return False
     else:
         return len(nodes) == 1
     
 
-def _select_until(condition, editor=wingapi.kArgEditor):
-    '''
-    Select the Python expression that the cursor is currently on.
-    
-    This does `select-more` until the biggest possible legal Python expression
-    is selected.
-    '''
+def _select_more_until(condition, editor=wingapi.kArgEditor):
+    '''`select-more` until the selected text satisfies `condition`.'''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     select_more = lambda: wingapi.gApplication.ExecuteCommand('select-more')
@@ -103,8 +97,7 @@ def select_expression(editor=wingapi.kArgEditor):
     This does `select-more` until the biggest possible legal Python expression
     is selected.
     '''
-    print('expression')
-    _select_until(_is_expression, editor)
+    _select_more_until(_is_expression, editor)
             
             
 def select_statement(editor=wingapi.kArgEditor):
@@ -114,7 +107,6 @@ def select_statement(editor=wingapi.kArgEditor):
     This does `select-more` until the biggest possible legal Python expression
     is selected.
     '''
-    print('statement')
-    _select_until(_is_statement, editor)
+    _select_more_until(_is_statement, editor)
     
     

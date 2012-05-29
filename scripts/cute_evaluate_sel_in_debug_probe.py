@@ -24,6 +24,6 @@ def cute_evaluate_sel_in_debug_probe(editor=wingapi.kArgEditor):
     assert isinstance(editor, wingapi.CAPIEditor)
     selection_start, selection_end = editor.GetSelection()
     if selection_start == selection_end:
-        editor.ExecuteCommand('select-more')
+        editor.ExecuteCommand('select-statement')
     
     wingapi.gApplication.ExecuteCommand('evaluate-sel-in-debug-probe')
