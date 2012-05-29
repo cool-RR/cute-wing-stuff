@@ -2,7 +2,7 @@
 # This program is distributed under the LGPL2.1 license.
 
 '''
-This module defines the `go_to_lowest_project_frame` script.
+This module defines the `go_up_to_lowest_project_frame` script.
 
 See its documentation for more information.
 '''
@@ -24,7 +24,7 @@ def _normalize_path(path):
         return os.path.realpath(path).lower()
 
 
-def go_to_lowest_project_frame(application=wingapi.gApplication):
+def go_up_to_lowest_project_frame(application=wingapi.gApplication):
     '''
     Go to the lowest frame that's on project file rather than external module.
 
@@ -33,7 +33,7 @@ def go_to_lowest_project_frame(application=wingapi.gApplication):
     figure out what you did wrong on *your* code, and the external module is
     usually not to blame.
     
-    `go-to-lowest-project-frame` to the rescue! Invoke this script while
+    `go-up-to-lowest-project-frame` to the rescue! Invoke this script while
     debugging in order to be taken to the lowest stack frame that's on a
     project file rather than an external module.
     '''
@@ -68,5 +68,5 @@ def _available(application=wingapi.gApplication):
         wingapi.gApplication.GetDebugger().GetCurrentRunState().GetStack()
     )
 
-go_to_lowest_project_frame.available = _available
+go_up_to_lowest_project_frame.available = _available
 
