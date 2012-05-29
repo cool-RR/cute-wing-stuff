@@ -99,7 +99,7 @@ Suggested key combination: `Alt-Insert H`
 
 ## cute-evaluate-sel-in-debug-probe ##
 
-Evaluate selection in debug probe, doing `select-more` if nothing selected.
+Evaluate selection in debug probe, doing `select-statement` if nothing selected.
     
 Suggested key combination: `Ctrl-Alt-D`
 
@@ -289,7 +289,17 @@ Select the Python expression that the cursor is currently on.
 This does `select-more` until the biggest possible legal Python expression is
 selected.
     
-Suggested key combination: `Ctrl-Alt Plus`
+Suggested key combination: `Ctrl-Alt-Plus`
+
+
+## select-statement ##
+
+Select the Python statement that the cursor is currently on.
+
+This does `select-more` until the biggest possible legal Python statement is
+selected.
+    
+Suggested key combination: `Ctrl-Alt-Equal`
 
     
 ## slash-line ##
