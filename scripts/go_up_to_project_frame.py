@@ -49,13 +49,11 @@ def go_up_to_project_frame(application=wingapi.gApplication):
     
     file_paths = [_normalize_path(file_path) for file_path, _, _, _, _ in
                   _stack]
-    print(_frame_index)
     file_paths_in_project_above_current_frame = filter(
         lambda (i, file_path): file_path in all_project_files and
                                                               i < _frame_index,
         enumerate(file_paths)
     )
-    print(len(file_paths_in_project_above_current_frame))
     if not file_paths_in_project_above_current_frame:
         return 
     index_of_last_file_path_in_project = \
