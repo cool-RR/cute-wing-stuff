@@ -18,12 +18,12 @@ import shared
 
 def cute_evaluate_sel_in_debug_probe(editor=wingapi.kArgEditor):
     '''
-    Evaluate selection in debug probe, do `select-statement` if no selection.
+    Evaluate selection in debug probe, do `select-more` if no selection.
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)
     selection_start, selection_end = editor.GetSelection()
     if selection_start == selection_end:
-        editor.ExecuteCommand('select-statement')
+        editor.ExecuteCommand('select-more')
     
     wingapi.gApplication.ExecuteCommand('evaluate-sel-in-debug-probe')

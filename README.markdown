@@ -99,7 +99,7 @@ Suggested key combination: `Alt-Insert H`
 
 ## cute-evaluate-sel-in-debug-probe ##
 
-Evaluate selection in debug probe, doing `select-statement` if nothing selected.
+Evaluate selection in debug probe, doing `select-more` if nothing selected.
     
 Suggested key combination: `Ctrl-Alt-D`
 
