@@ -11,9 +11,19 @@ import wingapi
 import shared
 
 
-def cute_end_of_line(editor=wingapi.kArgEditor):
+def cute_end_of_screen_line(editor=wingapi.kArgEditor):
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
-    _, caret_position = editor.GetSelection()
-    editor.GetVisualState
+    caret_position = editor.fEditor._fScint.get_current_pos()
+    #editor.fEditor._fScint.line_end_display()
+    #def help(func):
+        #import inspect
+        #return inspect.getargspec(func)
+    
+    
+    print(editor.fEditor._fScint.get_position_cache())
+
+    
+    
+    
     
