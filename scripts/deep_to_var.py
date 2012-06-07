@@ -18,6 +18,9 @@ import wingapi
 
 import shared
 
+
+### Defining `getter_pattern`: ################################################
+#                                                                             #
 getter_verbs = ('get', 'calculate', 'identify', 'fetch', 'make', 'create',
                 'grant', 'open')
 
@@ -30,10 +33,18 @@ getter_verb = '(?:%s)' % (
 
 getter_pattern = re.compile(r'%s_?([a-zA-Z_][0-9a-zA-Z_]*)\(.*\)$' %
                                                                    getter_verb)
+#                                                                             #
+### Finished defining `getter_pattern`. #######################################
+
+
 attribute_pattern = re.compile(r'\.([a-zA-Z_][0-9a-zA-Z_]*)$')
 getitem_pattern = re.compile(r'''\[['"]([a-zA-Z_][0-9a-zA-Z_]*)['"]\]$''')
 
-patterns = [getter_pattern, attribute_pattern, getitem_pattern]
+django_orm_get_pattern = re.compile(r'([a-zA-Z_][0-9a-zA-Z_]*)'
+                                    r'\.objects\.get\(.*\)$')
+
+patterns = [getter_pattern, attribute_pattern, getitem_pattern,
+            django_orm_get_pattern]
 
 
 
@@ -52,6 +63,10 @@ def deep_to_var(editor=wingapi.kArgEditor):
     Or:
         
         event_handler = super(Foobsnicator, self).get_event_handler()
+    
+    Or:
+        
+        user_profile = models.UserProfile.objects.get(pk=pk)
         
     What's common to all these lines is that you're accessing some expression,
     sometimes a deep one, and then getting an object, and making a variable for
