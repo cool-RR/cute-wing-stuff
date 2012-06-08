@@ -18,6 +18,8 @@ import wingapi
 
 import shared
 
+attribute_pattern = re.compile(r'\.([a-zA-Z_][0-9a-zA-Z_]*)$')
+getitem_pattern = re.compile(r'''\[['"]([a-zA-Z_][0-9a-zA-Z_]*)['"]\]$''')
 
 ### Defining `getter_pattern`: ################################################
 #                                                                             #
@@ -36,15 +38,26 @@ getter_pattern = re.compile(r'%s_?([a-zA-Z_][0-9a-zA-Z_]*)\(.*\)$' %
 #                                                                             #
 ### Finished defining `getter_pattern`. #######################################
 
+### Defining `django_orm_get_pattern`: ########################################
+#                                                                             #
+django_orm_getter_verbs = ('get', 'get_or_create')
 
-attribute_pattern = re.compile(r'\.([a-zA-Z_][0-9a-zA-Z_]*)$')
-getitem_pattern = re.compile(r'''\[['"]([a-zA-Z_][0-9a-zA-Z_]*)['"]\]$''')
+django_orm_getter_verb = '(?:%s)' % (
+    '|'.join(
+        '[%s%s]%s' % (verb[0], verb[0].upper(), verb[1:]) for verb in
+        django_orm_getter_verbs
+    )
+)
 
-django_orm_get_pattern = re.compile(r'([a-zA-Z_][0-9a-zA-Z_]*)'
-                                    r'\.objects\.get\(.*\)$')
+django_orm_get_pattern = re.compile(
+    r'([a-zA-Z_][0-9a-zA-Z_]*)\.objects\.%s\(.*\)$' % django_orm_getter_verb
+)
+#                                                                             #
+### Finished defining `django_orm_get_pattern`. ###############################
 
-patterns = [getter_pattern, attribute_pattern, getitem_pattern,
-            django_orm_get_pattern]
+
+patterns = [django_orm_get_pattern, getter_pattern, attribute_pattern,
+            getitem_pattern]
 
 
 
