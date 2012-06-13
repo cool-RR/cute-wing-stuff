@@ -13,6 +13,8 @@ could do `Ctrl-F12` and then type `flip-case` to activate the `flip_case`
 script. But you probably want to bind these commands to some key combination;
 do that in `Edit` -> `Preferences` -> `Keyboard` -> `Custom Key Bindings`.
 
+All the scripts are copyright Ram Rachum and released under the MIT open-source license.
+
 
 # What do the scripts do? #
 
