@@ -13,6 +13,8 @@ could do `Ctrl-F12` and then type `flip-case` to activate the `flip_case`
 script. But you probably want to bind these commands to some key combination;
 do that in `Edit` -> `Preferences` -> `Keyboard` -> `Custom Key Bindings`.
 
+All the scripts are copyright Ram Rachum and released under the MIT open-source license.
+
 
 # What do the scripts do? #
 
@@ -154,7 +156,11 @@ Or:
 Or:
     
     event_handler = super(Foobsnicator, self).get_event_handler()
-    
+
+Or:
+        
+    user_profile = models.UserProfile.objects.get(pk=pk)
+        
 What's common to all these lines is that you're accessing some expression,
 sometimes a deep one, and then getting an object, and making a variable for
 that object with the same name that it has in the deep expression.

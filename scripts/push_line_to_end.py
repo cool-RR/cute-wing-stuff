@@ -1,5 +1,5 @@
 # Copyright 2009-2012 Ram Rachum.
-# This program is distributed under the LGPL2.1 license.
+# This program is distributed under the MIT license.
 
 '''
 This module defines the `push_line_to_end` script.

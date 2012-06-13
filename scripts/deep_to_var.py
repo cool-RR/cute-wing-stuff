@@ -1,5 +1,5 @@
 # Copyright 2009-2012 Ram Rachum.
-# This program is distributed under the LGPL2.1 license.
+# This program is distributed under the MIT license.
 
 '''
 This module defines the `deep_to_var` script.
@@ -18,6 +18,11 @@ import wingapi
 
 import shared
 
+attribute_pattern = re.compile(r'\.([a-zA-Z_][0-9a-zA-Z_]*)$')
+getitem_pattern = re.compile(r'''\[['"]([a-zA-Z_][0-9a-zA-Z_]*)['"]\]$''')
+
+### Defining `getter_pattern`: ################################################
+#                                                                             #
 getter_verbs = ('get', 'calculate', 'identify', 'fetch', 'make', 'create',
                 'grant', 'open')
 
@@ -30,10 +35,29 @@ getter_verb = '(?:%s)' % (
 
 getter_pattern = re.compile(r'%s_?([a-zA-Z_][0-9a-zA-Z_]*)\(.*\)$' %
                                                                    getter_verb)
-attribute_pattern = re.compile(r'\.([a-zA-Z_][0-9a-zA-Z_]*)$')
-getitem_pattern = re.compile(r'''\[['"]([a-zA-Z_][0-9a-zA-Z_]*)['"]\]$''')
+#                                                                             #
+### Finished defining `getter_pattern`. #######################################
 
-patterns = [getter_pattern, attribute_pattern, getitem_pattern]
+### Defining `django_orm_get_pattern`: ########################################
+#                                                                             #
+django_orm_getter_verbs = ('get', 'get_or_create')
+
+django_orm_getter_verb = '(?:%s)' % (
+    '|'.join(
+        '[%s%s]%s' % (verb[0], verb[0].upper(), verb[1:]) for verb in
+        django_orm_getter_verbs
+    )
+)
+
+django_orm_get_pattern = re.compile(
+    r'([a-zA-Z_][0-9a-zA-Z_]*)\.objects\.%s\(.*\)$' % django_orm_getter_verb
+)
+#                                                                             #
+### Finished defining `django_orm_get_pattern`. ###############################
+
+
+patterns = [django_orm_get_pattern, getter_pattern, attribute_pattern,
+            getitem_pattern]
 
 
 
@@ -52,6 +76,10 @@ def deep_to_var(editor=wingapi.kArgEditor):
     Or:
         
         event_handler = super(Foobsnicator, self).get_event_handler()
+    
+    Or:
+        
+        user_profile = models.UserProfile.objects.get(pk=pk)
         
     What's common to all these lines is that you're accessing some expression,
     sometimes a deep one, and then getting an object, and making a variable for
