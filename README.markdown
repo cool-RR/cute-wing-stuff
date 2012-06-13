@@ -13,6 +13,8 @@ could do `Ctrl-F12` and then type `flip-case` to activate the `flip_case`
 script. But you probably want to bind these commands to some key combination;
 do that in `Edit` -> `Preferences` -> `Keyboard` -> `Custom Key Bindings`.
 
+All the scripts are copyright Ram Rachum and released under the MIT open-source license.
+
 
 # What do the scripts do? #
 
@@ -154,7 +156,11 @@ Or:
 Or:
     
     event_handler = super(Foobsnicator, self).get_event_handler()
-    
+
+Or:
+        
+    user_profile = models.UserProfile.objects.get(pk=pk)
+        
 What's common to all these lines is that you're accessing some expression,
 sometimes a deep one, and then getting an object, and making a variable for
 that object with the same name that it has in the deep expression.
@@ -232,6 +238,22 @@ of the text.
 Suggested key combination: `Shift-F11`
 
 
+## go-up-to-project-frame ##
+
+Go up one frame in the debugger, skipping any non-project frames.
+
+Did you ever have Wing stop on an exception, and then drop you in code that
+belongs to an external module? This is often annoying, because you want to
+figure out what you did wrong on *your* code, and the external module is
+usually not to blame.
+
+`go-up-to-project-frame` to the rescue! Invoke this script while debugging
+in order to be taken to the closest higher stack frame that's on a project
+file rather than an external module.
+    
+Suggested key combination: `Alt-F11`
+    
+
 ## instantiate ##
     
 Write `my_class_name = MyClassName`.
@@ -266,15 +288,26 @@ Also deletes trailing spaces.
 Suggested key combination: `Alt-Insert End`
 
 
-## show-file-in-explorer ##
+## select-expression ##
 
-Open the currently-edited file's folder in Explorer.
+Select the Python expression that the cursor is currently on.
 
-Implementd only for Windows.
+This does `select-more` until the biggest possible legal Python expression is
+selected.
+    
+Suggested key combination: `Ctrl-Alt-Plus`
 
-Suggested key combination: `Alt-Insert Ctrl-J`
 
+## select-statement ##
 
+Select the Python statement that the cursor is currently on.
+
+This does `select-more` until the biggest possible legal Python statement is
+selected.
+    
+Suggested key combination: `Ctrl-Alt-Equal`
+
+    
 ## slash-line ##
 
 Slash a long line into 2 lines, putting a `\` character as a separator.

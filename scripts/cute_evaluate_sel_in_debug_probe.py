@@ -1,5 +1,5 @@
-# Copyright 2009-2011 Ram Rachum.
-# This program is distributed under the LGPL2.1 license.
+# Copyright 2009-2012 Ram Rachum.
+# This program is distributed under the MIT license.
 
 '''
 This module defines the `cute_evaluate_sel_in_debug_probe` script.
@@ -18,7 +18,7 @@ import shared
 
 def cute_evaluate_sel_in_debug_probe(editor=wingapi.kArgEditor):
     '''
-    Evaluate selection in debug probe, doing `select-more` if nothing selected.
+    Evaluate selection in debug probe, do `select-more` if no selection.
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)

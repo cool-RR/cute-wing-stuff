@@ -1,5 +1,5 @@
-# Copyright 2009-2011 Ram Rachum.
-# This program is distributed under the LGPL2.1 license.
+# Copyright 2009-2012 Ram Rachum.
+# This program is distributed under the MIT license.
 
 '''Defines various tools for use in Wing scripts.'''
 
@@ -69,7 +69,7 @@ class SelectionRestorer(object):
 
 
 def scroll_to_line(editor, line_number):
-    ''' '''
+    '''Scroll the `editor` to `line_number`.'''
     assert isinstance(editor, wingapi.CAPIEditor)
     file_path = editor.GetDocument().GetFilename()
     
@@ -99,6 +99,9 @@ scroll_to_line.last_offset = collections.defaultdict(lambda: 0)
 
 
 class ScrollRestorer(object):
+    '''
+    Context manager for restoring scroll position to what it was before suite.
+    '''
     def __init__(self, editor):
         assert isinstance(editor, wingapi.CAPIEditor)
         self.editor = editor
@@ -112,7 +115,9 @@ class ScrollRestorer(object):
         
 
 def strip_selection_if_single_line(editor):
-    ''' '''
+    '''
+    If selection is on a single line, strip it, removing whitespace from edges.
+    '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     start, end = editor.GetSelection()
@@ -329,10 +334,14 @@ def line_position_to_character_position(document, line_number, line_position):
 def plural_word_to_singular_word(plural_word):
     ''' '''
     assert isinstance(plural_word, (str, unicode))
-    assert plural_word.endswith('s')
     if plural_word.endswith('ies'):
         return plural_word[:-3] + 'y'
+    elif plural_word.endswith('sses'):
+        return plural_word[:-2]
+    elif plural_word.endswith('ches'):
+        return plural_word[:-2]
     else:
+        assert plural_word.endswith('s')
         return plural_word[:-1]
     
     
