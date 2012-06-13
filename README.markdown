@@ -1,6 +1,6 @@
 # Cute Wing stuff #
 
-A collection of scripts for [Wing IDE 4](http://www.wingware.com/).
+A collection of scripts for [Wing IDE 4.1](http://www.wingware.com/).
 
 In order to use these scripts in your copy of Wing, download the repo to
 someplace in your computer, fire up Wing, go to `Edit` -> `Preferences` -> `IDE
@@ -12,6 +12,8 @@ After you do that, the commands will become available in Wing; For example you
 could do `Ctrl-F12` and then type `flip-case` to activate the `flip_case`
 script. But you probably want to bind these commands to some key combination;
 do that in `Edit` -> `Preferences` -> `Keyboard` -> `Custom Key Bindings`.
+
+All the scripts are copyright Ram Rachum and released under the MIT open-source license.
 
 
 # What do the scripts do? #
@@ -97,6 +99,13 @@ Example:
 Suggested key combination: `Alt-Insert H`
 
 
+## cute-evaluate-sel-in-debug-probe ##
+
+Evaluate selection in debug probe, doing `select-more` if nothing selected.
+    
+Suggested key combination: `Ctrl-Alt-D`
+
+    
 ## cute-goto-line ##
 
 Go to a specified line number in editor, temporarily showing line numbers.
@@ -147,7 +156,11 @@ Or:
 Or:
     
     event_handler = super(Foobsnicator, self).get_event_handler()
-    
+
+Or:
+        
+    user_profile = models.UserProfile.objects.get(pk=pk)
+        
 What's common to all these lines is that you're accessing some expression,
 sometimes a deep one, and then getting an object, and making a variable for
 that object with the same name that it has in the deep expression.
@@ -193,6 +206,16 @@ this script, you'll get `SomethingLikeThis`. Do it again and you'll get
 Suggested key combination: `Alt-Insert C`
 
 
+## for-thing-in-things ##
+
+Turn `things` into `for thing in things`.
+
+Type any pluarl word, like `bananas` or `directories`. Then run this
+script, and you get `for directory in directories`.
+
+Suggested key combination: `Alt-Insert Ctrl-F`
+
+
 ## forward-half-page ##
     
 Move half a page down.
@@ -214,6 +237,22 @@ of the text.
 
 Suggested key combination: `Shift-F11`
 
+
+## go-up-to-project-frame ##
+
+Go up one frame in the debugger, skipping any non-project frames.
+
+Did you ever have Wing stop on an exception, and then drop you in code that
+belongs to an external module? This is often annoying, because you want to
+figure out what you did wrong on *your* code, and the external module is
+usually not to blame.
+
+`go-up-to-project-frame` to the rescue! Invoke this script while debugging
+in order to be taken to the closest higher stack frame that's on a project
+file rather than an external module.
+    
+Suggested key combination: `Alt-F11`
+    
 
 ## instantiate ##
     
@@ -249,15 +288,26 @@ Also deletes trailing spaces.
 Suggested key combination: `Alt-Insert End`
 
 
-## show-file-in-explorer ##
+## select-expression ##
 
-Open the currently-edited file's folder in Explorer.
+Select the Python expression that the cursor is currently on.
 
-Implementd only for Windows.
+This does `select-more` until the biggest possible legal Python expression is
+selected.
+    
+Suggested key combination: `Ctrl-Alt-Plus`
 
-Suggested key combination: `Alt-Insert Ctrl-J`
 
+## select-statement ##
 
+Select the Python statement that the cursor is currently on.
+
+This does `select-more` until the biggest possible legal Python statement is
+selected.
+    
+Suggested key combination: `Ctrl-Alt-Equal`
+
+    
 ## slash-line ##
 
 Slash a long line into 2 lines, putting a `\` character as a separator.
@@ -295,7 +345,4 @@ Then you call this `start-debug-with-preset-args` with the `i_preset`
 argument equal to the preset index number, and debug will start with those
 arguments.
 
-Suggested key combinations: `Alt-Insert F5` for preset 0
-                            `Alt-Insert Shift-F5` for preset 1
-                            `Alt-Insert Ctrl-F5` for preset 2
-                            `Alt-Insert Ctrl-Shift-F5` for preset 3
+Suggested key combinations: `Alt-Insert F5` for preset 0, `Alt-Insert Shift-F5` for preset 1, `Alt-Insert Ctrl-F5` for preset 2, `Alt-Insert Ctrl-Shift-F5` for preset 3

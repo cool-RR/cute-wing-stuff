@@ -1,10 +1,11 @@
-# Copyright 2009-2011 Ram Rachum.
-# This program is distributed under the LGPL2.1 license.
+# Copyright 2009-2012 Ram Rachum.
+# This program is distributed under the MIT license.
 
 '''Defines various tools for use in Wing scripts.'''
 
 from  __future__ import with_statement
 
+import collections
 import re
 
 import wingapi
@@ -66,6 +67,70 @@ class SelectionRestorer(object):
             end = self.end
         self.editor.SetSelection(start, end)
 
+
+def scroll_to_line(editor, line_number):
+    '''Scroll the `editor` to `line_number`.'''
+    assert isinstance(editor, wingapi.CAPIEditor)
+    file_path = editor.GetDocument().GetFilename()
+    
+    #print('Trying to reach line number %s...' % line_number)
+    first_line_number_guess = line_number - \
+                                          scroll_to_line.last_offset[file_path]
+    #print("Last time there was an offset of %s, so we're gonna ask to scroll "
+          #"to %s" % (scroll_to_line.last_offset[file_path],
+                     #first_line_number_guess))
+    editor.ScrollToLine(first_line_number_guess, pos='top')
+    first_visible_line = editor.GetFirstVisibleLine()
+    #print('We were scrolled to %s.' % first_visible_line)
+    offset_to_target = first_visible_line - line_number
+    offset_to_first_guess = \
+                         first_visible_line - first_line_number_guess
+    if offset_to_target:
+        #print ('Got offset of %s, correcting...' % offset_to_target)
+        editor.ScrollToLine(first_line_number_guess - offset_to_target,
+                            pos='top')
+    
+    scroll_to_line.last_offset[file_path] = offset_to_first_guess
+    
+    #print('Function ended with us scrolled to %s' %
+                                                 #editor.GetFirstVisibleLine())
+        
+scroll_to_line.last_offset = collections.defaultdict(lambda: 0)
+
+
+class ScrollRestorer(object):
+    '''
+    Context manager for restoring scroll position to what it was before suite.
+    '''
+    def __init__(self, editor):
+        assert isinstance(editor, wingapi.CAPIEditor)
+        self.editor = editor
+        
+    def __enter__(self):
+        self.first_line_number = self.editor.GetFirstVisibleLine()
+        return self
+                
+    def __exit__(self, *args, **kwargs):
+        scroll_to_line(self.editor, self.first_line_number)
+        
+
+def strip_selection_if_single_line(editor):
+    '''
+    If selection is on a single line, strip it, removing whitespace from edges.
+    '''
+    assert isinstance(editor, wingapi.CAPIEditor)
+    document = editor.GetDocument()
+    start, end = editor.GetSelection()
+    start_line_number = document.GetLineNumberFromPosition(start)
+    end_line_number = document.GetLineNumberFromPosition(end - 1)
+    if start_line_number == end_line_number:
+        selection = document.GetCharRange(start, end)
+        left_strip_size = len(selection) - len(selection.lstrip())
+        right_strip_size = len(selection) - len(selection.rstrip())
+        new_start = start + left_strip_size
+        new_end = end - right_strip_size
+        editor.SetSelection(new_start, new_end)
+    
         
 class UndoableAction(object):
     '''
@@ -264,4 +329,19 @@ def line_position_to_character_position(document, line_number, line_position):
     ''' '''
     assert isinstance(document, wingapi.CAPIDocument)
     return document.GetLineStart(line_number) + line_position
+    
+    
+def plural_word_to_singular_word(plural_word):
+    ''' '''
+    assert isinstance(plural_word, (str, unicode))
+    if plural_word.endswith('ies'):
+        return plural_word[:-3] + 'y'
+    elif plural_word.endswith('sses'):
+        return plural_word[:-2]
+    elif plural_word.endswith('ches'):
+        return plural_word[:-2]
+    else:
+        assert plural_word.endswith('s')
+        return plural_word[:-1]
+    
     
