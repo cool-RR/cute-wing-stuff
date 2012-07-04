@@ -19,6 +19,7 @@ flip_pairs = (
     ('True', 'False'), 
     ('start', 'end'), 
     ('head', 'tail'),
+    ('low', 'high'),
     ('first', 'last'), 
     ('import', 'export'), 
     ('left', 'right'), 
