@@ -346,3 +346,16 @@ argument equal to the preset index number, and debug will start with those
 arguments.
 
 Suggested key combinations: `Alt-Insert F5` for preset 0, `Alt-Insert Shift-F5` for preset 1, `Alt-Insert Ctrl-F5` for preset 2, `Alt-Insert Ctrl-Shift-F5` for preset 3
+
+
+## unpack-tuple-to-one ##
+
+Turn `things` into `(thing,)`.
+
+Useful for writing things like:
+
+    (thing,) == things
+    
+See this blog post for more context: http://blog.ram.rachum.com/post/1198230058/python-idiom-for-taking-the-single-item-from-a-list
+
+Suggested key combination: `Alt-Insert U`
