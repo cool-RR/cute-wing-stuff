@@ -319,7 +319,13 @@ This is good for automatically formatting long lines into this style:
     nose.selector.Selector.wantFile = \
                        types.MethodType(wantFile, None, nose.selector.Selector)
     
-Suggested key combination: `Alt-Insert L`
+Specify `line_offset` to slash a line different from the one that the caret
+is on. For example, `line_offset=-1` would slash the previous line.
+
+Specify `at_caret=True` to use the current caret position as the slashing
+point, rather than finding one automatically.
+
+Suggested key combination: `Alt-Insert L` for default arguments, `Alt-Insert Shift-L` for line_offset=-1, and `Alt-Insert Ctrl-L` for at_caret=True.
 
 
 ## start-debug-with-preset-args ##
