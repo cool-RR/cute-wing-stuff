@@ -40,7 +40,6 @@ def previous_brace_match(editor=wingapi.kArgEditor):
         document_text.rfind(']', 0, caret_position - 1), 
         document_text.rfind('}', 0, caret_position - 1)
     ))
-    print(closing_brace_position)
     if closing_brace_position == -1:
         return
     new_position = closing_brace_position
