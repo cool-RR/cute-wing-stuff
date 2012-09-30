@@ -26,13 +26,15 @@ def previous_brace_match(editor=wingapi.kArgEditor):
     document = editor.GetDocument()
     with shared.ScrollRestorer(editor):
         document_text = document.GetText()
-        caret_position, _ = editor.GetSelection()
+        _, caret_position = editor.GetSelection()
         closing_brace_position = max((
-            document_text.find(')', 0, caret_position), 
-            document_text.find(']', 0, caret_position), 
-            document_text.find('}', 0, caret_position)
+            document_text.rfind(')', 0, caret_position - 1), 
+            document_text.rfind(']', 0, caret_position - 1), 
+            document_text.rfind('}', 0, caret_position - 1)
         ))
+        print(closing_brace_position)
         if closing_brace_position == -1:
             return
-        editor.SetSelection(closing_brace_position, closing_brace_position)
+        new_position = closing_brace_position - 1
+        editor.SetSelection(new_position, new_position)
         editor.ExecuteCommand('brace-match')
