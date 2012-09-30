@@ -269,6 +269,20 @@ the new instance name `cat_nip` because it doesn't exist yet.
 Suggested key combination: `Alt-Insert I`
 
 
+## previous-brace-match ##
+
+Select the previous pair of braces.
+
+Similar to Wing's built-in `brace-match`, except it goes backwards instead of
+going forwards. Goes to the nearest pair of braces, whether it's (), [], or {}
+that's before the current caret position, and selects those braces including
+all their content.
+
+Known limitation: Doesn't know to ignore braces found in strings.
+
+Suggested key combination: `Ctrl-Bracketleft`
+
+
 ## push-line-to-end ##
 
 Push the current line to the end, aligning it to right border of editor.

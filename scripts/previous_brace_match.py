@@ -28,6 +28,8 @@ def previous_brace_match(editor=wingapi.kArgEditor):
     including all their content.
     
     Known limitation: Doesn't know to ignore braces found in strings.
+    
+    Suggested key combination: `Ctrl-Bracketleft`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
