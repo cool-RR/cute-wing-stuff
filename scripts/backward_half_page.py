@@ -22,6 +22,9 @@ def backward_half_page(editor=wingapi.kArgEditor):
     Move half a page up.
     
     This is essentially one half of Page-Up.
+    
+    Suggested key combination: `Alt-Page_up` (As long as you don't use Wing's
+    folding.)
     '''
     shared._move_half_page(-1, editor=editor)
     

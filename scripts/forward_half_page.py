@@ -22,6 +22,9 @@ def forward_half_page(editor=wingapi.kArgEditor):
     Move half a page down.
     
     This is essentially one half of Page-Down.
+
+    Suggested key combination: `Alt-Page_down` (As long as you don't use Wing's
+    folding.)
     '''
     shared._move_half_page(1, editor=editor)
     

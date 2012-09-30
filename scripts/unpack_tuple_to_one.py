@@ -25,6 +25,8 @@ def unpack_tuple_to_one(editor=wingapi.kArgEditor):
         (thing,) == things
         
     See this blog post for more context: http://blog.ram.rachum.com/post/1198230058/python-idiom-for-taking-the-single-item-from-a-list
+    
+    Suggested key combination: `Alt-Insert U`
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)

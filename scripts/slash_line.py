@@ -33,6 +33,10 @@ def slash_line(editor=wingapi.kArgEditor, line_offset=0, at_caret=False):
     
     Specify `at_caret=True` to use the current caret position as the slashing
     point, rather than finding one automatically.
+
+    Suggested key combination: `Alt-Insert L` for default arguments,
+    `Alt-Insert Shift-L` for line_offset=-1, and `Alt-Insert Ctrl-L` for
+    at_caret=True.
     '''
     
     if at_caret:

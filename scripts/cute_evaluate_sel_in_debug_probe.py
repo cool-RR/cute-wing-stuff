@@ -19,6 +19,8 @@ import shared
 def cute_evaluate_sel_in_debug_probe(editor=wingapi.kArgEditor):
     '''
     Evaluate selection in debug probe, do `select-more` if no selection.
+
+    Suggested key combination: `Ctrl-Alt-D`
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)

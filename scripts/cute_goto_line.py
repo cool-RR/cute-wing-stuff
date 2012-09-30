@@ -31,6 +31,8 @@ def cute_goto_line(editor=wingapi.kArgEditor):
     
     Also, the caret will go to the beginning of the text on the line instead of
     Wing's default of going to column 0.
+
+    Suggested key combination: `Ctrl-L`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
 

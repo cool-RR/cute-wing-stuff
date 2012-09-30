@@ -92,6 +92,8 @@ def deep_to_var(editor=wingapi.kArgEditor):
     Just write your deep expression, like `self._style_handler.html_color`,
     invoke this `deep-to-var` script, and you'll get the full line and have the
     caret put on the next line.
+
+    Suggested key combination: `Alt-Insert E`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()

@@ -29,6 +29,8 @@ def cute_open_line(editor=wingapi.kArgEditor):
     things like auto-indenting your code to the right level, opening your
     parentheses *just so* if you're doing function invocation, and a bunch of
     other goodies.
+
+    Suggested key combination: `Ctrl-Return`
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)

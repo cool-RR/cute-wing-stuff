@@ -44,6 +44,8 @@ def arg_to_attr(editor=wingapi.kArgEditor):
     
     The final result is that you'll get a `self.crunchiness = crunchiness` line
     and have the cursor ready in the next line.
+    
+    Suggested key combination: `Alt-Insert A`    
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()

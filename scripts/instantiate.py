@@ -27,6 +27,8 @@ def instantiate(editor=wingapi.kArgEditor):
 
     This saves a lot of typing, because normally you don't have autocompletion
     for the new instance name `cat_nip` because it doesn't exist yet.
+
+    Suggested key combination: `Alt-Insert I`
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)

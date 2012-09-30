@@ -96,6 +96,8 @@ def select_expression(editor=wingapi.kArgEditor):
     
     This does `select-more` until the biggest possible legal Python expression
     is selected.
+
+    Suggested key combination: `Ctrl-Alt-Plus`
     '''
     _select_more_until(_is_expression, editor)
             
@@ -106,6 +108,8 @@ def select_statement(editor=wingapi.kArgEditor):
     
     This does `select-more` until the biggest possible legal Python statement
     is selected.
+    
+    Suggested key combination: `Ctrl-Alt-Equal`
     '''
     _select_more_until(_is_statement, editor)
     

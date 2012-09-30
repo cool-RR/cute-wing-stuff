@@ -17,6 +17,7 @@ import shared
 
 flip_pairs = (
     ('True', 'False'), 
+    ('true', 'false'), 
     ('start', 'end'), 
     ('head', 'tail'),
     ('low', 'high'),
@@ -55,7 +56,14 @@ def _is_any_word_on_caret(document_text, caret_position, words):
         return (None, None)
 
 def flip(editor=wingapi.kArgEditor):
-    '''Flip between `True` and `False`.'''
+    '''
+    Flip between opposite words.
+    
+    Put the caret on a word like `True` or `start` or `new` and watch it change
+    into `False` or `end` or `old`.
+    
+    Suggested key combination: `Alt-Insert P`
+    '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
@@ -87,3 +95,4 @@ def flip(editor=wingapi.kArgEditor):
             document.InsertChars(word_start_position, new_word)
     
         
+ 

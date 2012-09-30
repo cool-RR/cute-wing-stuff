@@ -22,8 +22,9 @@ def for_thing_in_things(editor=wingapi.kArgEditor):
 
     Type any pluarl word, like `bananas` or `directories`. Then run this
     script, and you get `for directory in directories`.
-    '''
     
+    Suggested key combination: `Alt-Insert Ctrl-F`
+    '''
     
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()

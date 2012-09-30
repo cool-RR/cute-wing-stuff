@@ -26,6 +26,8 @@ def previous_brace_match(editor=wingapi.kArgEditor):
     of going forwards. Goes to the nearest pair of braces, whether it's (), [],
     or {} that's before the current caret position, and selects those braces
     including all their content.
+    
+    Known limitation: Doesn't know to ignore braces found in strings.
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
