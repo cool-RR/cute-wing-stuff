@@ -20,7 +20,12 @@ import shared
             
 def previous_brace_match(editor=wingapi.kArgEditor):
     '''
-    blocktododoc
+    Select the previous pair of braces.
+    
+    Similar to Wing's built-in `brace-match`, except it goes backwards instead
+    of going forwards. Goes to the nearest pair of braces, whether it's (), [],
+    or {} that's before the current caret position, and selects those braces
+    including all their content.
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
@@ -35,6 +40,6 @@ def previous_brace_match(editor=wingapi.kArgEditor):
         print(closing_brace_position)
         if closing_brace_position == -1:
             return
-        new_position = closing_brace_position - 1
+        new_position = closing_brace_position
         editor.SetSelection(new_position, new_position)
         editor.ExecuteCommand('brace-match')
