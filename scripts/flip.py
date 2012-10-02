@@ -29,6 +29,7 @@ flip_pairs = (
     ('new', 'old'), 
     ('maximum', 'minimum'), 
     ('max', 'min'), 
+    ('width', 'height'), 
 )
 
 all_words = sum(flip_pairs, ())
