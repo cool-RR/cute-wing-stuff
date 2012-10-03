@@ -56,6 +56,19 @@ This is essentially one half of Page-Up.
 Suggested key combination: `Alt-Page_up` (As long as you don't use Wing's folding.)
 
 
+## brace-match-inner ##
+
+Select the inside of the current/next pair of braces.
+
+Similar to Wing's built-in `brace-match`, except it selects only the inside
+of the braces, not including the braces themselves.
+
+Known limitations: Misses some pairs of braces. Doesn't know to ignore
+braces found in strings.
+
+Suggested key combination: `Alt-Bracketright`
+
+
 ## comment-braces ##
 
 Create "comment braces" with a title around a piece of code.
@@ -273,14 +286,30 @@ Suggested key combination: `Alt-Insert I`
 
 Select the previous pair of braces.
 
-Similar to Wing's built-in `brace-match`, except it goes backwards instead of
-going forwards. Goes to the nearest pair of braces, whether it's (), [], or {}
-that's before the current caret position, and selects those braces including
-all their content.
+Similar to Wing's built-in `brace-match`, except it goes backwards instead
+of going forwards. Goes to the nearest pair of braces, whether it's (), [],
+or {} that's before the current caret position, and selects those braces
+including all their content.
 
-Known limitation: Doesn't know to ignore braces found in strings.
+Known limitations: Misses some pairs of braces. Doesn't know to ignore
+braces found in strings.
 
 Suggested key combination: `Ctrl-Bracketleft`
+
+
+## previous-brace-match-inner ##
+
+Select the inside of the previous pair of braces.
+
+Similar to Wing's built-in `brace-match`, except it goes backwards instead
+of going forwards. Goes to the nearest pair of braces, whether it's (), [],
+or {} that's before the current caret position, and selects the content of
+those braces, not including the braces themselves.
+
+Known limitations: Misses some pairs of braces. Doesn't know to ignore
+braces found in strings.
+
+Suggested key combination: `Alt-Bracketleft`
 
 
 ## push-line-to-end ##

@@ -25,7 +25,8 @@ def brace_match_inner(editor=wingapi.kArgEditor):
     Similar to Wing's built-in `brace-match`, except it selects only the inside
     of the braces, not including the braces themselves.
     
-    Known limitation: Doesn't know to ignore braces found in strings.
+    Known limitations: Misses some pairs of braces. Doesn't know to ignore
+    braces found in strings.
     
     Suggested key combination: `Alt-Bracketright`
     '''
@@ -44,7 +45,8 @@ def previous_brace_match(editor=wingapi.kArgEditor):
     or {} that's before the current caret position, and selects those braces
     including all their content.
     
-    Known limitation: Doesn't know to ignore braces found in strings.
+    Known limitations: Misses some pairs of braces. Doesn't know to ignore
+    braces found in strings.
     
     Suggested key combination: `Ctrl-Bracketleft`
     '''
@@ -73,7 +75,8 @@ def previous_brace_match_inner(editor=wingapi.kArgEditor):
     or {} that's before the current caret position, and selects the content of
     those braces, not including the braces themselves.
     
-    Known limitation: Doesn't know to ignore braces found in strings.
+    Known limitations: Misses some pairs of braces. Doesn't know to ignore
+    braces found in strings.
     
     Suggested key combination: `Alt-Bracketleft`
     '''
