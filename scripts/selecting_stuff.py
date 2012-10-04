@@ -9,6 +9,7 @@ See its documentation for more information.
 
 from __future__ import with_statement
 
+import re
 import _ast
 
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
@@ -56,6 +57,17 @@ def _is_statement(string):
         return False
     else:
         return len(nodes) == 1
+    
+    
+
+variable_name_pattern_text = r'[a-zA-Z_][0-9a-zA-Z_]*'
+dotted_name_pattern = re.compile(r'^%s(\.%s)*$')
+
+def _is_dotted_name(string):
+    '''Is `string` a dotted name?'''
+    assert isinstance(string, str)
+    return bool(dotted_name_pattern.match(string.strip()))
+    
     
 
 def _select_more_until(condition, editor=wingapi.kArgEditor):
@@ -112,5 +124,16 @@ def select_statement(editor=wingapi.kArgEditor):
     Suggested key combination: `Ctrl-Alt-Equal`
     '''
     _select_more_until(_is_statement, editor)
+    
+    
+def select_dotted_name(editor=wingapi.kArgEditor):
+    '''
+    Select the dotted name that the cursor is currently on, like `foo.bar.baz`.
+    
+    This does `select-more` until the biggest possible dotted name is selected.
+    
+    Suggested key combination: `Alt-Plus`
+    '''
+    _select_more_until(_is_dotted_name, editor)
     
     
