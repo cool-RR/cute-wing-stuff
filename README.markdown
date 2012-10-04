@@ -331,6 +331,15 @@ Also deletes trailing spaces.
 Suggested key combination: `Alt-Insert End`
 
 
+## select-dotted-name ##
+
+Select the dotted name that the cursor is currently on, like `foo.bar.baz`.
+
+This does `select-more` until the biggest possible dotted name is selected.
+
+Suggested key combination: `Alt-Plus`
+
+
 ## select-expression ##
 
 Select the Python expression that the cursor is currently on.
