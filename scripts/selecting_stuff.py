@@ -61,7 +61,9 @@ def _is_statement(string):
     
 
 variable_name_pattern_text = r'[a-zA-Z_][0-9a-zA-Z_]*'
-dotted_name_pattern = re.compile(r'^%s(\.%s)*$')
+dotted_name_pattern = re.compile(
+    r'^%s(\.%s)*$' % (variable_name_pattern_text, variable_name_pattern_text)
+)
 
 def _is_dotted_name(string):
     '''Is `string` a dotted name?'''
