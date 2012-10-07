@@ -30,7 +30,9 @@ flip_pairs = (
     ('maximum', 'minimum'), 
     ('max', 'min'), 
     ('width', 'height'),
-    ('column', 'row')
+    ('column', 'row'), 
+    ('horizontal', 'vertical'), 
+    ('horizontally', 'vertically'), 
 )
 
 all_words = sum(flip_pairs, ())
