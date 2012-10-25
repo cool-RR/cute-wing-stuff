@@ -2,7 +2,7 @@
 # This program is distributed under the MIT license.
 
 '''
-This module defines the `select_expression` and `select_statement` scripts.
+This module defines the `select_expression` and `select_dotted_name` scripts.
 
 See its documentation for more information.
 '''
@@ -117,18 +117,6 @@ def select_expression(editor=wingapi.kArgEditor):
     _select_more_until(_is_expression, editor)
             
             
-def select_statement(editor=wingapi.kArgEditor):
-    '''
-    Select the Python statement that the cursor is currently on.
-    
-    This does `select-more` until the biggest possible legal Python statement
-    is selected.
-    
-    Suggested key combination: `Ctrl-Alt-Equal`
-    '''
-    _select_more_until(_is_statement, editor)
-    
-    
 def select_dotted_name(editor=wingapi.kArgEditor):
     '''
     Select the dotted name that the cursor is currently on, like `foo.bar.baz`.
