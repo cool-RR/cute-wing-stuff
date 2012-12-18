@@ -127,7 +127,8 @@ def select_whitespaceless_name(editor=wingapi.kArgEditor):
     
     Example: `foo.bar.baz(e=3)`.
     
-    This does `select-more` until the biggest possible dotted name is selected.
+    This does `select-more` until the biggest possible whitespace-less name is
+    selected.
     
     Suggested key combination: `Ctrl-Alt-Equal`
     '''
