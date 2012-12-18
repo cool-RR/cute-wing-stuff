@@ -350,16 +350,6 @@ selected.
 Suggested key combination: `Ctrl-Alt-Plus`
 
 
-## select-statement ##
-
-Select the Python statement that the cursor is currently on.
-
-This does `select-more` until the biggest possible legal Python statement is
-selected.
-    
-Suggested key combination: `Ctrl-Alt-Equal`
-
-
 ## select-whitespaceless-name ##
 
 Select the whitespace-less name that the cursor is currently on.
