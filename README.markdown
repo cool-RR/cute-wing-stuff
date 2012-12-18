@@ -359,6 +359,17 @@ selected.
     
 Suggested key combination: `Ctrl-Alt-Equal`
 
+
+## select-whitespaceless-name ##
+
+Select the whitespace-less name that the cursor is currently on.
+
+Example: `foo.bar.baz(e=3)`.
+
+This does `select-more` until the biggest possible dotted name is selected.
+
+Suggested key combination: `Ctrl-Alt-Equal`
+
     
 ## slash-line ##
 
