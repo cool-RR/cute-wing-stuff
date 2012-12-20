@@ -44,9 +44,11 @@ def find_string_from_position(editor, position):
     return (start_marker, end_marker + 1)
             
             
-def select_next_string(editor=wingapi.kArgEditor):
+def select_next_string(editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
+
+    app.ExecuteCommand('set-visit-history-anchor')
 
     document_start = 0
     document_end = document.GetLength()
@@ -90,9 +92,11 @@ def select_next_string(editor=wingapi.kArgEditor):
     #editor.SetSelection(editor.GetSelection()[0]+1, editor.GetSelection()[1]-1)
     
     
-def select_prev_string(editor=wingapi.kArgEditor):
+def select_prev_string(editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
+
+    app.ExecuteCommand('set-visit-history-anchor')
 
     document_start = 0
     document_end = document.GetLength()
@@ -104,7 +108,7 @@ def select_prev_string(editor=wingapi.kArgEditor):
     if is_position_on_string(editor, caret_position):
         current_string_range = \
                               find_string_from_position(editor, caret_position)
-        base_position = current_string_range[0] - 0
+        base_position = current_string_range[0] - 1
         if base_position < document_start:
             return
     else:
