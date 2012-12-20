@@ -92,7 +92,8 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
         _innerize_selected_string(editor)
     
     
-def select_prev_string(editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
+def select_prev_string(inner=True, editor=wingapi.kArgEditor,
+                       app=wingapi.kArgApplication):
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
 
