@@ -112,7 +112,7 @@ def select_prev_string(editor=wingapi.kArgEditor):
 
     print('Base position is %s' % base_position)
         
-    for position in range(base_position, document_start-1, step=-1):
+    for position in range(base_position, document_start-1, -1):
         if is_position_on_string(editor, position):
             string_range = find_string_from_position(editor, position)
             editor.SetSelection(*string_range)
