@@ -350,6 +350,25 @@ selected.
 Suggested key combination: `Ctrl-Alt-Plus`
 
 
+## select-next-string ##
+
+Select the next (or current) string, starting from caret location.
+
+Provide `inner=True` to select only the contents of the string.
+
+Suggested key combinations: `Ctrl-Apostrophe`
+                            `Alt-Apostrophe` for `inner=True`
+
+
+## select-prev-string ##
+Select the previous string, starting from caret location.
+
+Provide `inner=True` to select only the contents of the string.
+
+Suggested key combinations: `Ctrl-Quotedbl`
+                            `Alt-Quotedbl` for `inner=True`
+
+
 ## select-whitespaceless-name ##
 
 Select the whitespace-less name that the cursor is currently on.
