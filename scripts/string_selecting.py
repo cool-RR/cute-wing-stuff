@@ -41,18 +41,39 @@ def find_string_from_position(editor, position):
     if end_marker < document_end:
         assert not is_position_on_string(editor, end_marker+1)
         
-    
+    return (start_marker, end_marker)
             
             
 def select_next_string(editor=wingapi.kArgEditor):
     assert isinstance(editor, wingapi.CAPIEditor)
+    document = editor.GetDocument()
+
+    document_start = 0
+    document_end = document.GetLength()
     
-    _selection_start, _selection_end = editor.GetSelection()
-    if _selection_start == _selection_end:
-        base_position = _selection_end
-    else:
-        base_position = _selection_end - 1
+    #_selection_start, _selection_end = editor.GetSelection()
+    #if _selection_start == _selection_end:
+        #base_position = _selection_end
+    #else:
+        #base_position = _selection_end - 1
         
+    caret_position = editor.GetSelection()[1]
+    
+    if is_position_on_string(caret_position):
+        current_string_position = \
+                              find_string_from_position(editor, caret_position)
+        if editor.GetSelection() == current_string_position:
+            base_position = current_string_position[1] + 1
+            if base_position > document_end:
+                return
+        else:
+            editor.SetSelection(current_string_position)
+            return
+    else:
+        base_position = caret_position
+        
+    marker = base_position
+    
     
     #next_quote_location = 
     
