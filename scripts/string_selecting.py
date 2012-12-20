@@ -20,33 +20,49 @@ import edit
 import shared
 
 
-def is_position_on_string(editor, position):
+def is_position_on_strict_string(editor, position):
+    '''
+    Is there a strict string in the specified position in the document?
+    
+    "Strict" here means that it's a string and it's *not* the last character of
+    the string.
+    '''
     return editor.fEditor.GetCharType(position) == edit.editor.kStringCharType
 
 
 def find_string_from_position(editor, position):
+    '''
+    Given acharacter in the document known to be in a string, find its string.
+    '''
     assert isinstance(editor, wingapi.CAPIEditor)
-    assert is_position_on_string(editor, position)
+    assert is_position_on_strict_string(editor, position)
     document_start = 0
     document_end = editor.GetDocument().GetLength()
     start_marker = end_marker = position
     while end_marker < document_end and \
-                                   is_position_on_string(editor, end_marker+1):
+                            is_position_on_strict_string(editor, end_marker+1):
         end_marker += 1
     while start_marker > document_start and \
-                                 is_position_on_string(editor, start_marker-1):
+                          is_position_on_strict_string(editor, start_marker-1):
         start_marker -= 1
             
     if start_marker > document_start:
-        assert not is_position_on_string(editor, start_marker-1)
+        assert not is_position_on_strict_string(editor, start_marker-1)
     if end_marker < document_end:
-        assert not is_position_on_string(editor, end_marker+1)
+        assert not is_position_on_strict_string(editor, end_marker+1)
 
     return (start_marker, end_marker + 1)
             
             
 def select_next_string(inner=False, editor=wingapi.kArgEditor,
                        app=wingapi.kArgApplication):
+    '''
+    Select the next (or current) string, starting from caret location.
+    
+    Provide `inner=True` to select only the contents of the string.
+    
+    
+    '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
 
@@ -65,19 +81,24 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
     #print('Caret position is %s' % caret_position)
     
     for _ in [0]:
-        if is_position_on_string(editor, selection_start):
+        if is_position_on_strict_string(editor, selection_start):
             current_string_range = \
                              find_string_from_position(editor, selection_start)
+            print(document.GetCharRange(selection_start-1,
+                                       selection_start))
+            print(document.GetCharRange(selection_end+1,
+                                       selection_end+2))
             if (selection_start, selection_end) == current_string_range:
                 base_position = current_string_range[1] + 1
                 if base_position > document_end:
                     return
             elif inner and 1 <= current_string_range[1] - selection_end <= 3 \
-                 and 1 <= selection_start - current_string_range <= 5 and \
+                 and 1 <= selection_start - current_string_range[0] <= 5 and \
                  document.GetCharRange(selection_start-1,
-                                       selection_start-1) in ('"', "'") and \
-                 document.GetCharRange(selection_end+1,
+                                       selection_start) in ('"', "'") and \
+                 document.GetCharRange(selection_end,
                                        selection_end+1) in ('"', "'"):
+                print('tits')
                 base_position = current_string_range[1] + 1
                 if base_position > document_end:
                     return                
@@ -91,7 +112,7 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
         #print('Base position is %s' % base_position)
             
         for position in range(base_position, document_end+1):
-            if is_position_on_string(editor, position):
+            if is_position_on_strict_string(editor, position):
                 string_range = find_string_from_position(editor, position)
                 editor.SetSelection(*string_range)
                 break
@@ -118,8 +139,8 @@ def select_prev_string(inner=False, editor=wingapi.kArgEditor,
 
     for _ in [0]:
             
-        if is_position_on_string(editor, caret_position) or \
-                             is_position_on_string(editor, caret_position - 1):
+        if is_position_on_strict_string(editor, caret_position) or \
+                      is_position_on_strict_string(editor, caret_position - 1):
             current_string_range = \
                               find_string_from_position(editor, caret_position)
             base_position = current_string_range[0] - 1
@@ -131,7 +152,7 @@ def select_prev_string(inner=False, editor=wingapi.kArgEditor,
         #print('Base position is %s' % base_position)
             
         for position in range(base_position, document_start-1, -1):
-            if is_position_on_string(editor, position):
+            if is_position_on_strict_string(editor, position):
                 string_range = find_string_from_position(editor, position)
                 editor.SetSelection(*string_range)
                 break
