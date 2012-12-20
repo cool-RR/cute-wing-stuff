@@ -67,7 +67,7 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
     for _ in [0]:
         if is_position_on_string(editor, caret_position):
             current_string_range = \
-                                  find_string_from_position(editor, caret_position)
+                              find_string_from_position(editor, caret_position)
             if editor.GetSelection() == current_string_range:
                 base_position = current_string_range[1] + 1
                 if base_position > document_end:
