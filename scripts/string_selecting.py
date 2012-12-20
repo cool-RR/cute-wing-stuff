@@ -72,8 +72,8 @@ def select_next_string(editor=wingapi.kArgEditor):
     else:
         base_position = caret_position
         
-    marker = base_position
-    
+    for position in range(base_position, document_end+1):
+        
     
     #next_quote_location = 
     
