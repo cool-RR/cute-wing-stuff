@@ -61,22 +61,32 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
     #else:
         #base_position = _selection_end - 1
         
-    caret_position = editor.GetSelection()[0]
+    selection_start, selection_end = editor.GetSelection()
     #print('Caret position is %s' % caret_position)
     
     for _ in [0]:
-        if is_position_on_string(editor, caret_position):
+        if is_position_on_string(editor, selection_start):
             current_string_range = \
-                              find_string_from_position(editor, caret_position)
-            if editor.GetSelection() == current_string_range:
+                             find_string_from_position(editor, selection_start)
+            if (selection_start, selection_end) == current_string_range:
                 base_position = current_string_range[1] + 1
                 if base_position > document_end:
                     return
+            elif inner and 1 <= current_string_range[1] - selection_end <= 3 \
+                 and 1 <= selection_start - current_string_range <= 5 and \
+                 document.GetCharRange(selection_start-1,
+                                       selection_start-1) in ('"', "'") and \
+                 document.GetCharRange(selection_end+1,
+                                       selection_end+1) in ('"', "'"):
+                base_position = current_string_range[1] + 1
+                if base_position > document_end:
+                    return                
+            
             else:
                 editor.SetSelection(*current_string_range)
                 break
         else:
-            base_position = caret_position
+            base_position = selection_start
     
         #print('Base position is %s' % base_position)
             
