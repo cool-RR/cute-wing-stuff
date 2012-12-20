@@ -361,6 +361,7 @@ Suggested key combinations: `Ctrl-Apostrophe`
 
 
 ## select-prev-string ##
+
 Select the previous string, starting from caret location.
 
 Provide `inner=True` to select only the contents of the string.
