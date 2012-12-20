@@ -29,6 +29,7 @@ flip_pairs = (
     ('new', 'old'), 
     ('maximum', 'minimum'), 
     ('max', 'min'), 
+    ('next', 'previous'), 
     ('width', 'height'),
     ('column', 'row'), 
     ('horizontal', 'vertical'), 
