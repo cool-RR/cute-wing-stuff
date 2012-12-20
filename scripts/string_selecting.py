@@ -62,7 +62,7 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
         #base_position = _selection_end - 1
         
     caret_position = editor.GetSelection()[0]
-    print('Caret position is %s' % caret_position)
+    #print('Caret position is %s' % caret_position)
     
     for _ in [0]:
         if is_position_on_string(editor, caret_position):
@@ -78,7 +78,7 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
         else:
             base_position = caret_position
     
-        print('Base position is %s' % base_position)
+        #print('Base position is %s' % base_position)
             
         for position in range(base_position, document_end+1):
             if is_position_on_string(editor, position):
@@ -103,7 +103,7 @@ def select_prev_string(editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
     
     caret_position = editor.GetSelection()[1]
 
-    print('Caret position is %s' % caret_position)
+    #print('Caret position is %s' % caret_position)
 
     for _ in [0]:
             
@@ -117,7 +117,7 @@ def select_prev_string(editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
         else:
             base_position = caret_position
     
-        print('Base position is %s' % base_position)
+        #print('Base position is %s' % base_position)
             
         for position in range(base_position, document_start-1, -1):
             if is_position_on_string(editor, position):
