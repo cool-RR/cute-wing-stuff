@@ -40,8 +40,8 @@ def find_string_from_position(editor, position):
         assert not is_position_on_string(editor, start_marker-1)
     if end_marker < document_end:
         assert not is_position_on_string(editor, end_marker+1)
-        
-    return (start_marker, end_marker)
+
+    return (start_marker, end_marker + 1)
             
             
 def select_next_string(editor=wingapi.kArgEditor):
@@ -57,8 +57,7 @@ def select_next_string(editor=wingapi.kArgEditor):
     #else:
         #base_position = _selection_end - 1
         
-    caret_position = editor.GetSelection()[1]
-
+    caret_position = editor.GetSelection()[0]
     print('Caret position is %s' % caret_position)
     
     if is_position_on_string(editor, caret_position):
@@ -98,12 +97,6 @@ def select_prev_string(editor=wingapi.kArgEditor):
     document_start = 0
     document_end = document.GetLength()
     
-    #_selection_start, _selection_end = editor.GetSelection()
-    #if _selection_start == _selection_end:
-        #base_position = _selection_end
-    #else:
-        #base_position = _selection_end - 1
-        
     caret_position = editor.GetSelection()[1]
 
     print('Caret position is %s' % caret_position)
@@ -112,8 +105,8 @@ def select_prev_string(editor=wingapi.kArgEditor):
         current_string_range = \
                               find_string_from_position(editor, caret_position)
         if editor.GetSelection() == current_string_range:
-            base_position = current_string_range[1] + 1
-            if base_position > document_end:
+            base_position = current_string_range[0] - 0
+            if base_position < document_start:
                 return
         else:
             editor.SetSelection(*current_string_range)
@@ -130,11 +123,4 @@ def select_prev_string(editor=wingapi.kArgEditor):
             return
     else:
         return
-    
-    #next_quote_location = 
-    
-    #editor.SetSelection(editor.GetSelection()[0]-1, editor.GetSelection()[1]+1)
-    #editor.ExecuteCommand('brace-match')
-    #editor.SetSelection(editor.GetSelection()[0]+1, editor.GetSelection()[1]-1)
-    
     
