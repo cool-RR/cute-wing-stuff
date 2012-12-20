@@ -32,7 +32,7 @@ def is_position_on_strict_string(editor, position):
 
 def find_string_from_position(editor, position):
     '''
-    Given acharacter in the document known to be in a string, find its string.
+    Given a character in the document known to be in a string, find its string.
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     assert is_position_on_strict_string(editor, position)
@@ -61,7 +61,9 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
     
     Provide `inner=True` to select only the contents of the string.
     
-    
+    Suggested key combinations: `Ctrl-Apostrophe`
+                                `Alt-Apostrophe` for `inner=True`
+
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
@@ -71,23 +73,12 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
     document_start = 0
     document_end = document.GetLength()
     
-    #_selection_start, _selection_end = editor.GetSelection()
-    #if _selection_start == _selection_end:
-        #base_position = _selection_end
-    #else:
-        #base_position = _selection_end - 1
-        
     selection_start, selection_end = editor.GetSelection()
-    #print('Caret position is %s' % caret_position)
     
     for _ in [0]:
         if is_position_on_strict_string(editor, selection_start):
             current_string_range = \
                              find_string_from_position(editor, selection_start)
-            print(document.GetCharRange(selection_start-1,
-                                       selection_start))
-            print(document.GetCharRange(selection_end+1,
-                                       selection_end+2))
             if (selection_start, selection_end) == current_string_range:
                 base_position = current_string_range[1] + 1
                 if base_position > document_end:
@@ -98,7 +89,6 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
                                        selection_start) in ('"', "'") and \
                  document.GetCharRange(selection_end,
                                        selection_end+1) in ('"', "'"):
-                print('tits')
                 base_position = current_string_range[1] + 1
                 if base_position > document_end:
                     return                
@@ -109,8 +99,6 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
         else:
             base_position = selection_start
     
-        #print('Base position is %s' % base_position)
-            
         for position in range(base_position, document_end+1):
             if is_position_on_strict_string(editor, position):
                 string_range = find_string_from_position(editor, position)
@@ -125,6 +113,15 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
     
 def select_prev_string(inner=False, editor=wingapi.kArgEditor,
                        app=wingapi.kArgApplication):
+    '''
+    Select the previous string, starting from caret location.
+    
+    Provide `inner=True` to select only the contents of the string.
+    
+    Suggested key combinations: `Ctrl-Quotedbl`
+                                `Alt-Quotedbl` for `inner=True`
+
+    '''    
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
 
@@ -134,8 +131,6 @@ def select_prev_string(inner=False, editor=wingapi.kArgEditor,
     document_end = document.GetLength()
     
     caret_position = editor.GetSelection()[1]
-
-    #print('Caret position is %s' % caret_position)
 
     for _ in [0]:
             
@@ -149,8 +144,6 @@ def select_prev_string(inner=False, editor=wingapi.kArgEditor,
         else:
             base_position = caret_position
     
-        #print('Base position is %s' % base_position)
-            
         for position in range(base_position, document_start-1, -1):
             if is_position_on_strict_string(editor, position):
                 string_range = find_string_from_position(editor, position)
@@ -169,6 +162,7 @@ string_pattern = re.compile(
 )
 
 def _innerize_selected_string(editor):
+    '''Given that a string is selected, select only its contents.'''
     assert isinstance(editor, wingapi.CAPIEditor)
     selection_start, selection_end = editor.GetSelection()
     string = editor.GetDocument().GetCharRange(selection_start, selection_end)
