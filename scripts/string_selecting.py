@@ -97,7 +97,7 @@ def select_prev_string(inner=False, editor=wingapi.kArgEditor,
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
 
-    app.ExecuteCommand('set-visit-history-anchor')
+    app.ExecuteCommand("set-visit-history-anchor")
 
     document_start = 0
     document_end = document.GetLength()
@@ -132,7 +132,10 @@ def select_prev_string(inner=False, editor=wingapi.kArgEditor,
         _innerize_selected_string(editor)
     
 
-string_pattern = re.compile('''^[urUR]*('|"|\'''|""").*$''')
+string_pattern = re.compile(
+    '''^[urUR]{0,2}(?P<delimiter>(\''')|(""")|(')|(")).*$''',
+    flags=re.DOTALL
+)
 
 def _innerize_selected_string(editor):
     assert isinstance(editor, wingapi.CAPIEditor)
@@ -140,10 +143,10 @@ def _innerize_selected_string(editor):
     string = editor.GetDocument().GetCharRange(selection_start, selection_end)
     match = string_pattern.match(string)
     assert match
-    quote = match.groups()
-    fixed_start = selection_start + len(quote)
-    fixed_end = selection_end - len(quote) if string.endswith(quote) else \
-                                                                  selection_end
+    delimiter = match.group('delimiter')
+    fixed_start = selection_start + len(delimiter)
+    fixed_end = selection_end - len(delimiter) if string.endswith(delimiter) \
+                                                             else selection_end
     editor.SetSelection(fixed_start, fixed_end)                               
         
     
