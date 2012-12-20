@@ -32,6 +32,17 @@ def find_string_from_position(editor, position):
     while end_marker < document_end:
         if is_position_on_string(editor, end_marker+1):
             end_marker += 1
+    while start_marker > document_start:
+        if is_position_on_string(editor, start_marker-1):
+            start_marker -= 1
+            
+    if start_marker > document_start:
+        assert not is_position_on_string(editor, start_marker-1)
+    if end_marker < document_end:
+        assert not is_position_on_string(editor, end_marker+1)
+        
+    
+            
             
 def select_next_string(editor=wingapi.kArgEditor):
     assert isinstance(editor, wingapi.CAPIEditor)
