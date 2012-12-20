@@ -350,13 +350,14 @@ selected.
 Suggested key combination: `Ctrl-Alt-Plus`
 
 
-## select-statement ##
+## select-whitespaceless-name ##
 
-Select the Python statement that the cursor is currently on.
+Select the whitespace-less name that the cursor is currently on.
 
-This does `select-more` until the biggest possible legal Python statement is
-selected.
-    
+Example: `foo.bar.baz(e=3)`.
+
+This does `select-more` until the biggest possible whitespace-less name is selected.
+
 Suggested key combination: `Ctrl-Alt-Equal`
 
     

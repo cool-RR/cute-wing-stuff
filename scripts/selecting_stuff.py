@@ -2,7 +2,7 @@
 # This program is distributed under the MIT license.
 
 '''
-This module defines the `select_expression` and `select_statement` scripts.
+This module defines scripts for selecting stuff.
 
 See its documentation for more information.
 '''
@@ -44,21 +44,6 @@ def _is_expression(string):
             return type(node) == _ast.Expr
     
 
-def _is_statement(string):
-    '''Is `string` a Python statement?'''
-    
-    string = '%s\n' % string
-    # Throwing out '\r' characters because `ast` can't process them for some
-    # reason:
-    string = string.replace('\r', '')
-    try:
-        nodes = _ast_parse(string).body
-    except SyntaxError:
-        return False
-    else:
-        return len(nodes) == 1
-    
-    
 
 variable_name_pattern_text = r'[a-zA-Z_][0-9a-zA-Z_]*'
 dotted_name_pattern = re.compile(
@@ -71,6 +56,14 @@ def _is_dotted_name(string):
     assert isinstance(string, str)
     return bool(dotted_name_pattern.match(string.strip()))
     
+
+whitespace_characters = ' \n\r\t\f\v'
+    
+def _is_whitespaceless_name(string):
+    '''Is `string` a whitespace-less name?'''
+    assert isinstance(string, str)
+    return not any((whitespace_character in string for whitespace_character
+                in whitespace_characters))
     
 
 def _select_more_until(condition, editor=wingapi.kArgEditor):
@@ -116,18 +109,6 @@ def select_expression(editor=wingapi.kArgEditor):
     '''
     _select_more_until(_is_expression, editor)
             
-            
-def select_statement(editor=wingapi.kArgEditor):
-    '''
-    Select the Python statement that the cursor is currently on.
-    
-    This does `select-more` until the biggest possible legal Python statement
-    is selected.
-    
-    Suggested key combination: `Ctrl-Alt-Equal`
-    '''
-    _select_more_until(_is_statement, editor)
-    
     
 def select_dotted_name(editor=wingapi.kArgEditor):
     '''
@@ -138,5 +119,19 @@ def select_dotted_name(editor=wingapi.kArgEditor):
     Suggested key combination: `Alt-Plus`
     '''
     _select_more_until(_is_dotted_name, editor)
+    
+    
+def select_whitespaceless_name(editor=wingapi.kArgEditor):
+    '''
+    Select the whitespace-less name that the cursor is currently on.
+    
+    Example: `foo.bar.baz(e=3)`.
+    
+    This does `select-more` until the biggest possible whitespace-less name is
+    selected.
+    
+    Suggested key combination: `Ctrl-Alt-Equal`
+    '''
+    _select_more_until(_is_whitespaceless_name, editor)
     
     
