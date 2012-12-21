@@ -125,7 +125,7 @@ def select_prev_string(inner=False, editor=wingapi.kArgEditor,
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
 
-    app.ExecuteCommand("set-visit-history-anchor")
+    app.ExecuteCommand('set-visit-history-anchor')
 
     document_start = 0
     document_end = document.GetLength()
