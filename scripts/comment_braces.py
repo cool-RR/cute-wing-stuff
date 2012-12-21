@@ -61,7 +61,7 @@ def comment_braces(title):
     capitalizing the first letter or ending the sentence with any punctuation
     mark. You may also use an empty title to get a title-less comment line.
 
-    Suggested key combination: `Alt-Insert B`
+    Suggested key combination: `Insert B`
     '''
     
     editor = wingapi.gApplication.GetActiveEditor()

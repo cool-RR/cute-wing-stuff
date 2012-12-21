@@ -93,7 +93,7 @@ def deep_to_var(editor=wingapi.kArgEditor):
     invoke this `deep-to-var` script, and you'll get the full line and have the
     caret put on the next line.
 
-    Suggested key combination: `Alt-Insert E`
+    Suggested key combination: `Insert E`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()

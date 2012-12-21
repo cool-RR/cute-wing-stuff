@@ -26,7 +26,7 @@ def comment_hr(editor=wingapi.kArgEditor):
     
         #######################################################################
         
-    Suggested key combination: `Alt-Insert H`
+    Suggested key combination: `Insert H`
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)
