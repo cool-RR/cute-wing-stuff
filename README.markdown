@@ -13,6 +13,12 @@ could do `Ctrl-F12` and then type `flip-case` to activate the `flip-case`
 script. But you probably want to bind these commands to some key combination;
 do that in `Edit` -> `Preferences` -> `Keyboard` -> `Custom Key Bindings`.
 
+Tip: Many of the commands have a suggested binding starting with the `Insert`
+key. In order for that to work, you need to bind `Insert` to nothing in Wing.
+(i.e. just leave the command text input box empty.) If you're one of the rare
+people who still like using the `Insert` key by itself, you can bind
+`Ctrl-Insert` to `toggle-overtype`.
+
 All the scripts are copyright Ram Rachum and released under the MIT open-source license.
 
 
@@ -44,7 +50,7 @@ argument.) Then run this `arg-to-attr` script.
 The final result is that you'll get a `self.crunchiness = crunchiness` line and
 have the cursor ready in the next line.
 
-Suggested key combination: `Alt-Insert A`
+Suggested key combination: `Insert A`
 
 
 ## backward-half-page ##
@@ -98,7 +104,7 @@ The title usually has a first word ending with "ing". Don't bother capitalizing
 the first letter or ending the sentence with any punctuation mark. You may also
 use an empty title to get a title-less comment line.
 
-Suggested key combination: `Alt-Insert B`
+Suggested key combination: `Insert B`
 
 
 ## comment-hr ##
@@ -109,7 +115,7 @@ Example:
 
     #######################################################################
     
-Suggested key combination: `Alt-Insert H`
+Suggested key combination: `Insert H`
 
 
 ## cute-evaluate-sel-in-debug-probe ##
@@ -186,7 +192,7 @@ Just write your deep expression, like `self._style_handler.html_color`, invoke
 this `deep-to-var` script, and you'll get the full line and have the caret put
 on the next line.
 
-Suggested key combination: `Alt-Insert E`
+Suggested key combination: `Insert E`
 
 
 ## delete-line-and-home ##
@@ -205,7 +211,7 @@ Suggested key combination: `Ctrl-Shift-C`
 
 Flip between `True` and `False`.
 
-Suggested key combination: `Alt-Insert P`
+Suggested key combination: `Insert P`
 
 
 ## flip-case ##
@@ -216,7 +222,7 @@ For example, if the cursor is on `something_like_this` and you activate
 this script, you'll get `SomethingLikeThis`. Do it again and you'll get
 `something_like_this` again.
 
-Suggested key combination: `Alt-Insert C`
+Suggested key combination: `Insert C`
 
 
 ## for-thing-in-things ##
@@ -226,7 +232,7 @@ Turn `things` into `for thing in things`.
 Type any pluarl word, like `bananas` or `directories`. Then run this
 script, and you get `for directory in directories`.
 
-Suggested key combination: `Alt-Insert Ctrl-F`
+Suggested key combination: `Insert Ctrl-F`
 
 
 ## forward-half-page ##
@@ -279,7 +285,7 @@ just press `(`, type in the arguments, and you're set.
 This saves a lot of typing, because normally you don't have autocompletion for
 the new instance name `cat_nip` because it doesn't exist yet.
 
-Suggested key combination: `Alt-Insert I`
+Suggested key combination: `Insert I`
 
 
 ## previous-brace-match ##
@@ -328,7 +334,7 @@ This is useful for creating lines of this style:
 
 Also deletes trailing spaces.                                          
 
-Suggested key combination: `Alt-Insert End`
+Suggested key combination: `Insert End`
 
 
 ## select-dotted-name ##
@@ -398,7 +404,7 @@ is on. For example, `line_offset=-1` would slash the previous line.
 Specify `at_caret=True` to use the current caret position as the slashing
 point, rather than finding one automatically.
 
-Suggested key combination: `Alt-Insert L` for default arguments, `Alt-Insert Shift-L` for line_offset=-1, and `Alt-Insert Ctrl-L` for at_caret=True.
+Suggested key combination: `Insert L` for default arguments, `Insert Shift-L` for line_offset=-1, and `Insert Ctrl-L` for at_caret=True.
 
 
 ## start-debug-with-preset-args ##
@@ -424,7 +430,7 @@ Then you call this `start-debug-with-preset-args` with the `i_preset`
 argument equal to the preset index number, and debug will start with those
 arguments.
 
-Suggested key combinations: `Alt-Insert F5` for preset 0, `Alt-Insert Shift-F5` for preset 1, `Alt-Insert Ctrl-F5` for preset 2, `Alt-Insert Ctrl-Shift-F5` for preset 3
+Suggested key combinations: `Insert F5` for preset 0, `Insert Shift-F5` for preset 1, `Insert Ctrl-F5` for preset 2, `Insert Ctrl-Shift-F5` for preset 3
 
 
 ## unpack-tuple-to-one ##
@@ -437,4 +443,4 @@ Useful for writing things like:
     
 See this blog post for more context: http://blog.ram.rachum.com/post/1198230058/python-idiom-for-taking-the-single-item-from-a-list
 
-Suggested key combination: `Alt-Insert U`
+Suggested key combination: `Insert U`
