@@ -8,8 +8,14 @@ from  __future__ import with_statement
 import collections
 import re
 
+try:
+    import autopy.key
+except ImportError:
+    autopy_available = False
+else:
+    autopy_available = True
+    
 import wingapi
-
 
 _ignore_scripts = True
 
@@ -345,3 +351,12 @@ def plural_word_to_singular_word(plural_word):
         return plural_word[:-1]
     
     
+#def press_keys(string, modifiers=''):
+    #if autopy_available:
+        #fixed_modifiers = autopy.key.MOD_NONE
+        #if 'ctrl' in modifiers: fixed_modifiers |= autopy.key.MOD_CONTROL
+        #if 'shift' in modifiers: fixed_modifiers |= autopy.key.MOD_SHIFT
+        #if 'alt' in modifiers: fixed_modifiers |= autopy.key.MOD_ALT
+        #if 'meta' in modifiers: fixed_modifiers |= autopy.key.MOD_META
+        #for character in string:
+            #autopy.key.tap(character, fixed_modifiers)
