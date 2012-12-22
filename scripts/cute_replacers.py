@@ -52,6 +52,8 @@ def cute_query_replace(editor=wingapi.kArgEditor,
     If text is selected, it will be used as the text to search for, and the
     contents of the clipboard will be offered as the replace value.
     
+    Implemented on Windows only.
+    
     Suggested key combination: `Alt-Comma`
     '''
     return _cute_general_replace('query-replace', editor=editor, app=app)
@@ -64,6 +66,8 @@ def cute_replace_string(editor=wingapi.kArgEditor,
     
     If text is selected, it will be used as the text to search for, and the
     contents of the clipboard will be offered as the replace value.
+    
+    Implemented on Windows only.
     
     Suggested key combination: `Alt-Period`
     '''    
