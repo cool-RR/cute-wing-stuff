@@ -74,6 +74,22 @@ class SelectionRestorer(object):
         self.editor.SetSelection(start, end)
 
 
+class ClipboardRestorer(object):
+    
+    def __init__(self, app):
+        assert isinstance(app, wingapi.CAPIApplication)
+        self.app = app
+        self.clipboard_data = None
+        
+    def __enter__(self):
+        self.clipboard_data = self.app.GetClipboard()
+
+                
+    def __exit__(self, *args, **kwargs):
+        self.app.SetClipboard(self.clipboard_data)
+
+
+
 def scroll_to_line(editor, line_number):
     '''Scroll the `editor` to `line_number`.'''
     assert isinstance(editor, wingapi.CAPIEditor)
