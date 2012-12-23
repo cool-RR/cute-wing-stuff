@@ -17,6 +17,16 @@ TAB_KEY = 15 if 'linux' in sys.platform else '48' if 'darwin' in sys.platform \
                                                                          else 9
 
 
+def type_string(string):
+    assert shared.autopy_available
+    import autopy.key
+    for character in string:
+        if character == '_':
+            autopy.key.tap('_', autopy.key.MOD_SHIFT)
+        else:
+            autopy.key.tap(character)
+
+
 def _cute_general_replace(command_name,
                           editor=wingapi.kArgEditor,
                           app=wingapi.kArgApplication):
@@ -32,7 +42,10 @@ def _cute_general_replace(command_name,
         if shared.autopy_available:
             import autopy.key
             autopy.key.toggle(autopy.key.K_ALT, False)
-            autopy.key.type_string(selection)
+            autopy.key.toggle(autopy.key.K_SHIFT, False)
+            autopy.key.toggle(autopy.key.K_CONTROL, False)
+            autopy.key.toggle(autopy.key.K_META, False)
+            type_string(selection)
             #autopy.key.tap(autopy.key.K_ESCAPE)
             #autopy.key.toggle(autopy.key.K_ALT, False)
             autopy.key.tap(TAB_KEY, autopy.key.MOD_SHIFT)
