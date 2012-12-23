@@ -160,30 +160,6 @@ doing function invocation, and a bunch of other goodies.
 Suggested key combination: `Ctrl-Return`
 
 
-## cute-query-replace ##
-
-Improved version of `query-replace` for finding and replacing in document.
-
-If text is selected, it will be used as the text to search for, and the
-contents of the clipboard will be offered as the replace value.
-
-Implemented on Windows only.
-
-Suggested key combination: `Alt-Comma`
-
-
-## cute-replace-string ##
-
-Improved version of `replace-string` for finding and replacing in document.
-
-If text is selected, it will be used as the text to search for, and the
-contents of the clipboard will be offered as the replace value.
-
-Implemented on Windows only.
-
-Suggested key combination: `Alt-Period`
-
-
 ## deep-to-var ##
     
 Create a variable from a deep expression.
