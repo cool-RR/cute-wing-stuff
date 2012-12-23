@@ -17,12 +17,14 @@ TAB_KEY = 15 if 'linux' in sys.platform else '48' if 'darwin' in sys.platform \
                                                                          else 9
 
 
+_characters_that_need_shift = ('!@#$%^&*()_+~{}>:"?|<')
+
 def type_string(string):
     assert shared.autopy_available
     import autopy.key
     for character in string:
-        if character == '_':
-            autopy.key.tap('_', autopy.key.MOD_SHIFT)
+        if character in _characters_that_need_shift:
+            autopy.key.tap(character, autopy.key.MOD_SHIFT)
         else:
             autopy.key.tap(character)
 
