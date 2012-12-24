@@ -337,6 +337,17 @@ Also deletes trailing spaces.
 Suggested key combination: `Insert End`
 
 
+## remove-rectangles ##
+
+Remove all rectangles that Wing drew on the editor.
+
+Wing sometimes draws rectangles on the editor, either for search results or
+for highlighting appearances of the currently selected word. This command
+clears all of those squares.
+
+Suggested key combination: `Ctrl-Alt-Shift-R`
+
+
 ## select-dotted-name ##
 
 Select the dotted name that the cursor is currently on, like `foo.bar.baz`.
