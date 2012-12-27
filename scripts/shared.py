@@ -218,7 +218,7 @@ def get_indent_size_in_pos(editor, pos):
     # todo: figure out something like `indent-to-match` except it looks at the
     # lines *below* the current one.
     
-    # blocktodo: I think that 'indent-to-match' actually modifies the document,
+    # blocktodo: I think that `indent-to-match` actually modifies the document,
     # adding or removing spaces! This is bad, should find substitute that
     # doesn't modify the document.
     
