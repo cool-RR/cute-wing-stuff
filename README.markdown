@@ -367,6 +367,13 @@ selected.
 Suggested key combination: `Ctrl-Alt-Plus`
 
 
+## select-next-number ##
+
+Select the next (or current) number in the document.
+
+Suggested key combination: Ctrl-0
+
+
 ## select-next-string ##
 
 Select the next (or current) string, starting from caret location.
@@ -375,6 +382,13 @@ Provide `inner=True` to select only the contents of the string.
 
 Suggested key combinations: `Ctrl-Apostrophe`
                             `Alt-Apostrophe` for `inner=True`
+
+
+## select-prev-number ##
+
+Select the previous number in the document.
+
+Suggested key combination: Ctrl-9
 
 
 ## select-prev-string ##

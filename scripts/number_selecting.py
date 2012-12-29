@@ -57,13 +57,6 @@ def select_next_number(editor=wingapi.kArgEditor,
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
 
-    #document_start = 0
-    #document_end = document.GetLength()
-    
-    #selection_start, selection_end = editor.GetSelection()
-    
-    #number_positions_in_document = get_number_positions_in_document()
-
     caret_position = editor.GetSelection()[1] + 1
     
     _, next_number_position = get_relevant_number_positions(editor,
@@ -75,6 +68,11 @@ def select_next_number(editor=wingapi.kArgEditor,
     
 def select_prev_number(editor=wingapi.kArgEditor,
                        app=wingapi.kArgApplication):
+    '''
+    Select the previous number in the document.
+    
+    Suggested key combination: Ctrl-9
+    '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
 
