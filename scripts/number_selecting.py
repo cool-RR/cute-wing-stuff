@@ -24,26 +24,56 @@ number_pattern = re.compile(r'''([0-9]+(\.[0-9]+)?)|(\.[0-9]+)''')
 
 
 def get_all_number_positions(editor):
-    text = editor.GetDocument.GetText()
+    text = editor.GetDocument().GetText()
     matches = tuple(number_pattern.finditer(text))
     return tuple((match.start(), match.end()) for match in matches)
 
 
-def get_relevant_number_positions(editor):
+def get_relevant_number_positions(editor, caret_position):
     assert isinstance(editor, wingapi.CAPIEditor)
     all_number_positions = get_all_number_positions(editor)
-    caret_position = editor.GetSelection()[0]
-    last_start_position = last_end_position = next_start_position = \
-                                                       next_end_position = None
+    last_start_position = last_end_position = None
     for i, (start_position, end_position) in enumerate(all_number_positions):
         if end_position >= caret_position:
             next_start_position, next_end_position = \
                                                    start_position, end_position
+            break
+        else:
+            last_start_position, last_end_position = \
+                                                   start_position, end_position
+    else:
+        next_start_position = next_end_position = None        
     return ((last_start_position, last_end_position),
             (next_start_position, next_end_position))
 
 
 def select_next_number(editor=wingapi.kArgEditor,
+                       app=wingapi.kArgApplication):
+    '''
+    Select the next (or current) number in the document.
+    
+    Suggested key combination: Ctrl-0
+    '''
+    assert isinstance(editor, wingapi.CAPIEditor)
+    document = editor.GetDocument()
+
+    #document_start = 0
+    #document_end = document.GetLength()
+    
+    #selection_start, selection_end = editor.GetSelection()
+    
+    #number_positions_in_document = get_number_positions_in_document()
+
+    caret_position = editor.GetSelection()[1] + 1
+    
+    _, next_number_position = get_relevant_number_positions(editor,
+                                                            caret_position)
+    if next_number_position != (None, None):
+        app.ExecuteCommand('set-visit-history-anchor')
+        editor.SetSelection(*next_number_position)
+
+    
+def select_prev_number(editor=wingapi.kArgEditor,
                        app=wingapi.kArgApplication):
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
@@ -55,8 +85,11 @@ def select_next_number(editor=wingapi.kArgEditor,
     
     #number_positions_in_document = get_number_positions_in_document()
     
-    _, next_number_position = get_relevant_number_positions()
-    if next_number_position != (None, None):
+    caret_position = editor.GetSelection()[0]
+    
+    prev_number_position, _  = get_relevant_number_positions(editor,
+                                                             caret_position)
+    if prev_number_position != (None, None):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(next_number_position)
+        editor.SetSelection(*prev_number_position)
     
