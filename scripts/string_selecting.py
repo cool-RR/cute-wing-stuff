@@ -175,3 +175,6 @@ def _innerize_selected_string(editor):
     editor.SetSelection(fixed_start, fixed_end)                               
         
     
+def say_char_type(editor=wingapi.kArgEditor):
+    assert isinstance(editor, wingapi.CAPIEditor)
+    print(editor.fEditor.GetCharType(editor.GetSelection()[0]))

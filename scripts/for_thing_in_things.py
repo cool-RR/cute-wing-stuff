@@ -45,4 +45,6 @@ def for_thing_in_things(editor=wingapi.kArgEditor):
         document.InsertChars(current_position, segment_to_insert)
         editor.ExecuteCommand('end-of-line')
         
-        
+        if shared.autopy_available:
+            import autopy.key
+            autopy.key.tap(':')        

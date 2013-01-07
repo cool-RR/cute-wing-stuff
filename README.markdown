@@ -361,6 +361,17 @@ Also deletes trailing spaces.
 Suggested key combination: `Insert End`
 
 
+## remove-rectangles ##
+
+Remove all rectangles that Wing drew on the editor.
+
+Wing sometimes draws rectangles on the editor, either for search results or
+for highlighting appearances of the currently selected word. This command
+clears all of those squares.
+
+Suggested key combination: `Ctrl-Alt-Shift-R`
+
+
 ## select-dotted-name ##
 
 Select the dotted name that the cursor is currently on, like `foo.bar.baz`.
@@ -380,6 +391,13 @@ selected.
 Suggested key combination: `Ctrl-Alt-Plus`
 
 
+## select-next-number ##
+
+Select the next (or current) number in the document.
+
+Suggested key combination: Ctrl-0
+
+
 ## select-next-string ##
 
 Select the next (or current) string, starting from caret location.
@@ -388,6 +406,13 @@ Provide `inner=True` to select only the contents of the string.
 
 Suggested key combinations: `Ctrl-Apostrophe`
                             `Alt-Apostrophe` for `inner=True`
+
+
+## select-prev-number ##
+
+Select the previous number in the document.
+
+Suggested key combination: Ctrl-9
 
 
 ## select-prev-string ##

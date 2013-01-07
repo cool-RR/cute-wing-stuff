@@ -54,4 +54,6 @@ def instantiate(editor=wingapi.kArgEditor):
         document.InsertChars(current_position, segment_to_insert)
         editor.ExecuteCommand('end-of-line')
         
-        
+        if shared.autopy_available:
+            import autopy.key
+            autopy.key.tap('(', autopy.key.MOD_SHIFT)
