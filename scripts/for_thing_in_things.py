@@ -18,10 +18,12 @@ import shared
 
 def for_thing_in_things(editor=wingapi.kArgEditor):
     '''
-    Turn `things` into `for thing in things`.
-
+    Turn `things` into `for thing in things:`.
+    
     Type any pluarl word, like `bananas` or `directories`. Then run this
     script, and you get `for directory in directories`.
+    
+    Note: The `:` part is added only on Windows.
     
     Suggested key combination: `Insert Ctrl-F`
     '''

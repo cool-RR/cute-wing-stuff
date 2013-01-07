@@ -251,10 +251,12 @@ Suggested key combination: `Insert C`
 
 ## for-thing-in-things ##
 
-Turn `things` into `for thing in things`.
+Turn `things` into `for thing in things:`.
 
 Type any pluarl word, like `bananas` or `directories`. Then run this
 script, and you get `for directory in directories`.
+
+Note: The `:` part is added only on Windows.
 
 Suggested key combination: `Insert Ctrl-F`
 
@@ -299,15 +301,16 @@ Suggested key combination: `Alt-F11`
 
 ## instantiate ##
     
-Write `my_class_name = MyClassName`.
+Write `my_class_name = MyClassName()`.
     
 This is used to quickly instantiate a class. Write your class name, like
 `CatNip`. It will usually be autocompleted. Then execute this script, and
-you'll have `cat_nip = CatNip`, with the cursor positioned at the end. Then
-just press `(`, type in the arguments, and you're set.
+you'll have `cat_nip = CatNip()`, with the cursor positioned between the brackes.
 
 This saves a lot of typing, because normally you don't have autocompletion for
 the new instance name `cat_nip` because it doesn't exist yet.
+
+Note: The `()` part is added only on Windows.
 
 Suggested key combination: `Insert I`
 
