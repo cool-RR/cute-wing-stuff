@@ -14,6 +14,9 @@ import guiutils.widgets_gtk
 
 import shared
 
+
+_ignore_scripts = True
+
 # Must set `monkeypatch = True` in `cute_wing_stuff_local_settings.py` for this
 # module to work!
 
