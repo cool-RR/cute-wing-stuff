@@ -157,7 +157,7 @@ def select_prev_string(inner=False, editor=wingapi.kArgEditor,
     
 
 string_pattern = re.compile(
-    '''^[urUR]{0,2}(?P<delimiter>(\''')|(""")|(')|(")).*$''',
+    '''^(?P<prefix>[uUbB]?[rR]?)(?P<delimiter>(\''')|(""")|(')|(")).*$''',
     flags=re.DOTALL
 )
 
@@ -169,7 +169,8 @@ def _innerize_selected_string(editor):
     match = string_pattern.match(string)
     assert match
     delimiter = match.group('delimiter')
-    fixed_start = selection_start + len(delimiter)
+    prefix = match.group('prefix')
+    fixed_start = selection_start + len(delimiter) + len(prefix)
     fixed_end = selection_end - len(delimiter) if string.endswith(delimiter) \
                                                              else selection_end
     editor.SetSelection(fixed_start, fixed_end)                               

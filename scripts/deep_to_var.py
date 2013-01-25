@@ -55,9 +55,16 @@ django_orm_get_pattern = re.compile(
 #                                                                             #
 ### Finished defining `django_orm_get_pattern`. ###############################
 
+### Defining `re_match_group_pattern`: ########################################
+#                                                                             #
+re_match_group_pattern = re.compile(
+    r'''match\.group\(['"]([^'"]*?)['"]\)$'''
+)
+#                                                                             #
+### Finished defining `re_match_group_pattern`. ###############################
 
 patterns = [django_orm_get_pattern, getter_pattern, attribute_pattern,
-            getitem_pattern]
+            getitem_pattern, re_match_group_pattern]
 
 
 
