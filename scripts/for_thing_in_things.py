@@ -11,9 +11,16 @@ from __future__ import with_statement
 
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
 
+import re
+
 import wingapi
 
 import shared
+
+
+plural_pattern = re.compile('^(.*?s)$')
+django_model_pattern('^.*[ .]([A-Z].*?s)\.(filter|all|exclude)\(.*\)s$')
+
 
 
 def for_thing_in_things(editor=wingapi.kArgEditor):
@@ -34,9 +41,12 @@ def for_thing_in_things(editor=wingapi.kArgEditor):
     assert isinstance(document, wingapi.CAPIDocument)
     
     with shared.UndoableAction(document):
+        
         editor.ExecuteCommand('end-of-line')
-        start, end = shared.select_current_word(editor)
-        plural_word = document.GetCharRange(start, end)
+        end_position, _ = editor.GetSelection()
+        editor.ExecuteCommand('beginning-of-line-text')
+        start_position, _ = editor.GetSelection()
+        base_text = document.GetCharRange(start_position, end_position)
         if not plural_word.endswith('s'):
             return
         singular_word = shared.plural_word_to_singular_word(plural_word)
