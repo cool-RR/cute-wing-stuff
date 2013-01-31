@@ -1,5 +1,5 @@
-# Copyright 2009-2011 Ram Rachum.
-# This program is distributed under the LGPL2.1 license.
+# Copyright 2009-2012 Ram Rachum.
+# This program is distributed under the MIT license.
 
 '''
 This module defines the `push_line_to_end` script.
@@ -59,6 +59,8 @@ def push_line_to_end(editor=wingapi.kArgEditor, line_offset=0):
                                           second_long_condition(fubaz, bazbar):
                                           
     Also deletes trailing spaces.
+
+    Suggested key combination: `Alt-Insert End`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()

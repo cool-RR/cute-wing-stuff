@@ -1,5 +1,5 @@
-# Copyright 2009-2011 Ram Rachum.
-# This program is distributed under the LGPL2.1 license.
+# Copyright 2009-2012 Ram Rachum.
+# This program is distributed under the MIT license.
 
 '''
 This module defines the `arg_to_attr` script.
@@ -44,6 +44,8 @@ def arg_to_attr(editor=wingapi.kArgEditor):
     
     The final result is that you'll get a `self.crunchiness = crunchiness` line
     and have the cursor ready in the next line.
+    
+    Suggested key combination: `Alt-Insert A`    
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()

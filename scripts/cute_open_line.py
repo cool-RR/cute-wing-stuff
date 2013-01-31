@@ -1,5 +1,5 @@
-# Copyright 2009-2011 Ram Rachum.
-# This program is distributed under the LGPL2.1 license.
+# Copyright 2009-2012 Ram Rachum.
+# This program is distributed under the MIT license.
 
 '''
 This module defines the `cute_open_line` script.
@@ -29,6 +29,8 @@ def cute_open_line(editor=wingapi.kArgEditor):
     things like auto-indenting your code to the right level, opening your
     parentheses *just so* if you're doing function invocation, and a bunch of
     other goodies.
+
+    Suggested key combination: `Ctrl-Return`
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)

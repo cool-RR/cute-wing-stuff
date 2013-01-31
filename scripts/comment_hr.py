@@ -1,5 +1,5 @@
-# Copyright 2009-2011 Ram Rachum.
-# This program is distributed under the LGPL2.1 license.
+# Copyright 2009-2012 Ram Rachum.
+# This program is distributed under the MIT license.
 
 '''
 This module defines the `comment_hr` script.
@@ -26,6 +26,7 @@ def comment_hr(editor=wingapi.kArgEditor):
     
         #######################################################################
         
+    Suggested key combination: `Alt-Insert H`
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)

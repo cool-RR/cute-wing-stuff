@@ -1,5 +1,5 @@
-# Copyright 2009-2011 Ram Rachum.
-# This program is distributed under the LGPL2.1 license.
+# Copyright 2009-2012 Ram Rachum.
+# This program is distributed under the MIT license.
 
 '''
 This module defines the `backward_half_page` script.
@@ -22,6 +22,9 @@ def backward_half_page(editor=wingapi.kArgEditor):
     Move half a page up.
     
     This is essentially one half of Page-Up.
+    
+    Suggested key combination: `Alt-Page_up` (As long as you don't use Wing's
+    folding.)
     '''
     shared._move_half_page(-1, editor=editor)
     

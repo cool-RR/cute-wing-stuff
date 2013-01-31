@@ -1,5 +1,5 @@
-# Copyright 2009-2011 Ram Rachum.
-# This program is distributed under the LGPL2.1 license.
+# Copyright 2009-2012 Ram Rachum.
+# This program is distributed under the MIT license.
 
 '''
 This module defines the `cute_goto_line` script.
@@ -31,6 +31,8 @@ def cute_goto_line(editor=wingapi.kArgEditor):
     
     Also, the caret will go to the beginning of the text on the line instead of
     Wing's default of going to column 0.
+
+    Suggested key combination: `Ctrl-L`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
 

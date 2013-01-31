@@ -1,5 +1,5 @@
-# Copyright 2009-2011 Ram Rachum.
-# This program is distributed under the LGPL2.1 license.
+# Copyright 2009-2012 Ram Rachum.
+# This program is distributed under the MIT license.
 
 '''
 This module defines the `start_debug_with_preset_args` script.
@@ -40,6 +40,10 @@ def start_debug_with_preset_args(i_preset=0,
     Then you call this `start-debug-with-preset-args` with the `i_preset`
     argument equal to the preset index number, and debug will start with those
     arguments.
+
+    Suggested key combinations: `Alt-Insert F5` for preset 0, `Alt-Insert
+    Shift-F5` for preset 1, `Alt-Insert Ctrl-F5` for preset 2, `Alt-Insert
+    Ctrl-Shift-F5` for preset 3
     '''
     assert isinstance(project, wingapi.CAPIProject)
     
