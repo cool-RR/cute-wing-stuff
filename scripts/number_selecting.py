@@ -1,5 +1,5 @@
-# This program is distributed under the MIT license.
 # Copyright 2009-2012 Ram Rachum.
+# This program is distributed under the MIT license.
 
 '''
 This module defines number-selecting scripts.
