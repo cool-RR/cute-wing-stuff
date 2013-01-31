@@ -1,5 +1,5 @@
+# Copyright 2009-2013 Ram Rachum.
 # This program is distributed under the MIT license.
-# Copyright 2009-2012 Ram Rachum.
 
 '''
 This module defines string-selecting scripts.

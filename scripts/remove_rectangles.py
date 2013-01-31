@@ -1,4 +1,4 @@
-# Copyright 2009-2012 Ram Rachum.
+# Copyright 2009-2013 Ram Rachum.
 # This program is distributed under the MIT license.
 
 from __future__ import with_statement
