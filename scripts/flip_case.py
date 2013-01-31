@@ -24,7 +24,7 @@ def flip_case(editor=wingapi.kArgEditor):
     this script, you'll get `SomethingLikeThis`. Do it again and you'll get
     `something_like_this` again.
 
-    Suggested key combination: `Alt-Insert C`
+    Suggested key combination: `Insert C`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()

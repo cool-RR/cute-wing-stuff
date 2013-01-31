@@ -18,12 +18,14 @@ import shared
 
 def for_thing_in_things(editor=wingapi.kArgEditor):
     '''
-    Turn `things` into `for thing in things`.
-
+    Turn `things` into `for thing in things:`.
+    
     Type any pluarl word, like `bananas` or `directories`. Then run this
     script, and you get `for directory in directories`.
     
-    Suggested key combination: `Alt-Insert Ctrl-F`
+    Note: The `:` part is added only on Windows.
+    
+    Suggested key combination: `Insert Ctrl-F`
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)
@@ -45,4 +47,6 @@ def for_thing_in_things(editor=wingapi.kArgEditor):
         document.InsertChars(current_position, segment_to_insert)
         editor.ExecuteCommand('end-of-line')
         
-        
+        if shared.autopy_available:
+            import autopy.key
+            autopy.key.tap(':')        

@@ -24,7 +24,7 @@ getitem_pattern = re.compile(r'''\[['"]([a-zA-Z_][0-9a-zA-Z_]*)['"]\]$''')
 ### Defining `getter_pattern`: ################################################
 #                                                                             #
 getter_verbs = ('get', 'calculate', 'identify', 'fetch', 'make', 'create',
-                'grant', 'open')
+                'grant', 'open', 'determine', 'download', 'obtain', 'fetch')
 
 getter_verb = '(?:%s)' % (
     '|'.join(
@@ -55,9 +55,16 @@ django_orm_get_pattern = re.compile(
 #                                                                             #
 ### Finished defining `django_orm_get_pattern`. ###############################
 
+### Defining `re_match_group_pattern`: ########################################
+#                                                                             #
+re_match_group_pattern = re.compile(
+    r'''match\.group\(['"]([^'"]*?)['"]\)$'''
+)
+#                                                                             #
+### Finished defining `re_match_group_pattern`. ###############################
 
 patterns = [django_orm_get_pattern, getter_pattern, attribute_pattern,
-            getitem_pattern]
+            getitem_pattern, re_match_group_pattern]
 
 
 
@@ -93,7 +100,7 @@ def deep_to_var(editor=wingapi.kArgEditor):
     invoke this `deep-to-var` script, and you'll get the full line and have the
     caret put on the next line.
 
-    Suggested key combination: `Alt-Insert E`
+    Suggested key combination: `Insert E`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()

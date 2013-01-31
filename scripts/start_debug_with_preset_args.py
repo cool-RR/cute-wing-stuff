@@ -41,8 +41,8 @@ def start_debug_with_preset_args(i_preset=0,
     argument equal to the preset index number, and debug will start with those
     arguments.
 
-    Suggested key combinations: `Alt-Insert F5` for preset 0, `Alt-Insert
-    Shift-F5` for preset 1, `Alt-Insert Ctrl-F5` for preset 2, `Alt-Insert
+    Suggested key combinations: `Insert F5` for preset 0, `Insert
+    Shift-F5` for preset 1, `Insert Ctrl-F5` for preset 2, `Insert
     Ctrl-Shift-F5` for preset 3
     '''
     assert isinstance(project, wingapi.CAPIProject)

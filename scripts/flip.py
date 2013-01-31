@@ -29,6 +29,7 @@ flip_pairs = (
     ('new', 'old'), 
     ('maximum', 'minimum'), 
     ('max', 'min'), 
+    ('next', 'previous'), 
     ('width', 'height'),
     ('column', 'row'), 
     ('horizontal', 'vertical'), 
@@ -66,7 +67,7 @@ def flip(editor=wingapi.kArgEditor):
     Put the caret on a word like `True` or `start` or `new` and watch it change
     into `False` or `end` or `old`.
     
-    Suggested key combination: `Alt-Insert P`
+    Suggested key combination: `Insert P`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()

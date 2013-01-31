@@ -8,8 +8,14 @@ from  __future__ import with_statement
 import collections
 import re
 
+try:
+    import autopy.key
+except ImportError:
+    autopy_available = False
+else:
+    autopy_available = True
+    
 import wingapi
-
 
 _ignore_scripts = True
 
@@ -66,6 +72,22 @@ class SelectionRestorer(object):
             start = self.start
             end = self.end
         self.editor.SetSelection(start, end)
+
+
+class ClipboardRestorer(object):
+    
+    def __init__(self, app):
+        assert isinstance(app, wingapi.CAPIApplication)
+        self.app = app
+        self.clipboard_data = None
+        
+    def __enter__(self):
+        self.clipboard_data = self.app.GetClipboard()
+
+                
+    def __exit__(self, *args, **kwargs):
+        self.app.SetClipboard(self.clipboard_data)
+
 
 
 def scroll_to_line(editor, line_number):
@@ -196,7 +218,7 @@ def get_indent_size_in_pos(editor, pos):
     # todo: figure out something like `indent-to-match` except it looks at the
     # lines *below* the current one.
     
-    # blocktodo: I think that 'indent-to-match' actually modifies the document,
+    # blocktodo: I think that `indent-to-match` actually modifies the document,
     # adding or removing spaces! This is bad, should find substitute that
     # doesn't modify the document.
     
@@ -343,5 +365,4 @@ def plural_word_to_singular_word(plural_word):
     else:
         assert plural_word.endswith('s')
         return plural_word[:-1]
-    
     
