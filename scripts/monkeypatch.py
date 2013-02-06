@@ -71,3 +71,10 @@ if monkeypatch:
     
     old_ExpandFileFragment = guiutils.widgets_gtk.ExpandFileFragment
     guiutils.widgets_gtk.ExpandFileFragment = ExpandFileFragment
+    
+    ###########################################################################
+    
+    def print_shit(*args, **kwargs):
+        print('shit %s' %  (args, kwargs))
+    
+    wingapi.gApplication.connect('text-modified', print_shit)
