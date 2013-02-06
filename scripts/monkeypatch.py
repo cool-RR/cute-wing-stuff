@@ -11,6 +11,7 @@ import inspect
 
 import wingapi
 import guiutils.widgets_gtk
+import cache.textcache
 
 import shared
 
@@ -76,5 +77,9 @@ if monkeypatch:
     
     def print_shit(*args, **kwargs):
         print('shit %s' %  (args, kwargs))
+        sys.stdout.flush()
+        1 / 0
     
-    wingapi.gApplication.connect('text-modified', print_shit)
+    cache.textcache.CTextCache.class_connect('text-modified', print_shit)
+    wingapi._CAPIBase.class_connect('text-modified', print_shit)
+    wingapi.CAPIEditor.class_connect('text-modified', print_shit)
