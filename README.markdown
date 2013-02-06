@@ -256,6 +256,8 @@ Turn `things` into `for thing in things:`.
 Type any pluarl word, like `bananas` or `directories`. Then run this
 script, and you get `for directory in directories`.
 
+This also works for making `range(number)` into `for i in range(number):`.
+
 Note: The `:` part is added only on Windows.
 
 Suggested key combination: `Insert Ctrl-F`

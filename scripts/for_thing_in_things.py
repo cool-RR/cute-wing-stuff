@@ -9,11 +9,16 @@ See its documentation for more information.
 
 from __future__ import with_statement
 
+import re
+
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
 
 import wingapi
 
 import shared
+
+
+range_pattern = re.compile('^range\(.*\)$')
 
 
 def for_thing_in_things(editor=wingapi.kArgEditor):
@@ -22,6 +27,8 @@ def for_thing_in_things(editor=wingapi.kArgEditor):
     
     Type any pluarl word, like `bananas` or `directories`. Then run this
     script, and you get `for directory in directories`.
+    
+    This also works for making `range(number)` into `for i in range(number):`.
     
     Note: The `:` part is added only on Windows.
     
@@ -35,16 +42,23 @@ def for_thing_in_things(editor=wingapi.kArgEditor):
     
     with shared.UndoableAction(document):
         editor.ExecuteCommand('end-of-line')
-        start, end = shared.select_current_word(editor)
-        plural_word = document.GetCharRange(start, end)
-        if not plural_word.endswith('s'):
-            return
-        singular_word = shared.plural_word_to_singular_word(plural_word)
-        
-        segment_to_insert = 'for %s in ' % singular_word
+        end_position, _ = editor.GetSelection()
         editor.ExecuteCommand('beginning-of-line-text')
-        current_position, _ = editor.GetSelection()
-        document.InsertChars(current_position, segment_to_insert)
+        start_position, _ = editor.GetSelection()
+
+        base_text = document.GetCharRange(start_position, end_position)
+        
+        ### Analyzing base text: ##############################################
+        #                                                                     #
+        if range_pattern.match(base_text):
+            variable_name = 'i'
+        elif base_text.endswith('s'):
+            variable_name = shared.plural_word_to_singular_word(base_text)
+        #                                                                     #
+        ### Finished analyzing base text. #####################################
+        
+        segment_to_insert = 'for %s in ' % variable_name
+        document.InsertChars(start_position, segment_to_insert)
         editor.ExecuteCommand('end-of-line')
         
         if shared.autopy_available:
