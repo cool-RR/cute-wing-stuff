@@ -81,12 +81,8 @@ if monkeypatch:
         
         def analyze_text_modified(*args):
             flag, text = args[3:5]
-            print('first')
-            #autopy.key.tap('x')
             if flag == 2 and text[-1] in string_module.whitespace:
-                print('second')
-                autopy.key.tap(135)
-                #autopy.key.tap('x')
+                shared.clip_ahk()
                 
         cache.textcache.CTextCache.class_connect('text-modified',
                                                  analyze_text_modified)

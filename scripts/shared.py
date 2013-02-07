@@ -366,3 +366,11 @@ def plural_word_to_singular_word(plural_word):
         assert plural_word.endswith('s')
         return plural_word[:-1]
     
+
+def clip_ahk():
+    '''
+    Cause AHK to think that a new word is being typed, for its auto-completion.
+    '''
+    assert autopy_available
+    autopy.key.tap(135) # F24 for making AHK think it's a new word
+    
