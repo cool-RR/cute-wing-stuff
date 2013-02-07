@@ -6,6 +6,7 @@ from __future__ import with_statement
 
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
 
+import string as string_module
 import sys
 import inspect
 
@@ -74,12 +75,19 @@ if monkeypatch:
     guiutils.widgets_gtk.ExpandFileFragment = ExpandFileFragment
     
     ###########################################################################
+
+    if shared.autopy_available:
+        import autopy.key
+        
+        def analyze_text_modified(*args):
+            flag, text = args[3:5]
+            print('first')
+            #autopy.key.tap('x')
+            if flag == 2 and text[-1] in string_module.whitespace:
+                print('second')
+                autopy.key.tap(135)
+                autopy.key.tap('x')
+                
+        cache.textcache.CTextCache.class_connect('text-modified',
+                                                 analyze_text_modified)
     
-    def print_shit(*args, **kwargs):
-        print('shit %s' %  (args, kwargs))
-        sys.stdout.flush()
-        1 / 0
-    
-    cache.textcache.CTextCache.class_connect('text-modified', print_shit)
-    wingapi._CAPIBase.class_connect('text-modified', print_shit)
-    wingapi.CAPIEditor.class_connect('text-modified', print_shit)
