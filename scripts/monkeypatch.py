@@ -86,7 +86,7 @@ if monkeypatch:
             if flag == 2 and text[-1] in string_module.whitespace:
                 print('second')
                 autopy.key.tap(135)
-                autopy.key.tap('x')
+                #autopy.key.tap('x')
                 
         cache.textcache.CTextCache.class_connect('text-modified',
                                                  analyze_text_modified)
