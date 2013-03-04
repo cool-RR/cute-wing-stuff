@@ -24,7 +24,7 @@ getitem_pattern = re.compile(r'''\[['"]([a-zA-Z_][0-9a-zA-Z_]*)['"]\]$''')
 ### Defining `getter_pattern`: ################################################
 #                                                                             #
 getter_verbs = ('get', 'calculate', 'identify', 'fetch', 'make', 'create',
-                'grant', 'open', 'determine', 'download', 'obtain', 'fetch')
+                'grant', 'open', 'determine', 'download', 'obtain')
 
 getter_verb = '(?:%s)' % (
     '|'.join(
