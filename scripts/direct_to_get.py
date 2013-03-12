@@ -36,10 +36,13 @@ def dict_direct_to_get(editor=wingapi.kArgEditor):
     
     _, current_position = editor.GetSelection()
     current_line_number = document.GetLineNumberFromPosition(current_position)
+    
     line_start = document.GetLineStart(current_line_number)
     line_end = document.GetLineEnd(current_line_number)
+    
     line_head = document.GetCharRange(line_start, current_position)
     line_tail = document.GetCharRange(current_position, line_end)
+    line_text = line_head + line_tail
     
     if ']' not in line_tail:
         print('''']' not in line_tail''')
@@ -59,8 +62,14 @@ def dict_direct_to_get(editor=wingapi.kArgEditor):
         print('{{{%s}}}' % text_until_closing_bracket)
         return
     else: # we have a match
-        print(match.group('key'))
-        print(match.group('square_brackets'))
+        new_line_text = line_text.replace(
+            match.group('square_brackets'), '.get(%s, None)' %
+                                                             match.group('key')
+        )
+        
+        with shared.UndoableAction(document):
+            document.DeleteChars(line_start, line_end)
+            document.InsertChars(line_start, new_line_text)
     
     #with shared.UndoableAction(document):
         #start, end = shared.select_current_word(editor)    
