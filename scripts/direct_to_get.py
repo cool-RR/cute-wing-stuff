@@ -40,8 +40,10 @@ def dict_direct_to_get(editor=wingapi.kArgEditor):
     line_start = document.GetLineStart(current_line_number)
     line_end = document.GetLineEnd(current_line_number)
     
-    line_head = document.GetCharRange(line_start, current_position)
-    line_tail = document.GetCharRange(current_position, line_end)
+    fixed_position = min(current_position - 1, line_start)
+    
+    line_head = document.GetCharRange(line_start, fixed_position)
+    line_tail = document.GetCharRange(fixed_position, line_end)
     line_text = line_head + line_tail
     
     if ']' not in line_tail:
@@ -62,14 +64,21 @@ def dict_direct_to_get(editor=wingapi.kArgEditor):
         print('{{{%s}}}' % text_until_closing_bracket)
         return
     else: # we have a match
+        square_brackets_position = \
+            line_text.find(match.group('square_brackets'))
+        text_to_insert = '.get(%s, None)' % match.group('key')
         new_line_text = line_text.replace(
-            match.group('square_brackets'), '.get(%s, None)' %
-                                                             match.group('key')
+            match.group('square_brackets'), text_to_insert
         )
+        none_start = line_start + square_brackets_position + \
+                                                        len(text_to_insert) - 5
+        none_end = line_start + square_brackets_position + \
+                                                        len(text_to_insert) - 1
         
         with shared.UndoableAction(document):
             document.DeleteChars(line_start, line_end)
             document.InsertChars(line_start, new_line_text)
+            editor.SetSelection(none_start, none_end)
     
     #with shared.UndoableAction(document):
         #start, end = shared.select_current_word(editor)    
