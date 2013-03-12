@@ -40,7 +40,7 @@ def dict_direct_to_get(editor=wingapi.kArgEditor):
     line_start = document.GetLineStart(current_line_number)
     line_end = document.GetLineEnd(current_line_number)
     
-    fixed_position = min(current_position - 1, line_start)
+    fixed_position = max(current_position - 1, line_start)
     
     line_head = document.GetCharRange(line_start, fixed_position)
     line_tail = document.GetCharRange(fixed_position, line_end)
