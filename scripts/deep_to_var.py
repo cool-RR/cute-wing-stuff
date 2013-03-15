@@ -63,8 +63,15 @@ re_match_group_pattern = re.compile(
 #                                                                             #
 ### Finished defining `re_match_group_pattern`. ###############################
 
+### Defining datetime module patterns: ########################################
+#                                                                             #
+now_pattern = re.compile(r'''datetime(?:_module)?\.datetime\.(now)\(\)$''')
+today_pattern = re.compile(r'''datetime(?:_module)?\.date\.(today)\(\)$''')
+#                                                                             #
+### Finished defining datetime module patterns. ###############################
+
 patterns = [django_orm_get_pattern, getter_pattern, attribute_pattern,
-            getitem_pattern, re_match_group_pattern]
+            getitem_pattern, re_match_group_pattern, now_pattern, today_pattern]
 
 
 
