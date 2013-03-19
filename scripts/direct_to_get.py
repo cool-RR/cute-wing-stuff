@@ -2,7 +2,7 @@
 # This program is distributed under the MIT license.
 
 '''
-This module defines the `direct_to_get` script.
+This module defines the `dict_direct_to_get` script.
 
 See its documentation for more information.
 '''
