@@ -90,23 +90,29 @@ if monkeypatch:
 
         #######################################################################
         
-        import command
+        #import command
+        import singleton
         
         commands_to_clip_after = set(
             ['introduce-variable']
         )
         
-        old_execute = command.commandmgr.CCommandManager.Execute
-        def Execute(self, _cmd, **args):
-            print('Meow')
-            return_value = old_execute(self, _cmd, **args)
-            if _cmd in commands_to_clip_after:
-                shared.clip_ahk()
-                print('%s clipped' % _cmd)
-            else:
-                print('%s not clipped' % _cmd)
+        #old_execute = command.commandmgr.CCommandManager.Execute
+        #def Execute(self, _cmd, **args):
+            #print('Meow')
+            #return_value = old_execute(self, _cmd, **args)
+            #if _cmd in commands_to_clip_after:
+                #shared.clip_ahk()
+                #print('%s clipped' % _cmd)
+            #else:
+                #print('%s not clipped' % _cmd)
                 
-        command.commandmgr.CCommandManager.Execute = Execute
+        def cmd_executed(*args, **kwargs):
+            print('Hello')
+                
+        #command.commandmgr.CCommandManager.Execute = Execute
+        singleton.GetSingletons().fCmdMgr.connect('cmd-executed',
+                                                  cmd_executed)
             
             
             
