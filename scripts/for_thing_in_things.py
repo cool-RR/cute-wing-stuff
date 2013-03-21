@@ -33,7 +33,7 @@ def for_thing_in_things(editor=wingapi.kArgEditor, comprehension=False):
     Note: The `:` part is added only on Windows.
     
     If `comprehension=True`, inputs `for thing in things` without the colon and
-    puts focus before instead of after.
+    puts the caret before instead of after.
     
     Suggested key combination: `Insert Ctrl-F`
                                `Insert Shift-F` for `comprehension=True`
@@ -46,15 +46,19 @@ def for_thing_in_things(editor=wingapi.kArgEditor, comprehension=False):
     with shared.UndoableAction(document):
         editor.ExecuteCommand('end-of-line')
         end_position, _ = editor.GetSelection()
+        line_number = document.GetLineNumberFromPosition(end_position)
+        line_start = document.GetLineStart(line_number)
+        line_end = document.GetLineEnd(line_number)
+        line_contents = document.GetCharRange(line_start, line_end)
         editor.SetSelection(end_position, end_position)
-        if ')' in document.GetCharRange(end_position - 1, end_position + 1):
-            wingapi.gApplication.ExecuteCommand('brace-match')
-            print(editor.GetSelection())
-        
-        editor.SetSelection(end_position, end_position)
+        if ')' in document.GetCharRange(end_position - 1, end_position + 1) \
+                                                 and 'range(' in line_contents:
             
-        wingapi.gApplication.ExecuteCommand('backward-word')
-        start_position, _ = editor.GetSelection()
+            start_position = document.GetText().find('range(', line_start)
+        else:
+            wingapi.gApplication.ExecuteCommand('backward-word')
+            start_position, _ = editor.GetSelection()
+            
 
         print(start_position, end_position)
         base_text = document.GetCharRange(start_position, end_position)
