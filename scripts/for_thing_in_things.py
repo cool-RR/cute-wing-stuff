@@ -47,13 +47,16 @@ def for_thing_in_things(editor=wingapi.kArgEditor, comprehension=False):
         editor.ExecuteCommand('end-of-line')
         end_position, _ = editor.GetSelection()
         editor.SetSelection(end_position, end_position)
-        if document.GetCharRange(end_position - 1, end_position) == ')':
-            editor.SetSelection(end_position, end_position)
-        else:
+        if ')' in document.GetCharRange(end_position - 1, end_position + 1):
+            wingapi.gApplication.ExecuteCommand('brace-match')
+            print(editor.GetSelection())
+        
+        editor.SetSelection(end_position, end_position)
             
         wingapi.gApplication.ExecuteCommand('backward-word')
         start_position, _ = editor.GetSelection()
 
+        print(start_position, end_position)
         base_text = document.GetCharRange(start_position, end_position)
         print(base_text)
         ### Analyzing base text: ##############################################
