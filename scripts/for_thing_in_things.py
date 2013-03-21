@@ -46,7 +46,12 @@ def for_thing_in_things(editor=wingapi.kArgEditor, comprehension=False):
     with shared.UndoableAction(document):
         editor.ExecuteCommand('end-of-line')
         end_position, _ = editor.GetSelection()
-        wingapi.gApplication.ExecuteCommand('select-whitespaceless-name')
+        editor.SetSelection(end_position, end_position)
+        if document.GetCharRange(end_position - 1, end_position) == ')':
+            editor.SetSelection(end_position, end_position)
+        else:
+            
+        wingapi.gApplication.ExecuteCommand('backward-word')
         start_position, _ = editor.GetSelection()
 
         base_text = document.GetCharRange(start_position, end_position)
