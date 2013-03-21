@@ -21,7 +21,7 @@ import shared
 range_pattern = re.compile('^range\(.*\)$')
 
 
-def for_thing_in_things(editor=wingapi.kArgEditor):
+def for_thing_in_things(editor=wingapi.kArgEditor, comprehension=False):
     '''
     Turn `things` into `for thing in things:`.
     
@@ -32,9 +32,12 @@ def for_thing_in_things(editor=wingapi.kArgEditor):
     
     Note: The `:` part is added only on Windows.
     
-    Suggested key combination: `Insert Ctrl-F`
-    '''
+    If `comprehension=True`, inputs `for thing in things` without the colon and
+    puts focus before instead of after.
     
+    Suggested key combination: `Insert Ctrl-F`
+                               `Insert Shift-F` for `comprehension=True`
+    '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     
@@ -43,11 +46,11 @@ def for_thing_in_things(editor=wingapi.kArgEditor):
     with shared.UndoableAction(document):
         editor.ExecuteCommand('end-of-line')
         end_position, _ = editor.GetSelection()
-        editor.ExecuteCommand('beginning-of-line-text')
+        wingapi.gApplication.ExecuteCommand('select-whitespaceless-name')
         start_position, _ = editor.GetSelection()
 
         base_text = document.GetCharRange(start_position, end_position)
-        
+        print(base_text)
         ### Analyzing base text: ##############################################
         #                                                                     #
         if range_pattern.match(base_text):
@@ -58,9 +61,15 @@ def for_thing_in_things(editor=wingapi.kArgEditor):
         ### Finished analyzing base text. #####################################
         
         segment_to_insert = 'for %s in ' % variable_name
+        if comprehension:
+            segment_to_insert = ' %s' % segment_to_insert
         document.InsertChars(start_position, segment_to_insert)
-        editor.ExecuteCommand('end-of-line')
         
-        if shared.autopy_available:
-            import autopy.key
-            autopy.key.tap(':')        
+        if comprehension:
+            editor.SetSelection(start_position, start_position)
+        else:
+            editor.ExecuteCommand('end-of-line')
+        
+            if shared.autopy_available:
+                import autopy.key
+                autopy.key.tap(':')        
