@@ -40,11 +40,11 @@ def for_thing_in_things(editor=wingapi.kArgEditor, comprehension=False):
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
+    document_text = document.GetText()
     
     assert isinstance(document, wingapi.CAPIDocument)
     
     with shared.UndoableAction(document):
-        editor.ExecuteCommand('end-of-line')
         end_position, _ = editor.GetSelection()
         line_number = document.GetLineNumberFromPosition(end_position)
         line_start = document.GetLineStart(line_number)
@@ -54,7 +54,12 @@ def for_thing_in_things(editor=wingapi.kArgEditor, comprehension=False):
         if ')' in document.GetCharRange(end_position - 1, end_position + 1) \
                                                  and 'range(' in line_contents:
             
-            start_position = document.GetText().find('range(', line_start)
+            start_position = document_text.find('range(', line_start)
+            end_position = document_text.find(
+                ')',
+                start_position,
+                min((line_end, end_position + 1))
+            ) + 1
         else:
             wingapi.gApplication.ExecuteCommand('backward-word')
             start_position, _ = editor.GetSelection()
