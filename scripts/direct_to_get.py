@@ -26,7 +26,7 @@ pattern = re.compile(
 
 def dict_direct_to_get(editor=wingapi.kArgEditor):
     '''
-    EXPERIMENTAL Turn `foo[bar]` into `foo.get(bar, None)`.
+    Turn `foo[bar]` into `foo.get(bar, None)`.
     
     Suggested key combination: Insert Ctrl-G
     '''

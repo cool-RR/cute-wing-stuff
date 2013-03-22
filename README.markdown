@@ -231,6 +231,13 @@ on the next line.
 Suggested key combination: `Ctrl-Shift-C`
 
 
+## dict-direct-to-get ##
+
+Turn `foo[bar]` into `foo.get(bar, None)`.
+
+Suggested key combination: Insert Ctrl-G
+
+
 ## flip ##
 
 Flip between `True` and `False`.
