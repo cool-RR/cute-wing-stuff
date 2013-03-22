@@ -24,7 +24,7 @@ number_pattern = re.compile(r'''([0-9]+(\.[0-9]+)?)|(\.[0-9]+)''')
 
 
 def get_all_number_positions(editor):
-    text = editor.GetDocument().GetText()
+    text = shared.get_text(editor.GetDocument())
     matches = tuple(number_pattern.finditer(text))
     return tuple((match.start(), match.end()) for match in matches)
 

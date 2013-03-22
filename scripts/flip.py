@@ -75,7 +75,7 @@ def flip(editor=wingapi.kArgEditor):
     
     with shared.UndoableAction(document):
         word, word_start_position = _is_any_word_on_caret(
-            document.GetText(), 
+            shared.get_text(document), 
             editor.GetSelection()[0], 
             all_words
         )

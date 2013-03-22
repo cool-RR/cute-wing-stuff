@@ -374,3 +374,9 @@ def clip_ahk():
     assert autopy_available
     autopy.key.tap(135) # F24 for making AHK think it's a new word
     
+    
+def get_text(document):
+    # Getting the text using `GetCharRange` instead of `GetText` because
+    # `GetText` returns unicode.
+    assert isinstance(document, wingapi.CAPIDocument)
+    return document.GetCharRange(0, document.GetLength())

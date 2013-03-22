@@ -52,7 +52,7 @@ def previous_brace_match(editor=wingapi.kArgEditor):
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
-    document_text = document.GetText()
+    document_text = shared.get_text(document)
     _, caret_position = editor.GetSelection()
     closing_brace_position = max((
         document_text.rfind(')', 0, caret_position - 1), 

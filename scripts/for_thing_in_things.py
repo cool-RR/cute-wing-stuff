@@ -41,9 +41,7 @@ def for_thing_in_things(editor=wingapi.kArgEditor, comprehension=False):
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     
-    # Getting the text using `GetCharRange` instead of `GetText` because
-    # `GetText` returns unicode.
-    document_text = document.GetCharRange(0, document.GetLength())
+    document_text = shared.get_text(document)
     
     assert isinstance(document, wingapi.CAPIDocument)
     
