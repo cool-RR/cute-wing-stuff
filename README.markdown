@@ -235,7 +235,7 @@ Suggested key combination: `Ctrl-Shift-C`
 
 Turn `foo[bar]` into `foo.get(bar, None)`.
 
-Suggested key combination: Insert Ctrl-G
+Suggested key combination: `Insert Ctrl-G`
 
 
 ## flip ##

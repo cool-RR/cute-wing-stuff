@@ -28,7 +28,7 @@ def dict_direct_to_get(editor=wingapi.kArgEditor):
     '''
     Turn `foo[bar]` into `foo.get(bar, None)`.
     
-    Suggested key combination: Insert Ctrl-G
+    Suggested key combination: `Insert Ctrl-G`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
