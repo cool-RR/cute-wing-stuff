@@ -18,6 +18,11 @@ import shared
 
 def cute_start_select_line(editor=wingapi.kArgEditor):
     '''
+    Start selecting by visual lines instead of by character.
+    
+    What this adds over `start-select-line` is that it takes the current
+    selection when this command is invoked and expands it to cover all of its
+    lines as the initial selection.
 
     Suggested key combination: `Ctrl-F8`
     '''
@@ -35,18 +40,8 @@ def cute_start_select_line(editor=wingapi.kArgEditor):
     
 
 
-def _available(editor=wingapi.kArgEditor):
-    assert isinstance(editor, wingapi.CAPIEditor)
-    processed = editor.fEditor.GetCommandMap()._GetCommand('start_select_line')
-    x = editor.CommandAvailable('start-select-line')
-    with open(r'G:\Dropbox\Desktop\file.txt', mode='a') as log_file:
-        log_file.write(str((x, processed, editor)))
-    return True
-    return x
-
-#cute_start_select_line.available = (
-    #_a
-    ##lambda application:
-                     ##wingapi.gApplication.CommandAvailable('start-select-line')
-#)
+cute_start_select_line.available = (
+    lambda editor=wingapi.kArgEditor:
+                     wingapi.gApplication.CommandAvailable('start_select_line')
+)
 

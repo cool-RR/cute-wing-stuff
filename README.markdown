@@ -184,6 +184,17 @@ Implemented on Windows only.
 Suggested key combination: `Alt-Period`
 
 
+## cute-start-select-line ##
+
+Start selecting by visual lines instead of by character.
+
+What this adds over `start-select-line` is that it takes the current
+selection when this command is invoked and expands it to cover all of its
+lines as the initial selection.
+
+Suggested key combination: `Ctrl-F8`
+
+
 ## deep-to-var ##
     
 Create a variable from a deep expression.
