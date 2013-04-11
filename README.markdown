@@ -157,7 +157,8 @@ doesn't just insert a newline character like `open-line` does; it runs Wing's
 your code to the right level, opening your parentheses *just so* if you're
 doing function invocation, and a bunch of other goodies.
 
-Suggested key combination: `Ctrl-Return`
+Suggested key combination: `Alt-Return`
+(The `Alt-Return` combination requires a AHK shim, at least on Windows.)
 
 
 ## cute-query-replace ##
