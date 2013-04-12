@@ -19,7 +19,7 @@ import wingapi
 import shared
 
 
-SAFETY_LIMIT = 40
+SAFETY_LIMIT = 60
 '''The maximum number of times we'll do `select-more` before giving up.'''
 
 def _ast_parse(string):
@@ -66,8 +66,8 @@ def _is_whitespaceless_name(string):
                 in whitespace_characters))
     
 
-def _select_more_until(condition, editor=wingapi.kArgEditor):
-    '''`select-more` until the selected text satisfies `condition`.'''
+def _select_more_until_biggest_match(condition, editor=wingapi.kArgEditor):
+    '''`select-more` until reaching biggest text that satisfies `condition`.'''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     select_more = lambda: wingapi.gApplication.ExecuteCommand('select-more')
@@ -75,10 +75,10 @@ def _select_more_until(condition, editor=wingapi.kArgEditor):
         document.GetCharRange(*editor.GetSelection()).strip()
     )
 
-    last_expression_start = None
-    last_expression_end = None
+    last_success_n_iterations = None
     
-    last_start, last_end = editor.GetSelection()
+    last_start, last_end = original_selection = editor.GetSelection()
+    
     with shared.ScrollRestorer(editor):
         with shared.SelectionRestorer(editor):
             for i in range(SAFETY_LIMIT):
@@ -87,15 +87,12 @@ def _select_more_until(condition, editor=wingapi.kArgEditor):
                 if (current_start == last_start) and (current_end == last_end):
                     break
                 if is_selection_good():
-                    last_expression_start, last_expression_end = \
-                                                     current_start, current_end
+                    last_success_n_iterations = i
                 last_start, last_end = current_start, current_end
-    
-        assert (last_expression_start is None) == \
-                                                (last_expression_start is None)
-        if last_expression_start is not None:
-            editor.SetSelection(last_expression_start, last_expression_end)
-            shared.strip_selection_if_single_line(editor)
+                
+        if last_success_n_iterations is not None:
+            for i in range(last_success_n_iterations+1):
+                select_more()
             
             
 def select_expression(editor=wingapi.kArgEditor):
@@ -107,7 +104,7 @@ def select_expression(editor=wingapi.kArgEditor):
 
     Suggested key combination: `Ctrl-Alt-Plus`
     '''
-    _select_more_until(_is_expression, editor)
+    _select_more_until_biggest_match(_is_expression, editor)
             
     
 def select_dotted_name(editor=wingapi.kArgEditor):
@@ -118,7 +115,7 @@ def select_dotted_name(editor=wingapi.kArgEditor):
     
     Suggested key combination: `Alt-Plus`
     '''
-    _select_more_until(_is_dotted_name, editor)
+    _select_more_until_biggest_match(_is_dotted_name, editor)
     
     
 def select_whitespaceless_name(editor=wingapi.kArgEditor):
@@ -132,7 +129,7 @@ def select_whitespaceless_name(editor=wingapi.kArgEditor):
     
     Suggested key combination: `Ctrl-Alt-Equal`
     '''
-    _select_more_until(_is_whitespaceless_name, editor)
+    _select_more_until_biggest_match(_is_whitespaceless_name, editor)
     
 
 _scope_name_regex = re.compile(
