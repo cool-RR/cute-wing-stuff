@@ -449,6 +449,13 @@ Suggested key combinations: `Ctrl-Quotedbl`
                             `Alt-Quotedbl` for `inner=True`
 
 
+# select-scope-name #
+
+Select the name of the function or class that the cursor is currently on.
+
+Suggested key combination: `Alt-Colon`
+
+
 ## select-whitespaceless-name ##
 
 Select the whitespace-less name that the cursor is currently on.

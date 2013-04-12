@@ -134,4 +134,39 @@ def select_whitespaceless_name(editor=wingapi.kArgEditor):
     '''
     _select_more_until(_is_whitespaceless_name, editor)
     
+
+_scope_name_regex = re.compile(
+    r'''^(.*?(?:def )|(?:class ))([a-zA-Z_][0-9a-zA-Z_]*)''',
+    flags=re.DOTALL
+)
+
+def select_scope_name(editor=wingapi.kArgEditor):
+    '''
+    Select the name of the function or class that the cursor is currently on.
+    
+    Suggested key combination: `Alt-Colon`
+    '''
+    assert isinstance(editor, wingapi.CAPIEditor)
+    document = editor.GetDocument()
+    document_text = shared.get_text(document)
+    with shared.SelectionRestorer(editor):    
+        editor.ExecuteCommand('select-scope')
+        scope_start, scope_end = editor.GetSelection()
+        
+    scope_contents = document_text[scope_start : scope_end]
+    match = _scope_name_regex.match(scope_contents)
+    if not match:
+        return
+    stuff_before_scope_name, scope_name = match.groups()
+    scope_name_start = scope_start + len(stuff_before_scope_name)
+    scope_name_end = scope_name_start + len(scope_name)
+    assert document_text[scope_name_position :
+                             scope_name_position+len(scope_name)] == scope_name
+    
+    with shared.UndoableAction(document):
+        editor.SetSelection(scope_name_start, scope_name_end)
+    
+    
+    
+    
     
