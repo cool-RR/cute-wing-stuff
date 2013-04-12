@@ -104,5 +104,10 @@ if monkeypatch:
         wingapi.gApplication.fSingletons.fCmdMgr.connect('cmd-executed',
                                                          command_executed)
         
+        #######################################################################
         
-        
+        def args_needed(*args, **kwargs):
+            shared.clip_ahk()
+            
+        wingapi.gApplication.fSingletons.fCmdMgr.connect('args-needed',
+                                                         args_needed)
