@@ -71,7 +71,12 @@ class SelectionRestorer(object):
         else:
             start = self.start
             end = self.end
-        self.editor.SetSelection(start, end)
+            
+        if tuple(self.editor.GetSelection()) != (start, end):
+            self.editor.SetSelection(start, end)
+            # (Only conditionally setting selection, because if it's already
+            # correct it's best to leave it as it is, because when we set it
+            # ourselves some things (like `select-less`) stop working.)
 
 
 class ClipboardRestorer(object):
