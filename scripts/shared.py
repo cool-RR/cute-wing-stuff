@@ -170,15 +170,29 @@ class UndoableAction(object):
         # Now the user can do Ctrl-Z and have the above suite undone.
     
     '''
-    def __init__(self, document):
-        assert isinstance(document, wingapi.CAPIDocument)
-        self.document = document
+    def __init__(self, document_or_editor, enhanced=False):
+        if enhanced:
+            assert isinstance(document_or_editor, wingapi.CAPIEditor)
+        if isinstance(document_or_editor, wingapi.CAPIEditor):
+            self.editor = editor = document_or_editor
+            document_or_editor = editor.GetDocument()
+        else:
+            assert isinstance(document_or_editor, wingapi.CAPIDocument)
+        self.document = document_or_editor
+        self.enhanced = enhanced
+        if enhanced:
+            self.selection_restorer = SelectionRestorer(editor)
         
     def __enter__(self):
+        if self.enhanced:
+            self.selection_restorer.__enter__()
         self.document.BeginUndoAction()
         
     def __exit__(self, *args, **kwargs):
         self.document.EndUndoAction()
+        if self.enhanced:
+            self.selection_restorer.__exit__(*args, **kwargs)
+            
         
 
 def get_cursor_position(editor):
