@@ -12,9 +12,6 @@ try:
     import autopy.key
 except ImportError:
     autopy_available = False
-    import traceback
-    with file(r'c:\\fuck.log', 'w') as exception_file:
-        traceback.print_exc(file=exception_file)
 else:
     autopy_available = True
     
