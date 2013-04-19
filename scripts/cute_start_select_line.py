@@ -34,9 +34,16 @@ def cute_start_select_line(editor=wingapi.kArgEditor):
     selection_end_line = document.GetLineNumberFromPosition(selection_end)
     new_selection_start = document.GetLineStart(selection_start_line)
     new_selection_end = document.GetLineEnd(selection_end_line)
-
+    
+    caret_position = editor.fEditor._fScint.get_current_pos()
+    if caret_position == selection_end:
+        arguments = (new_selection_start, new_selection_end)
+    else:
+        assert caret_position == selection_start
+        arguments = (new_selection_end, new_selection_start)
+        
     wingapi.gApplication.ExecuteCommand('start-select-line')
-    editor.SetSelection(new_selection_start, new_selection_end)
+    editor.SetSelection(*arguments)
     
 
 
