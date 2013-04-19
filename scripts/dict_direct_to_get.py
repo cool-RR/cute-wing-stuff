@@ -74,9 +74,10 @@ def dict_direct_to_get(editor=wingapi.kArgEditor):
                                                         len(text_to_insert) - 5
         none_end = line_start + square_brackets_position + \
                                                         len(text_to_insert) - 1
-        
+
         with shared.UndoableAction(document):
-            document.DeleteChars(line_start, line_end)
+            document.DeleteChars(line_start, line_end - 1)
+            # The `- 1` above is necessary for \n-documents.
             document.InsertChars(line_start, new_line_text)
             editor.SetSelection(none_start, none_end)
     
