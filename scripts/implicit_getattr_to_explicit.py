@@ -39,16 +39,12 @@ def implicit_getattr_to_explicit(editor=wingapi.kArgEditor):
     
     _, current_position = editor.GetSelection()
     head = max(current_position - 100, 0)
-    tail = min(current_position + 100, document.GetText)
+    tail = min(current_position + 100, document.GetLength())
     
-    line_start = document.GetLineStart(current_line_number)
-    line_end = document.GetLineEnd(current_line_number)
+    text = document.GetCharRange(head, tail)
     
-    fixed_position = max(current_position - 1, line_start)
+    matches = list(re.finditer(pattern, text))
     
-    line_head = document.GetCharRange(line_start, fixed_position)
-    line_tail = document.GetCharRange(fixed_position, line_end)
-    line_text = line_head + line_tail
     
     if ']' not in line_tail:
         #print('''']' not in line_tail''')
