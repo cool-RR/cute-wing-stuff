@@ -14,6 +14,7 @@ import os.path, sys; sys.path.append(os.path.dirname(__file__))
 
 import re
 import inspect
+import logging
 
 import wingapi
 
@@ -44,41 +45,46 @@ def implicit_getattr_to_explicit(editor=wingapi.kArgEditor):
     text = document.GetCharRange(head, tail)
     
     matches = list(re.finditer(pattern, text))
-    
-    
-    if ']' not in line_tail:
-        #print('''']' not in line_tail''')
-        return
-    
-    first_closing_bracket_position = line_tail.find(']') + len(line_head) + \
-                                                                     line_start
-    
-    text_until_closing_bracket = document.GetCharRange(
-        line_start,
-        first_closing_bracket_position + 1
-    )
-    
-    match = pattern.match(text_until_closing_bracket)
-    if not match:
-        #print('''no match''')
-        #print('{{{%s}}}' % text_until_closing_bracket)
-        return
-    else: # we have a match
-        square_brackets_position = \
-            line_text.find(match.group('square_brackets'))
-        text_to_insert = '.get(%s, None)' % match.group('key')
-        new_line_text = line_text.replace(
-            match.group('square_brackets'), text_to_insert
-        )
-        none_start = line_start + square_brackets_position + \
-                                                        len(text_to_insert) - 5
-        none_end = line_start + square_brackets_position + \
-                                                        len(text_to_insert) - 1
 
-        with shared.UndoableAction(document):
-            document.DeleteChars(line_start, line_end - 1)
-            # The `- 1` above is necessary for \n-documents.
-            document.InsertChars(line_start, new_line_text)
-            editor.SetSelection(none_start, none_end)
+    logging.error('Printing matches:')
+    for match in matches:
+        logging.error(match.string[match.start():match.end()])
+        
+    return
+    
+    #if ']' not in line_tail:
+        ##print('''']' not in line_tail''')
+        #return
+    
+    #first_closing_bracket_position = line_tail.find(']') + len(line_head) + \
+                                                                     #line_start
+    
+    #text_until_closing_bracket = document.GetCharRange(
+        #line_start,
+        #first_closing_bracket_position + 1
+    #)
+    
+    #match = pattern.match(text_until_closing_bracket)
+    #if not match:
+        ##print('''no match''')
+        ##print('{{{%s}}}' % text_until_closing_bracket)
+        #return
+    #else: # we have a match
+        #square_brackets_position = \
+            #line_text.find(match.group('square_brackets'))
+        #text_to_insert = '.get(%s, None)' % match.group('key')
+        #new_line_text = line_text.replace(
+            #match.group('square_brackets'), text_to_insert
+        #)
+        #none_start = line_start + square_brackets_position + \
+                                                        #len(text_to_insert) - 5
+        #none_end = line_start + square_brackets_position + \
+                                                        #len(text_to_insert) - 1
+
+        #with shared.UndoableAction(document):
+            #document.DeleteChars(line_start, line_end - 1)
+            ## The `- 1` above is necessary for \n-documents.
+            #document.InsertChars(line_start, new_line_text)
+            #editor.SetSelection(none_start, none_end)
     
         
