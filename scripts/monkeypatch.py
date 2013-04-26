@@ -11,7 +11,7 @@ import sys
 import inspect
 
 import wingapi
-import guiutils.widgets_gtk
+#import guiutils.widgets_gtk
 import cache.textcache
 
 import shared
@@ -35,44 +35,44 @@ if monkeypatch:
     # Monkeypatching `ExpandFileFragment` so Wing won't show .pyc, .pyo and
     # .pyd files when browsing using `open-from-keyboard`:
     
-    def ExpandFileFragment(entry):
-        """ Try to expand given entry for possible matches, completing as far
-        as we can """
-        from guiutils.widgets_gtk import *
-        # Utility to obtain list of files for directory on disk
-        dirname, filefrag = os.path.split(textutils.AsUnicode(entry))
-        if not dirname:
-            return []
-        try:
-            file_list = location.ListDir(os.path.expanduser(dirname))
-        except OSError:
-            file_list = []
+    #def ExpandFileFragment(entry):
+        #""" Try to expand given entry for possible matches, completing as far
+        #as we can """
+        #from guiutils.widgets_gtk import *
+        ## Utility to obtain list of files for directory on disk
+        #dirname, filefrag = os.path.split(textutils.AsUnicode(entry))
+        #if not dirname:
+            #return []
+        #try:
+            #file_list = location.ListDir(os.path.expanduser(dirname))
+        #except OSError:
+            #file_list = []
     
-        allfiles = []
-        for file in file_list:
-            # This is the only modified part.
-            ### Throwing away compiled Python files: ##########################
-            #                                                                 #
-            if file.endswith('.pyc') or file.endswith('.pyo') or \
-                                                         file.endswith('.pyd'):
-                continue
-            #                                                                 #
-            ### Finished throwing away compiled Python files. #################
-            if sys.platform == 'win32':
-                file_matches = file.lower().startswith(filefrag.lower())
-            else:
-                file_matches = file.startswith(filefrag)
-            if file_matches:
-                match = fileutils.join(dirname, file)
-                if os.path.isdir(match) and match[-1] != os.sep:
-                    match = match + os.sep
-                allfiles.append(match)
+        #allfiles = []
+        #for file in file_list:
+            ## This is the only modified part.
+            #### Throwing away compiled Python files: ##########################
+            ##                                                                 #
+            #if file.endswith('.pyc') or file.endswith('.pyo') or \
+                                                         #file.endswith('.pyd'):
+                #continue
+            ##                                                                 #
+            #### Finished throwing away compiled Python files. #################
+            #if sys.platform == 'win32':
+                #file_matches = file.lower().startswith(filefrag.lower())
+            #else:
+                #file_matches = file.startswith(filefrag)
+            #if file_matches:
+                #match = fileutils.join(dirname, file)
+                #if os.path.isdir(match) and match[-1] != os.sep:
+                    #match = match + os.sep
+                #allfiles.append(match)
     
-        return allfiles
+        #return allfiles
     
     
-    old_ExpandFileFragment = guiutils.widgets_gtk.ExpandFileFragment
-    guiutils.widgets_gtk.ExpandFileFragment = ExpandFileFragment
+    #old_ExpandFileFragment = guiutils.widgets_gtk.ExpandFileFragment
+    #guiutils.widgets_gtk.ExpandFileFragment = ExpandFileFragment
     
     ###########################################################################
 
