@@ -167,12 +167,15 @@ def select_scope_name(editor=wingapi.kArgEditor):
     
 re.compile(
     r'''(?<=\n)(?P<indent>[ \t]*)''' # Before LHS
-    r'''(?P<lhs>[A-Za-z_][A-Za-z0-9_]*)''' # LHS
+    
+    # LHS:
+    r'''(?P<lhs>(?!if |while |elif |assert )[^ \n][^=\n\(]+?)'''
+    
     r''' *(?:[+\-*/%|&^]|<<|>>|//|\*\*)?= *''' # operator and padding
+    
     # RHS:
     r'''(?P<rhs>[^ ][^\n]*\n''' 
-    r'''(?:(?:[ \t]*[)\]}][^\n]*[\n])|(?:(?=(?P=indent)[ \t])[^\n]*\n))*)''', 
-    flags=re.DOTALL
+    r'''(?:(?:[ \t]*[)\]}][^\n]*[\n])|(?:(?=(?P=indent)[ \t])[^\n]*\n))*)'''
 )    
     
     
