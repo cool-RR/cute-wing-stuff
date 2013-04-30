@@ -44,7 +44,8 @@ def _get_lhs_positions(document):
     
 def _get_rhs_positions(document):
     matches = _get_matches(document)
-    return tuple(match.span('rhs') for match in matches)
+    raw_rhs_positions = tuple(match.span('rhs') for match in matches)
+    return tuple((start, end-1) for start, end in raw_rhs_positions)
 
 def _get_lhs_starts_and_ends(document):
     lhs_positions = _get_lhs_positions(document)
@@ -88,10 +89,28 @@ def select_prev_lhs(editor=wingapi.kArgEditor):
         editor.SetSelection(*lhs_positions[lhs_index])
 
 
-def select_next_rhs():
-    pass
+def select_next_rhs(editor=wingapi.kArgEditor):
+    assert isinstance(editor, wingapi.CAPIEditor)
+    _, position = editor.GetSelection()
+    position += 1
 
-def select_prev_rhs():
-    pass
+    rhs_positions = _get_rhs_positions(editor.GetDocument())
+    rhs_ends = tuple(rhs_position[1] for rhs_position in rhs_positions)
+    rhs_index = bisect.bisect_left(rhs_ends, position)
     
+    if 0 <= rhs_index < len(rhs_ends):
+        editor.SetSelection(*rhs_positions[rhs_index])
+        
+
+def select_prev_rhs(editor=wingapi.kArgEditor):
+    assert isinstance(editor, wingapi.CAPIEditor)
+    position, _ = editor.GetSelection()
+    position -= 1
+
+    rhs_positions = _get_rhs_positions(editor.GetDocument())
+    rhs_starts = tuple(rhs_position[0] for rhs_position in rhs_positions)
+    rhs_index = bisect.bisect_left(rhs_starts, position) - 1
     
+    if 0 <= rhs_index < len(rhs_starts):
+        editor.SetSelection(*rhs_positions[rhs_index])
+
