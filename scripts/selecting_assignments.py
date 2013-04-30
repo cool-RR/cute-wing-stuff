@@ -66,44 +66,27 @@ def select_next_lhs(editor=wingapi.kArgEditor):
     assert isinstance(editor, wingapi.CAPIEditor)
     _, position = editor.GetSelection()
     position += 1
-    lhs_starts, lhs_ends = _get_lhs_starts_and_ends(document)
+
+    lhs_positions = _get_lhs_positions(editor.GetDocument())
+    lhs_ends = tuple(lhs_position[1] for lhs_position in lhs_positions)
+    lhs_index = bisect.bisect_left(lhs_ends, position)
     
-    lhs_index_start_candidate = bisect.bisect_left(lhs_starts, position)
-    lhs_index_end_candidate = bisect.bisect_left(lhs_ends, position)
-    
-    if lhs_index_start_candidate < len(lhs_positions):
-        lhs_start_candidate = lhs_starts[lhs_index_start_candidate]
-    else:
-        lhs_start_candidate = None
+    if 0 <= lhs_index < len(lhs_ends):
+        editor.SetSelection(*lhs_positions[lhs_index])
         
-    if lhs_index_end_candidate < len(lhs_positions):
-        lhs_end_candidate = lhs_ends[lhs_index_end_candidate]
-    else:
-        lhs_end_candidate = None
+
+def select_prev_lhs(editor=wingapi.kArgEditor):
+    assert isinstance(editor, wingapi.CAPIEditor)
+    position, _ = editor.GetSelection()
+    position -= 1
+
+    lhs_positions = _get_lhs_positions(editor.GetDocument())
+    lhs_starts = tuple(lhs_position[0] for lhs_position in lhs_positions)
+    lhs_index = bisect.bisect_left(lhs_starts, position) - 1
     
-    ### Choosing which index to use: ##########################################
-    #                                                                         #
-    none_count = (lhs_start_candidate, lhs_end_candidate).count(None)
-    if none_count == 2:
-        return
-    elif none_count == 1:
-        if lhs_start_candidate is not None:
-            index_to_use = lhs_index_start_candidate
-        else:
-            assert lhs_end_candidate is not None
-            index_to_use = lhs_index_end_candidate
-    else:
-        assert none_count == 0
-        if lhs_index_start_candidate
-            
-    if lhs_index < len(lhs_positions):
+    if 0 <= lhs_index < len(lhs_starts):
         editor.SetSelection(*lhs_positions[lhs_index])
 
-    #                                                                         #
-    ### Finished choosing which index to use. #################################
-
-def select_prev_lhs():
-    pass
 
 def select_next_rhs():
     pass
