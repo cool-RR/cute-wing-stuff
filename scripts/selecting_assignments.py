@@ -163,9 +163,12 @@ def select_scope_name(editor=wingapi.kArgEditor):
     with shared.UndoableAction(document):
         editor.SetSelection(scope_name_start, scope_name_end)
     
+
+
     
     
-re.compile(
+    
+assignment_pattern = re.compile(
     r'''(?<=\n)(?P<indent>[ \t]*)''' # Before LHS
     
     # LHS:
@@ -178,9 +181,27 @@ re.compile(
     r'''(?:(?:[ \t]*[)\]}][^\n]*[\n])|(?:(?=(?P=indent)[ \t])[^\n]*\n))*)'''
 )    
     
+
+def _get_matches_in_document(document):
+    assert isinstance(document, wingapi.CAPIDocument)
+    document_text = shared.get_text(document)
+    return tuple(assignment_pattern.finditer(document_text))
+
+def _get_lhs_positions_in_document(document):
+    matches = _get_matches_in_document(document)
+    return tuple(match.span('lhs') for match in matches)
+    
+def _get_rhs_positions_in_document(document):
+    matches = _get_matches_in_document(document)
+    return tuple(match.span('rhs') for match in matches)
     
 
-def select_next_lhs():
+def select_next_lhs(editor=wingapi.kArgEditor):
+    assert isinstance(editor, wingapi.CAPIEditor)
+    _, position = editor.GetSelection()
+    position += 1
+    lhs_positions = _get_lhs_positions_in_document(editor.GetDocument())
+    lhs_starts = (lhs_position[0] for lhs_position in lhs_positions)
     pass
 
 def select_prev_lhs():
