@@ -164,7 +164,7 @@ def select_scope_name(editor=wingapi.kArgEditor):
         editor.SetSelection(scope_name_start, scope_name_end)
     
 re.compile(
-    r'''\n(?P<indent>[ \t]*)(?P<lhs>[A-Za-z_][A-Za-z0-9_]*) *'''
+    r'''(?<=\n)(?P<indent>[ \t]*)(?P<lhs>[A-Za-z_][A-Za-z0-9_]*) *'''
     r'''(?:[+\-*/%|&^]|<<|>>|//|\*\*)?= *'''
     r'''(?P<rhs>[^ ][^\n]*\n'''
     r'''(?:(?:[ \t]*[)\]}][^\n]*[\n])|(?:(?!(?P=indent)[^ \t])[^\n]*\n))*)''', 
