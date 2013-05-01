@@ -160,7 +160,7 @@ def strip_selection_if_single_line(editor):
     
     
 _whitespace_and_newlines_stripping_pattern = re.compile(
-    r'''^(?P<leading>[ \n\t]*)(?P<content>.*?)(?P<trailing>[ \n\t]*)$''',
+    r'''^(?P<leading>[ \r\n\t]*)(?P<content>.*?)(?P<trailing>[ \r\n\t]*)$''',
     flags=re.DOTALL
 )    
 def strip_segment_from_whitespace_and_newlines(document, start, end):
@@ -168,10 +168,17 @@ def strip_segment_from_whitespace_and_newlines(document, start, end):
     If selection is on a single line, strip it, removing whitespace from edges.
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
+    def p(text):
+        with open('c:\\fuck.log', 'a') as f:
+            f.write(text+'\n')
     
     selection_text = document.GetCharRange(start, end)
     match = _whitespace_and_newlines_stripping_pattern.match(selection_text)
     assert match
+    import logging
+    p(repr(match.group('leading')))
+    p(repr(match.group('content')))
+    p(repr(match.group('trailing')))
     new_start = start + len(match.group('leading'))
     new_end = end - len(match.group('trailing'))
     
