@@ -27,6 +27,7 @@ def type_string(string):
             autopy.key.tap(character, autopy.key.MOD_SHIFT)
         else:
             autopy.key.tap(character)
+        autopy.key.tap(135) # F24 for making AHK not interfere
 
 
 def _cute_general_replace(command_name,
@@ -50,7 +51,7 @@ def _cute_general_replace(command_name,
             type_string(selection)
             #autopy.key.tap(autopy.key.K_ESCAPE)
             #autopy.key.toggle(autopy.key.K_ALT, False)
-            autopy.key.tap(TAB_KEY, autopy.key.MOD_SHIFT)
+            autopy.key.tap(TAB_KEY)
             autopy.key.tap('v', autopy.key.MOD_CONTROL)
             autopy.key.tap('a', autopy.key.MOD_CONTROL)
             
