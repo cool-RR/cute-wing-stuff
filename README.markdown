@@ -415,18 +415,18 @@ selected.
 Suggested key combination: `Ctrl-Alt-Plus`
 
 
-## select-next-number ##
-
-Select the next (or current) number in the document.
-
-Suggested key combination: Ctrl-0
-
-
 ## select-next-lhs ##
 
 Select the next left-hand-side of an assignment.
 
 Suggested key combination: `Ctrl-Alt-9`
+
+
+## select-next-number ##
+
+Select the next (or current) number in the document.
+
+Suggested key combination: Ctrl-0
 
 
 ## select-next-rhs ##
@@ -446,18 +446,18 @@ Suggested key combinations: `Ctrl-Apostrophe`
                             `Alt-Apostrophe` for `inner=True`
 
 
-## select-prev-number ##
-
-Select the previous number in the document.
-
-Suggested key combination: Ctrl-9
-
-
 ## select-prev-lhs ##
 
 Select the previous left-hand-side of an assignment.
 
 Suggested key combination: `Ctrl-Alt-Parenleft`
+
+
+## select-prev-number ##
+
+Select the previous number in the document.
+
+Suggested key combination: Ctrl-9
 
 
 ## select-prev-rhs ##
