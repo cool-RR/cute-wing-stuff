@@ -1,6 +1,6 @@
 # Cute Wing stuff #
 
-A collection of scripts for [Wing IDE 4.1](http://www.wingware.com/).
+A collection of scripts for [Wing IDE 5.0](http://www.wingware.com/).
 
 In order to use these scripts in your copy of Wing, download the repo to
 someplace in your computer, fire up Wing, go to `Edit` -> `Preferences` -> `IDE
