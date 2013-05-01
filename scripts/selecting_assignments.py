@@ -44,20 +44,9 @@ def _get_lhs_positions(document):
     
 def _get_rhs_positions(document):
     matches = _get_matches(document)
-    raw_rhs_positions = tuple(match.span('rhs') for match in matches)
-    return tuple((start, end-1) for start, end in raw_rhs_positions)
-
-def _get_lhs_starts_and_ends(document):
-    lhs_positions = _get_lhs_positions(document)
-    lhs_starts = tuple(lhs_position[0] for lhs_position in lhs_positions)    
-    lhs_ends = tuple(lhs_position[1] for lhs_position in lhs_positions)
-    return (lhs_starts, lhs_ends)
-
-def _get_rhs_starts_and_ends(document):
-    rhs_positions = _get_rhs_positions(document)
-    rhs_starts = tuple(rhs_position[0] for rhs_position in rhs_positions)    
-    rhs_ends = tuple(rhs_position[1] for rhs_position in rhs_positions)    
-    return (rhs_starts, rhs_ends)    
+    stripper = lambda (start, end): \
+        shared.strip_segment_from_whitespace_and_newlines(document, start, end)
+    return map(stripper, (match.span('rhs') for match in matches))
 
 
 ###############################################################################
