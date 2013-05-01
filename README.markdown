@@ -515,32 +515,6 @@ point, rather than finding one automatically.
 Suggested key combination: `Insert L` for default arguments, `Insert Shift-L` for line_offset=-1, and `Insert Ctrl-L` for at_caret=True.
 
 
-## start-debug-with-preset-args ##
-
-Start debugging with preset arguments.
-
-You need to have a git-ignored file `cute_wing_stuff_local_settings.py`
-right in this `scripts` folder, which defines a `dict` like this:
-
-    all_debug_argument_presets = {
-        'my_django_app.wpr': ['runserver --noreload', 'test']
-        'other_django_app.wpr': ['runserver 80 --noreload', 'test',
-                                 'syncdb']
-        None: ['runserver 80 --noreload', 'test'], 
-    }
-   
-What does this file mean? For each of your projects, you define the
-different presets for debug arguments that will be used for your main debug
-file. `None` is used as the default for any Wing projects that are not
-listed.
-
-Then you call this `start-debug-with-preset-args` with the `i_preset`
-argument equal to the preset index number, and debug will start with those
-arguments.
-
-Suggested key combinations: `Insert F5` for preset 0, `Insert Shift-F5` for preset 1, `Insert Ctrl-F5` for preset 2, `Insert Ctrl-Shift-F5` for preset 3
-
-
 ## unpack-tuple-to-one ##
 
 Turn `things` into `(thing,)`.
