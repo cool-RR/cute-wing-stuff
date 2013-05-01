@@ -52,7 +52,7 @@ def _get_rhs_positions(document):
 ###############################################################################
 
 
-def select_next_lhs(editor=wingapi.kArgEditor):
+def select_next_lhs(editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
     '''
     Select the next left-hand-side of an assignment.
     
@@ -71,7 +71,7 @@ def select_next_lhs(editor=wingapi.kArgEditor):
         editor.SetSelection(*lhs_positions[lhs_index])
         
 
-def select_prev_lhs(editor=wingapi.kArgEditor):
+def select_prev_lhs(editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
     '''
     Select the previous left-hand-side of an assignment.
     
@@ -90,7 +90,7 @@ def select_prev_lhs(editor=wingapi.kArgEditor):
         editor.SetSelection(*lhs_positions[lhs_index])
 
 
-def select_next_rhs(editor=wingapi.kArgEditor):
+def select_next_rhs(editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
     '''
     Select the next right-hand-side of an assignment.
     
@@ -109,7 +109,7 @@ def select_next_rhs(editor=wingapi.kArgEditor):
         editor.SetSelection(*rhs_positions[rhs_index])
         
 
-def select_prev_rhs(editor=wingapi.kArgEditor):
+def select_prev_rhs(editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
     '''
     Select the previous right-hand-side of an assignment.
     
