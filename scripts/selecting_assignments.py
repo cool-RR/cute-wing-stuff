@@ -25,7 +25,7 @@ assignment_pattern = re.compile(
     # LHS:
     r'''(?P<lhs>(?!if |while |elif |assert )[^ \n][^=\n\(]+?)'''
     
-    r''' *(?:[+\-*/%|&^]|<<|>>|//|\*\*)?= *''' # operator and padding
+    r''' +(?:[+\-*/%|&^]|<<|>>|//|\*\*)?= +''' # operator and padding
     
     # RHS:
     r'''(?P<rhs>[^ ][^\n]*\n''' 
@@ -67,6 +67,7 @@ def select_next_lhs(editor=wingapi.kArgEditor):
     lhs_index = bisect.bisect_left(lhs_ends, position)
     
     if 0 <= lhs_index < len(lhs_ends):
+        app.ExecuteCommand('set-visit-history-anchor')
         editor.SetSelection(*lhs_positions[lhs_index])
         
 
@@ -85,6 +86,7 @@ def select_prev_lhs(editor=wingapi.kArgEditor):
     lhs_index = bisect.bisect_left(lhs_starts, position) - 1
     
     if 0 <= lhs_index < len(lhs_starts):
+        app.ExecuteCommand('set-visit-history-anchor')
         editor.SetSelection(*lhs_positions[lhs_index])
 
 
@@ -103,6 +105,7 @@ def select_next_rhs(editor=wingapi.kArgEditor):
     rhs_index = bisect.bisect_left(rhs_ends, position)
     
     if 0 <= rhs_index < len(rhs_ends):
+        app.ExecuteCommand('set-visit-history-anchor')
         editor.SetSelection(*rhs_positions[rhs_index])
         
 
@@ -121,5 +124,6 @@ def select_prev_rhs(editor=wingapi.kArgEditor):
     rhs_index = bisect.bisect_left(rhs_starts, position) - 1
     
     if 0 <= rhs_index < len(rhs_starts):
+        app.ExecuteCommand('set-visit-history-anchor')
         editor.SetSelection(*rhs_positions[rhs_index])
 
