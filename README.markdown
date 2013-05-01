@@ -422,6 +422,20 @@ Select the next (or current) number in the document.
 Suggested key combination: Ctrl-0
 
 
+## select-next-lhs ##
+
+Select the next left-hand-side of an assignment.
+
+Suggested key combination: `Ctrl-Alt-9`
+
+
+## select-next-rhs ##
+
+Select the next right-hand-side of an assignment.
+
+Suggested key combination: `Ctrl-Alt-0`
+
+
 ## select-next-string ##
 
 Select the next (or current) string, starting from caret location.
@@ -437,6 +451,20 @@ Suggested key combinations: `Ctrl-Apostrophe`
 Select the previous number in the document.
 
 Suggested key combination: Ctrl-9
+
+
+## select-prev-lhs ##
+
+Select the previous left-hand-side of an assignment.
+
+Suggested key combination: `Ctrl-Alt-Parenleft`
+
+
+## select-prev-rhs ##
+
+Select the previous right-hand-side of an assignment.
+
+Suggested key combination: `Ctrl-Alt-Parenright`
 
 
 ## select-prev-string ##

@@ -53,6 +53,11 @@ def _get_rhs_positions(document):
 
 
 def select_next_lhs(editor=wingapi.kArgEditor):
+    '''
+    Select the next left-hand-side of an assignment.
+    
+    Suggested key combination: `Ctrl-Alt-9`
+    '''
     assert isinstance(editor, wingapi.CAPIEditor)
     _, position = editor.GetSelection()
     position += 1
@@ -66,6 +71,11 @@ def select_next_lhs(editor=wingapi.kArgEditor):
         
 
 def select_prev_lhs(editor=wingapi.kArgEditor):
+    '''
+    Select the previous left-hand-side of an assignment.
+    
+    Suggested key combination: `Ctrl-Alt-Parenleft`
+    '''    
     assert isinstance(editor, wingapi.CAPIEditor)
     position, _ = editor.GetSelection()
     position -= 1
@@ -79,6 +89,11 @@ def select_prev_lhs(editor=wingapi.kArgEditor):
 
 
 def select_next_rhs(editor=wingapi.kArgEditor):
+    '''
+    Select the next right-hand-side of an assignment.
+    
+    Suggested key combination: `Ctrl-Alt-0`
+    '''    
     assert isinstance(editor, wingapi.CAPIEditor)
     _, position = editor.GetSelection()
     position += 1
@@ -92,6 +107,11 @@ def select_next_rhs(editor=wingapi.kArgEditor):
         
 
 def select_prev_rhs(editor=wingapi.kArgEditor):
+    '''
+    Select the previous right-hand-side of an assignment.
+    
+    Suggested key combination: `Ctrl-Alt-Parenright`
+    '''    
     assert isinstance(editor, wingapi.CAPIEditor)
     position, _ = editor.GetSelection()
     position -= 1
