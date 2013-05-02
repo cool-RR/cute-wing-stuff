@@ -28,6 +28,7 @@ def type_string(string):
         else:
             autopy.key.tap(character)
         autopy.key.tap(135) # F24 for making AHK not interfere
+        autopy.key.tap(35) # `End` for making AHK not interfere
 
 
 def _cute_general_replace(command_name,
