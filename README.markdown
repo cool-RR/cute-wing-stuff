@@ -396,6 +396,16 @@ clears all of those squares.
 Suggested key combination: `Ctrl-Alt-Shift-R`
 
 
+## reverse-selection ##
+
+Reverse the selection, putting the caret on the opposite side.
+
+If the caret was at the beginning of the selection, it'll be put at the
+end, and if it was in the end, it'll be put in the beginning.
+
+Suggested key combination: `Insert Shift-R`
+
+
 ## select-dotted-name ##
 
 Select the dotted name that the cursor is currently on, like `foo.bar.baz`.
