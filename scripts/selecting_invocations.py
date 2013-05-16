@@ -41,37 +41,40 @@ def select_next_invocation(editor=wingapi.kArgEditor,
     '''
     Select the next invocation.
     
-    Suggested key combination: `Ctrl-Alt-9`
+    Suggested key combination: `Ctrl-Alt-8`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     _, position = editor.GetSelection()
     position += 1
 
-    lhs_positions = _get_lhs_positions(editor.GetDocument())
-    lhs_ends = tuple(lhs_position[1] for lhs_position in lhs_positions)
-    lhs_index = bisect.bisect_left(lhs_ends, position)
+    invocation_positions = get_invocation_positions(editor.GetDocument())
+    invocation_ends = tuple(invocation_position[1] for invocation_position in
+                            invocation_positions)
+    invocation_index = bisect.bisect_left(invocation_ends, position)
     
-    if 0 <= lhs_index < len(lhs_ends):
+    if 0 <= invocation_index < len(invocation_ends):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*lhs_positions[lhs_index])
+        editor.SetSelection(*invocation_positions[invocation_index])
         
 
-def select_prev_lhs(editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
+def select_prev_invocation(editor=wingapi.kArgEditor,
+                           app=wingapi.kArgApplication):
     '''
-    Select the previous left-hand-side of an assignment.
+    Select the previous invocation.
     
-    Suggested key combination: `Ctrl-Alt-Parenleft`
+    Suggested key combination: `Ctrl-Alt-Asterisk`
     '''    
     assert isinstance(editor, wingapi.CAPIEditor)
     position, _ = editor.GetSelection()
     position -= 1
 
-    lhs_positions = _get_lhs_positions(editor.GetDocument())
-    lhs_starts = tuple(lhs_position[0] for lhs_position in lhs_positions)
-    lhs_index = bisect.bisect_left(lhs_starts, position) - 1
+    invocation_positions = get_invocation_positions(editor.GetDocument())
+    invocation_starts = tuple(invocation_position[0] for invocation_position
+                              in invocation_positions)
+    invocation_index = bisect.bisect_left(invocation_starts, position) - 1
     
-    if 0 <= lhs_index < len(lhs_starts):
+    if 0 <= invocation_index < len(invocation_starts):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*lhs_positions[lhs_index])
+        editor.SetSelection(*invocation_positions[invocation_index])
 
 
