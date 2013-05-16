@@ -425,6 +425,13 @@ selected.
 Suggested key combination: `Ctrl-Alt-Plus`
 
 
+## select-next-invocation ##
+
+Select the next invocation of a callable, e.g `foo.bar(baz)`.
+
+Suggested key combination: `Ctrl-Alt-8`
+    
+    
 ## select-next-lhs ##
 
 Select the next left-hand-side of an assignment.
@@ -456,6 +463,13 @@ Suggested key combinations: `Ctrl-Apostrophe`
                             `Alt-Apostrophe` for `inner=True`
 
 
+## select-prev-invocation ##
+
+Select the previous invocation of a callable, e.g `foo.bar(baz)`.
+
+Suggested key combination: `Ctrl-Alt-Asterisk`
+    
+    
 ## select-prev-lhs ##
 
 Select the previous left-hand-side of an assignment.

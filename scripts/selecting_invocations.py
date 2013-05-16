@@ -20,7 +20,7 @@ import shared
 
     
 invocation_pattern = re.compile(
-    r'''([A-Za-z_][A-Za-z_0-9]*) *\('''
+    r'''(?<!def )(?<!class )(?<![A-Za-z_0-9])([A-Za-z_][A-Za-z_0-9]*) *\('''
 )    
     
 
@@ -39,7 +39,7 @@ def get_invocation_positions(document):
 def select_next_invocation(editor=wingapi.kArgEditor,
                            app=wingapi.kArgApplication):
     '''
-    Select the next invocation.
+    Select the next invocation of a callable, e.g `foo.bar(baz)`.
     
     Suggested key combination: `Ctrl-Alt-8`
     '''
@@ -60,7 +60,7 @@ def select_next_invocation(editor=wingapi.kArgEditor,
 def select_prev_invocation(editor=wingapi.kArgEditor,
                            app=wingapi.kArgApplication):
     '''
-    Select the previous invocation.
+    Select the previous invocation of a callable, e.g `foo.bar(baz)`.
     
     Suggested key combination: `Ctrl-Alt-Asterisk`
     '''    
