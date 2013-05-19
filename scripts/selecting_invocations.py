@@ -9,6 +9,7 @@ See its documentation for more information.
 
 from __future__ import with_statement
 
+import itertools
 import re
 import _ast
 import bisect
@@ -37,10 +38,10 @@ def get_argument_positions_from_argument_batch(argument_batch,
         module = _ast_parse(argument_batch)
         (expression,) = module.body
         call = expression.value
-        things = call.args + [call.starargs] + [call.kwargs]
+        things = filter(None, (call.args + [call.starargs] + [call.kwargs]))
         return tuple(
-            (things.col_offset + document_offset,
-             things.col_offset + document_offset + len(thing.id))
+            (thing.col_offset + document_offset,
+             thing.col_offset + document_offset + len(thing.id))
                                                             for thing in things
         )
     except Exception:
@@ -87,14 +88,15 @@ def get_argument_batch_positions(document):
 def get_argument_positions(document):
     argument_batch_positions = get_argument_batch_positions(document)
     document_text = shared.get_text(document)
-    argument_positions = tuple(
+    argument_positions = tuple(itertools.chain(
+        
         get_argument_positions_from_argument_batch(
             document_text[argument_batch_position[0]:
                                                    argument_batch_position[1]],
             document_offset=argument_batch_position[0]
         )
                         for argument_batch_position in argument_batch_positions
-    )
+    ))
     
     return argument_positions
 
@@ -152,12 +154,12 @@ def select_next_argument(editor=wingapi.kArgEditor,
     _, position = editor.GetSelection()
     position += 1
 
-    argument_batch_positions = get_argument_batch_positions(editor.GetDocument())
-    argument_batch_ends = tuple(argument_batch_position[1] for argument_batch_position in
-                            argument_batch_positions)
-    argument_batch_index = bisect.bisect_left(argument_batch_ends, position)
+    argument_positions = get_argument_positions(editor.GetDocument())
+    argument_ends = tuple(argument_position[1] for argument_position in
+                            argument_positions)
+    argument_index = bisect.bisect_left(argument_ends, position)
     
-    if 0 <= argument_batch_index < len(argument_batch_ends):
+    if 0 <= argument_index < len(argument_ends):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*argument_batch_positions[argument_batch_index])
+        editor.SetSelection(*argument_positions[argument_index])
         
