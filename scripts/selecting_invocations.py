@@ -10,6 +10,7 @@ See its documentation for more information.
 from __future__ import with_statement
 
 import re
+import _ast
 import bisect
 
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
@@ -19,8 +20,32 @@ import wingapi
 import shared
 
     
-invocation_pattern = re.compile(r'''[A-Za-z_][A-Za-z_0-9]* *\(''')    
+invocation_pattern = re.compile(
+    r'''(?<!def )(?<!class )(?<![A-Za-z_0-9])([A-Za-z_][A-Za-z_0-9]*) *\('''
+)    
+invocation_pattern_for_arguments = re.compile(
+    r'''[A-Za-z_][A-Za-z_0-9]* *\('''
+)    
     
+def _ast_parse(string):
+    return compile(string.replace('\r', ''), '<unknown>', 'exec',
+                   _ast.PyCF_ONLY_AST)
+    
+def get_argument_positions_from_argument_batch(argument_batch,
+                                               document_offset=0):
+    try:
+        module = _ast_parse(argument_batch)
+        (expression,) = module.body
+        call = expression.value
+        things = call.args + [call.starargs] + [call.kwargs]
+        return tuple(
+            (things.col_offset + document_offset,
+             things.col_offset + document_offset + len(thing.id))
+                                                            for thing in things
+        )
+    except Exception:
+        return ()
+
 
 def get_span_of_opening_parenthesis(document, position):
     assert isinstance(document, wingapi.CAPIDocument)
@@ -41,12 +66,17 @@ def _get_matches(document):
     document_text = shared.get_text(document)
     return tuple(invocation_pattern.finditer(document_text))
 
+def _get_matches_for_arguments(document):
+    assert isinstance(document, wingapi.CAPIDocument)
+    document_text = shared.get_text(document)
+    return tuple(invocation_pattern_for_arguments.finditer(document_text))
+
 def get_invocation_positions(document):
     matches = _get_matches(document)
     return tuple(match.span(1) for match in matches)
     
 def get_argument_batch_positions(document):
-    matches = _get_matches(document)
+    matches = _get_matches_for_arguments(document)
     parenthesis_starts = tuple(match.span(0)[1]-1 for match in matches)
     return map(
         lambda parenthesis_start:
@@ -54,6 +84,20 @@ def get_argument_batch_positions(document):
         parenthesis_starts
     )
     
+def get_argument_positions(document):
+    argument_batch_positions = get_argument_batch_positions(document)
+    document_text = shared.get_text(document)
+    argument_positions = tuple(
+        get_argument_positions_from_argument_batch(
+            document_text[argument_batch_position[0]:
+                                                   argument_batch_position[1]],
+            document_offset=argument_batch_position[0]
+        )
+                        for argument_batch_position in argument_batch_positions
+    )
+    
+    return argument_positions
+
 ###############################################################################
 
 
