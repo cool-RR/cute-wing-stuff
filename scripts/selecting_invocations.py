@@ -34,18 +34,19 @@ def _ast_parse(string):
     
 def get_argument_positions_from_argument_batch(argument_batch,
                                                document_offset=0):
-    try:
-        module = _ast_parse(argument_batch)
-        (expression,) = module.body
-        call = expression.value
-        things = filter(None, (call.args + [call.starargs] + [call.kwargs]))
-        return tuple(
-            (thing.col_offset + document_offset,
-             thing.col_offset + document_offset + len(thing.id))
-                                                            for thing in things
-        )
-    except Exception:
-        return ()
+    #try:
+    module = _ast_parse('f%s' % argument_batch)
+    print('f%s' % argument_batch)
+    (expression,) = module.body
+    call = expression.value
+    things = filter(None, (call.args + [call.starargs] + [call.kwargs]))
+    return tuple(
+        (thing.col_offset + document_offset,
+         thing.col_offset + document_offset + len(thing.id))
+                                                        for thing in things
+    )
+    #except Exception:
+        #return ()
 
 
 def get_span_of_opening_parenthesis(document, position):
