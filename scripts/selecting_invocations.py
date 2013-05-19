@@ -24,6 +24,19 @@ invocation_pattern = re.compile(
 )    
     
 
+def get_span_of_opening_parenthesis(document, position):
+    assert isinstance(document, wingapi.CAPIDocument)
+    document_text = shared.get_text(document)
+    for i in range(2, len(document_text) - 1 - position):
+        portion = document_text[position:position+i+1]
+        if portion.count('(') == portion.count(')'):
+            assert document_text[position + i] == ')'
+            return (position, position + i)
+    else:
+        return (position, position)
+        
+    
+
 def _get_matches(document):
     assert isinstance(document, wingapi.CAPIDocument)
     document_text = shared.get_text(document)
@@ -31,6 +44,11 @@ def _get_matches(document):
 
 def get_invocation_positions(document):
     matches = _get_matches(document)
+    return tuple(match.span(1) for match in matches)
+    
+def get_argument_batch_positions(document):
+    matches = _get_matches(document)
+    
     return tuple(match.span(1) for match in matches)
     
 ###############################################################################
@@ -78,3 +96,9 @@ def select_prev_invocation(editor=wingapi.kArgEditor,
         editor.SetSelection(*invocation_positions[invocation_index])
 
 
+###############################################################################
+
+def select_next_argument(editor=wingapi.kArgEditor,
+                         app=wingapi.kArgApplication):
+    
+        
