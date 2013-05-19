@@ -19,19 +19,18 @@ import wingapi
 import shared
 
     
-invocation_pattern = re.compile(
-    r'''(?<!def )(?<!class )(?<![A-Za-z_0-9])([A-Za-z_][A-Za-z_0-9]*) *\('''
-)    
+invocation_pattern = re.compile(r'''[A-Za-z_][A-Za-z_0-9]* *\(''')    
     
 
 def get_span_of_opening_parenthesis(document, position):
     assert isinstance(document, wingapi.CAPIDocument)
     document_text = shared.get_text(document)
-    for i in range(2, len(document_text) - 1 - position):
+    if not document_text[position] == '(': raise Exception
+    for i in range(1, len(document_text) - 1 - position):
         portion = document_text[position:position+i+1]
         if portion.count('(') == portion.count(')'):
-            assert document_text[position + i] == ')'
-            return (position, position + i)
+            if not portion[-1] == ')': raise Exception
+            return (position, position + i + 1)
     else:
         return (position, position)
         
@@ -48,8 +47,12 @@ def get_invocation_positions(document):
     
 def get_argument_batch_positions(document):
     matches = _get_matches(document)
-    
-    return tuple(match.span(1) for match in matches)
+    parenthesis_starts = tuple(match.span(0)[1]-1 for match in matches)
+    return map(
+        lambda parenthesis_start:
+                  get_span_of_opening_parenthesis(document, parenthesis_start),
+        parenthesis_starts
+    )
     
 ###############################################################################
 
@@ -101,4 +104,16 @@ def select_prev_invocation(editor=wingapi.kArgEditor,
 def select_next_argument(editor=wingapi.kArgEditor,
                          app=wingapi.kArgApplication):
     
+    assert isinstance(editor, wingapi.CAPIEditor)
+    _, position = editor.GetSelection()
+    position += 1
+
+    argument_batch_positions = get_argument_batch_positions(editor.GetDocument())
+    argument_batch_ends = tuple(argument_batch_position[1] for argument_batch_position in
+                            argument_batch_positions)
+    argument_batch_index = bisect.bisect_left(argument_batch_ends, position)
+    
+    if 0 <= argument_batch_index < len(argument_batch_ends):
+        app.ExecuteCommand('set-visit-history-anchor')
+        editor.SetSelection(*argument_batch_positions[argument_batch_index])
         
