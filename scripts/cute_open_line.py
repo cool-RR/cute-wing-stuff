@@ -16,7 +16,10 @@ import wingapi
 import shared
 
 
-def cute_open_line(editor=wingapi.kArgEditor):
+behaviors = ('stand-ground', 'before', 'after')
+
+
+def cute_open_line(editor=wingapi.kArgEditor, behavior='stand-ground'):
     '''
     Open a new line, but don't move the caret down to the new line.
     
@@ -35,6 +38,13 @@ def cute_open_line(editor=wingapi.kArgEditor):
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)
-    with shared.SelectionRestorer(editor):
-        wingapi.gApplication.ExecuteCommand('new-line')
-    
+    assert behavior in behaviors
+    if behavior == 'stand-ground':
+        with shared.SelectionRestorer(editor):
+            wingapi.gApplication.ExecuteCommand('new-line')
+    else:
+        document = editor.GetDocument()
+        _, caret_position = editor.GetAnchorAndCaret()
+        line_number = editor.gel
+        #if behavior == 'before':
+        
