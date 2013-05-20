@@ -11,6 +11,7 @@ import wingapi
 
 import shared
 
+
 def cute_goto_definition(editor=wingapi.kArgEditor):
     '''
     Go to the definition of the symbol that the caret is on.
@@ -27,7 +28,13 @@ def cute_goto_definition(editor=wingapi.kArgEditor):
     selection_start, selection_end = editor.GetSelection()
     editor.SetSelection(selection_end, selection_end)
     backup = guimgr.multieditor.CMultiEditor.NextVisitInHistory
-    guimgr.multieditor.CMultiEditor.NextVisitInHistory = lambda *args, **kwargs: None
-    wingapi.gApplication.ExecuteCommand('goto-selected-symbol-defn')
-    guimgr.multieditor.CMultiEditor.NextVisitInHistory = backup
-    wingapi.gApplication.ExecuteCommand('set-visit-history-anchor')    
+    try:
+        guimgr.multieditor.CMultiEditor.NextVisitInHistory = \
+                                                   lambda *args, **kwargs: None
+        if wingapi.gApplication.CommandAvailable('goto-selected-symbol-defn'):
+            wingapi.gApplication.ExecuteCommand('goto-selected-symbol-defn')
+        else:
+            editor.SetSelection(selection_start, selection_end)
+    finally:
+        guimgr.multieditor.CMultiEditor.NextVisitInHistory = backup
+        wingapi.gApplication.ExecuteCommand('set-visit-history-anchor')    
