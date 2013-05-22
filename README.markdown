@@ -124,6 +124,17 @@ Evaluate selection in debug probe, doing `select-more` if nothing selected.
     
 Suggested key combination: `Ctrl-Alt-D`
 
+
+## cute-goto-definition ##
+
+Go to the definition of the symbol that the caret is on.
+
+This is an improvement over Wing's `goto-selected-symbol-defn` because if
+operated when selecting a segment of code, it looks at the end of the
+selection instead of the start.
+
+Suggested key combination: `F4`
+
     
 ## cute-goto-line ##
 
@@ -147,17 +158,27 @@ Suggested key combination: `Ctrl-L`
 ## cute-open-line ##
 
 Open a new line, but don't move the caret down to the new line.
+
+Running this command is like pressing Enter, except your caret doesn't move
+into the new line that was created, but stays exactly where it was.
+
+The advantage of this over Wing's built-in `open-line` is that
+`cute-open-line` doesn't just insert a newline character like `open-line`
+does; it runs Wing's `new-line` command, which does various intelligent
+things like auto-indenting your code to the right level, opening your
+parentheses *just so* if you're doing function invocation, and a bunch of
+other goodies.
+
+If given `behavior='after'`, goes to the end of the current line, and opens
+a new line from there. If given `behavior='before'`, goes to the end of the
+previous line, and opens a new line from there.
+
+Suggested key combinations:
+
+    `Alt-Return` for normal operation
+    `Ctrl-Return` for `behavior='after'`
+    `Shift-Return` for `behavior='before'`
     
-Running this command is like pressing Enter, except your caret doesn't move into the
-new line that was created, but stays exactly where it was.
-
-The advantage of this over Wing's built-in `open-line` is that `cute-open-line`
-doesn't just insert a newline character like `open-line` does; it runs Wing's
-`new-line` command, which does various intelligent things like auto-indenting
-your code to the right level, opening your parentheses *just so* if you're
-doing function invocation, and a bunch of other goodies.
-
-Suggested key combination: `Alt-Return`
 (The `Alt-Return` combination requires a AHK shim, at least on Windows.)
 
 
