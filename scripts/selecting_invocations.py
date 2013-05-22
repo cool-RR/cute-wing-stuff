@@ -11,6 +11,7 @@ from __future__ import with_statement
 
 import itertools
 import re
+import ast
 import _ast
 import bisect
 
@@ -32,21 +33,53 @@ def _ast_parse(string):
     return compile(string.replace('\r', ''), '<unknown>', 'exec',
                    _ast.PyCF_ONLY_AST)
     
-def get_argument_positions_from_argument_batch(argument_batch,
-                                               document_offset=0):
-    #try:
-    module = _ast_parse('f%s' % argument_batch)
-    print('f%s' % argument_batch)
-    (expression,) = module.body
-    call = expression.value
-    things = filter(None, (call.args + [call.starargs] + [call.kwargs]))
+
+def _argpos(call_string, document_offset):
+    def _find_start(prev_end, offset):
+        s = call_string[prev_end:offset]
+        m = re.search('(\(|,)(\s*)(.*?)$', s)
+        return prev_end + m.regs[3][0]
+    def _find_end(start, next_offset):
+        s = call_string[start:next_offset]
+        m = re.search('(\s*)$', s[:max(s.rfind(','), s.rfind(')'))])
+        return start + m.start() - 1
+    def _abs_offset(lineno, col_offset):
+        current_lineno = 0
+        total = 0
+        for line in call_string.splitlines():
+            current_lineno += 1
+            if current_lineno == lineno:
+                return col_offset + total
+            total += len(line)
+
+    # parse call_string with ast
+    call = ast.parse(call_string).body[0].value
+    # collect offsets provided by ast
+    offsets = []
+    for arg in call.args:
+        offsets.append(_abs_offset(arg.lineno, arg.col_offset))
+    for kw in call.keywords:
+        offsets.append(_abs_offset(kw.value.lineno, kw.value.col_offset))
+    if call.starargs:
+        offsets.append(_abs_offset(call.starargs.lineno,
+                                   call.starargs.col_offset))
+    if call.kwargs:
+        offsets.append(_abs_offset(call.kwargs.lineno, call.kwargs.col_offset))
+    offsets.append(len(call_string))
+
+    result = []
+    # previous end
+    end = 0
+    # given offsets = [9, 14, 21, ...],
+    # zip(offsets, offsets[1:]) returns [(9, 14), (14, 21), ...]
+    for offset, next_offset in zip(offsets, offsets[1:]):
+        start = _find_start(end, offset)
+        end = _find_end(start, next_offset)
+        result.append((start, end))
     return tuple(
-        (thing.col_offset + document_offset,
-         thing.col_offset + document_offset + len(thing.id))
-                                                        for thing in things
+        (start + document_offset, end + document_offset) for (start, end)
+                                                                     in result
     )
-    #except Exception:
-        #return ()
 
 
 def get_span_of_opening_parenthesis(document, position):
@@ -90,8 +123,7 @@ def get_argument_positions(document):
     argument_batch_positions = get_argument_batch_positions(document)
     document_text = shared.get_text(document)
     argument_positions = tuple(itertools.chain(
-        
-        get_argument_positions_from_argument_batch(
+        _argpos(
             document_text[argument_batch_position[0]:
                                                    argument_batch_position[1]],
             document_offset=argument_batch_position[0]
