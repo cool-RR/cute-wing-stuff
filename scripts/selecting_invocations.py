@@ -11,7 +11,6 @@ from __future__ import with_statement
 
 import itertools
 import re
-import ast
 import _ast
 import bisect
 
@@ -53,7 +52,14 @@ def _argpos(call_string, document_offset):
             total += len(line)
 
     # parse call_string with ast
-    call = ast.parse(call_string).body[0].value
+    print('f' + call_string)
+    try:
+        call = _ast_parse('f' + call_string).body[0].value
+    except Exception:
+        return ()
+    if not isinstance(call, _ast.Call):
+        return ()
+    
     # collect offsets provided by ast
     offsets = []
     for arg in call.args:
@@ -77,8 +83,8 @@ def _argpos(call_string, document_offset):
         end = _find_end(start, next_offset)
         result.append((start, end))
     return tuple(
-        (start + document_offset, end + document_offset) for (start, end)
-                                                                     in result
+        (start + document_offset - 1, end + document_offset - 1)
+                                                     for (start, end) in result
     )
 
 
