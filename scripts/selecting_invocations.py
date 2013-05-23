@@ -2,13 +2,14 @@
 # This program is distributed under the MIT license.
 
 '''
-This module defines scripts for selecting invocations.
+This module defines scripts for selecting invocations and arguments.
 
 See its documentation for more information.
 '''
 
 from __future__ import with_statement
 
+import keyword
 import itertools
 import re
 import _ast
@@ -20,12 +21,11 @@ import wingapi
 
 import shared
 
-    
 invocation_pattern = re.compile(
     r'''(?<!def )(?<!class )(?<![A-Za-z_0-9])([A-Za-z_][A-Za-z_0-9]*) *\('''
 )    
 invocation_pattern_for_arguments = re.compile(
-    r'''[A-Za-z_][A-Za-z_0-9]* *\('''
+    r'''(?<![A-Za-z_0-9])([A-Za-z_][A-Za-z_0-9]*) *\('''
 )    
     
 def _ast_parse(string):
@@ -128,12 +128,15 @@ def get_span_of_opening_parenthesis(document, position):
 def _get_matches(document):
     assert isinstance(document, wingapi.CAPIDocument)
     document_text = shared.get_text(document)
-    return tuple(invocation_pattern.finditer(document_text))
+    return tuple(match for match in invocation_pattern.finditer(document_text)
+                 if not keyword.iskeyword(match.groups()[0]))
 
 def _get_matches_for_arguments(document):
     assert isinstance(document, wingapi.CAPIDocument)
     document_text = shared.get_text(document)
-    return tuple(invocation_pattern_for_arguments.finditer(document_text))
+    return tuple(match for match in
+                 invocation_pattern_for_arguments.finditer(document_text)
+                 if not keyword.iskeyword(match.groups()[0]))
 
 def get_invocation_positions(document):
     matches = _get_matches(document)
