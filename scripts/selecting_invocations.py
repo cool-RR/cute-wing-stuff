@@ -219,6 +219,11 @@ def select_prev_invocation(editor=wingapi.kArgEditor,
 
 def select_next_argument(editor=wingapi.kArgEditor,
                          app=wingapi.kArgApplication):
+    '''
+    Select the next argument to a callable.
+    
+    Suggested key combination: `Ctrl-Alt-7`
+    '''
     
     assert isinstance(editor, wingapi.CAPIEditor)
     _, position = editor.GetSelection()
@@ -236,9 +241,14 @@ def select_next_argument(editor=wingapi.kArgEditor,
         app.ExecuteCommand('set-visit-history-anchor')
         editor.SetSelection(*argument_positions[argument_index])
         
+
 def select_prev_argument(editor=wingapi.kArgEditor,
                          app=wingapi.kArgApplication):
+    '''
+    Select the previous argument to a callable.
     
+    Suggested key combination: `Ctrl-Alt-Ampersand`
+    '''    
     assert isinstance(editor, wingapi.CAPIEditor)
     position, _ = editor.GetSelection()
     position -= 1

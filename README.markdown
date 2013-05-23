@@ -446,6 +446,13 @@ selected.
 Suggested key combination: `Ctrl-Alt-Plus`
 
 
+## select-next-argument ##
+
+Select the next argument to a callable.
+
+Suggested key combination: `Ctrl-Alt-7`
+
+
 ## select-next-invocation ##
 
 Select the next invocation of a callable, e.g `foo.bar(baz)`.
@@ -482,6 +489,13 @@ Provide `inner=True` to select only the contents of the string.
 
 Suggested key combinations: `Ctrl-Apostrophe`
                             `Alt-Apostrophe` for `inner=True`
+
+
+## select-prev-argument ##
+
+Select the previous argument to a callable.
+
+Suggested key combination: `Ctrl-Alt-Ampersand`
 
 
 ## select-prev-invocation ##
