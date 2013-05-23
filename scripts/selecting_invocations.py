@@ -33,15 +33,12 @@ def _ast_parse(string):
                    _ast.PyCF_ONLY_AST)
     
 
-def _argpos(call_string, document_offset):
-    def _find_start(prev_end, offset):
-        s = call_string[prev_end:offset]
-        m = re.search('(\(|,)(\s*)(.*?)$', s)
-        return prev_end + m.regs[3][0]
-    def _find_end(start, next_offset):
-        s = call_string[start:next_offset]
-        m = re.search('(\s*)$', s[:max(s.rfind(','), s.rfind(')'))])
-        return start + m.start() - 1
+class ArgumentSearchingFailed(Exception):
+    pass
+           
+
+
+def _collect_offsets(call_string):
     def _abs_offset(lineno, col_offset):
         current_lineno = 0
         total = 0
@@ -50,28 +47,47 @@ def _argpos(call_string, document_offset):
             if current_lineno == lineno:
                 return col_offset + total
             total += len(line)
-
     # parse call_string with ast
-    print('f' + call_string)
+    #print('f' + call_string)
     try:
         call = _ast_parse('f' + call_string).body[0].value
     except Exception:
-        return ()
+        #print('Exception')
+        raise ArgumentSearchingFailed
     if not isinstance(call, _ast.Call):
-        return ()
-    
+        #print('Not a call')
+        raise ArgumentSearchingFailed
+
     # collect offsets provided by ast
     offsets = []
     for arg in call.args:
-        offsets.append(_abs_offset(arg.lineno, arg.col_offset))
+        a = arg
+        while isinstance(a, _ast.BinOp):
+            a = a.left
+        offsets.append(_abs_offset(a.lineno, a.col_offset))
     for kw in call.keywords:
         offsets.append(_abs_offset(kw.value.lineno, kw.value.col_offset))
     if call.starargs:
-        offsets.append(_abs_offset(call.starargs.lineno,
-                                   call.starargs.col_offset))
+        offsets.append(_abs_offset(call.starargs.lineno, call.starargs.col_offset))
     if call.kwargs:
         offsets.append(_abs_offset(call.kwargs.lineno, call.kwargs.col_offset))
     offsets.append(len(call_string))
+    return offsets
+
+def _argpos(call_string, document_offset):
+    def _find_start(prev_end, offset):
+        s = call_string[prev_end:offset]
+        m = re.search('(\(|,)(\s*)(.*?)$', s)
+        return prev_end + m.regs[3][0]
+    def _find_end(start, next_offset):
+        s = call_string[start:next_offset]
+        m = re.search('(\s*)$', s[:max(s.rfind(','), s.rfind(')'))])
+        return start + m.start()
+
+    try:
+        offsets = _collect_offsets(call_string)
+    except ArgumentSearchingFailed:
+        return ()
 
     result = []
     # previous end
@@ -79,14 +95,15 @@ def _argpos(call_string, document_offset):
     # given offsets = [9, 14, 21, ...],
     # zip(offsets, offsets[1:]) returns [(9, 14), (14, 21), ...]
     for offset, next_offset in zip(offsets, offsets[1:]):
+        #print 'I:', offset, next_offset
         start = _find_start(end, offset)
         end = _find_end(start, next_offset)
+        #print 'R:', start, end
         result.append((start, end))
-    return tuple(
-        (start + document_offset - 1, end + document_offset - 1)
-                                                     for (start, end) in result
-    )
-
+    final_result = tuple((start + document_offset, end + document_offset)
+                         for (start, end) in result)
+    #print(final_result)
+    return final_result
 
 def get_span_of_opening_parenthesis(document, position):
     assert isinstance(document, wingapi.CAPIDocument)
@@ -129,14 +146,13 @@ def get_argument_positions(document):
     argument_batch_positions = get_argument_batch_positions(document)
     document_text = shared.get_text(document)
     argument_positions = tuple(itertools.chain(
-        _argpos(
+        *(_argpos(
             document_text[argument_batch_position[0]:
                                                    argument_batch_position[1]],
             document_offset=argument_batch_position[0]
         )
-                        for argument_batch_position in argument_batch_positions
+                       for argument_batch_position in argument_batch_positions)
     ))
-    
     return argument_positions
 
 ###############################################################################
@@ -194,9 +210,31 @@ def select_next_argument(editor=wingapi.kArgEditor,
     position += 1
 
     argument_positions = get_argument_positions(editor.GetDocument())
+    #print(argument_positions)
+    argument_positions = sorted(argument_positions,
+                                key=(lambda (start, end): end))
     argument_ends = tuple(argument_position[1] for argument_position in
-                            argument_positions)
+                          argument_positions)
     argument_index = bisect.bisect_left(argument_ends, position)
+    
+    if 0 <= argument_index < len(argument_ends):
+        app.ExecuteCommand('set-visit-history-anchor')
+        editor.SetSelection(*argument_positions[argument_index])
+        
+def select_prev_argument(editor=wingapi.kArgEditor,
+                         app=wingapi.kArgApplication):
+    
+    assert isinstance(editor, wingapi.CAPIEditor)
+    position, _ = editor.GetSelection()
+    position -= 1
+
+    argument_positions = get_argument_positions(editor.GetDocument())
+    #print(argument_positions)
+    argument_positions = sorted(argument_positions,
+                                key=(lambda (start, end): start))
+    argument_ends = tuple(argument_position[0] for argument_position in
+                          argument_positions)
+    argument_index = bisect.bisect_left(argument_ends, position) - 1
     
     if 0 <= argument_index < len(argument_ends):
         app.ExecuteCommand('set-visit-history-anchor')
