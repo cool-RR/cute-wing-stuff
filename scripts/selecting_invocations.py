@@ -75,6 +75,7 @@ def _collect_offsets(call_string):
     return offsets
 
 def _argpos(call_string, document_offset):
+    print(call_string)
     def _find_start(prev_end, offset):
         s = call_string[prev_end:offset]
         m = re.search('(\(|,)(\s*)(.*?)$', s)
@@ -96,8 +97,11 @@ def _argpos(call_string, document_offset):
     # zip(offsets, offsets[1:]) returns [(9, 14), (14, 21), ...]
     for offset, next_offset in zip(offsets, offsets[1:]):
         #print 'I:', offset, next_offset
-        start = _find_start(end, offset)
-        end = _find_end(start, next_offset)
+        try:
+            start = _find_start(end, offset)
+            end = _find_end(start, next_offset)
+        except AttributeError:
+            continue
         #print 'R:', start, end
         result.append((start, end))
     final_result = tuple((start + document_offset, end + document_offset)
