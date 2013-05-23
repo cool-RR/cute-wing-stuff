@@ -17,6 +17,8 @@ else:
     
 import wingapi
 
+from _lru_cache import *
+
 _ignore_scripts = True
 
 
@@ -163,13 +165,9 @@ _whitespace_and_newlines_stripping_pattern = re.compile(
     r'''^(?P<leading>[ \r\n\t]*)(?P<content>.*?)(?P<trailing>[ \r\n\t]*)$''',
     flags=re.DOTALL
 )    
-def strip_segment_from_whitespace_and_newlines(document, start, end):
-    '''
-    If selection is on a single line, strip it, removing whitespace from edges.
-    '''
-    assert isinstance(editor, wingapi.CAPIEditor)
+def strip_segment_from_whitespace_and_newlines(text, start, end):
     
-    selection_text = document.GetCharRange(start, end)
+    selection_text = text[start:end]
     match = _whitespace_and_newlines_stripping_pattern.match(selection_text)
     assert match
     new_start = start + len(match.group('leading'))

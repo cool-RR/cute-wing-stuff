@@ -74,11 +74,13 @@ def _collect_offsets(call_string):
     offsets.append(len(call_string))
     return offsets
 
+@shared.lru_cache(maxsize=1000)
 def _argpos(call_string, document_offset):
-    print(call_string)
+    #print(call_string)
     def _find_start(prev_end, offset):
         s = call_string[prev_end:offset]
-        m = re.search('(\(|,)(\s*)(.*?)$', s)
+        #print(repr(s))
+        m = re.search('(\(|,)(\s*)((.|\s)*?)$', s)
         return prev_end + m.regs[3][0]
     def _find_end(start, next_offset):
         s = call_string[start:next_offset]
@@ -139,6 +141,7 @@ def get_invocation_positions(document):
     
 def get_argument_batch_positions(document):
     matches = _get_matches_for_arguments(document)
+    print(matches)
     parenthesis_starts = tuple(match.span(0)[1]-1 for match in matches)
     return map(
         lambda parenthesis_start:
@@ -148,8 +151,9 @@ def get_argument_batch_positions(document):
     
 def get_argument_positions(document):
     argument_batch_positions = get_argument_batch_positions(document)
+    print(argument_batch_positions)
     document_text = shared.get_text(document)
-    argument_positions = tuple(itertools.chain(
+    raw_argument_positions = tuple(itertools.chain(
         *(_argpos(
             document_text[argument_batch_position[0]:
                                                    argument_batch_position[1]],
@@ -157,6 +161,12 @@ def get_argument_positions(document):
         )
                        for argument_batch_position in argument_batch_positions)
     ))
+    argument_positions = map(
+        lambda (start, end):
+            shared.strip_segment_from_whitespace_and_newlines(document_text,
+                                                              start, end),
+        raw_argument_positions
+    )
     return argument_positions
 
 ###############################################################################
