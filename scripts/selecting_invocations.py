@@ -115,7 +115,7 @@ def get_span_of_opening_parenthesis(document, position):
     assert isinstance(document, wingapi.CAPIDocument)
     document_text = shared.get_text(document)
     if not document_text[position] == '(': raise Exception
-    for i in range(1, len(document_text) - 1 - position):
+    for i in range(1, len(document_text) - position):
         portion = document_text[position:position+i+1]
         if portion.count('(') == portion.count(')'):
             if not portion[-1] == ')': raise Exception
@@ -141,7 +141,6 @@ def get_invocation_positions(document):
     
 def get_argument_batch_positions(document):
     matches = _get_matches_for_arguments(document)
-    print(matches)
     parenthesis_starts = tuple(match.span(0)[1]-1 for match in matches)
     return map(
         lambda parenthesis_start:
@@ -151,7 +150,6 @@ def get_argument_batch_positions(document):
     
 def get_argument_positions(document):
     argument_batch_positions = get_argument_batch_positions(document)
-    print(argument_batch_positions)
     document_text = shared.get_text(document)
     raw_argument_positions = tuple(itertools.chain(
         *(_argpos(
