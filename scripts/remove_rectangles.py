@@ -18,7 +18,7 @@ def remove_rectangles(editor=wingapi.kArgEditor):
     for highlighting appearances of the currently selected word. This command
     clears all of those squares.
     
-    Suggested key combination: `Ctrl-Alt-Shift-R`
+    Suggested key combination: `Insert Ctrl-R`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     editor.fEditor.fEditMgr.fOccurrences._ClearAll(

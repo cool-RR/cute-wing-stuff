@@ -414,7 +414,7 @@ Wing sometimes draws rectangles on the editor, either for search results or
 for highlighting appearances of the currently selected word. This command
 clears all of those squares.
 
-Suggested key combination: `Ctrl-Alt-Shift-R`
+Suggested key combination: `Insert Ctrl-R`
 
 
 ## reverse-selection ##
@@ -450,7 +450,10 @@ Suggested key combination: `Ctrl-Alt-Plus`
 
 Select the next argument to a callable.
 
-Suggested key combination: `Ctrl-Alt-7`
+Set `limit_to_keywords=True` to go only to a keyword argument.
+
+Suggested key combinations: `Ctrl-R`
+                            `Ctrl-Alt-R` for `limit_to_keywords=True`
 
 
 ## select-next-invocation ##
@@ -495,7 +498,10 @@ Suggested key combinations: `Ctrl-Apostrophe`
 
 Select the previous argument to a callable.
 
-Suggested key combination: `Ctrl-Alt-Ampersand`
+Set `limit_to_keywords=True` to go only to a keyword argument.
+
+Suggested key combinations: `Ctrl-Shift-R`
+                            `Ctrl-Shift-Alt-R` for `limit_to_keywords=True`
 
 
 ## select-prev-invocation ##

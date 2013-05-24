@@ -38,7 +38,7 @@ class ArgumentSearchingFailed(Exception):
            
 
 
-def _collect_offsets(call_string):
+def _collect_offsets(call_string, limit_to_keywords=False):
     def _abs_offset(lineno, col_offset):
         current_lineno = 0
         total = 0
@@ -68,14 +68,16 @@ def _collect_offsets(call_string):
     for kw in call.keywords:
         offsets.append(_abs_offset(kw.value.lineno, kw.value.col_offset))
     if call.starargs:
-        offsets.append(_abs_offset(call.starargs.lineno, call.starargs.col_offset))
+        offsets.append(_abs_offset(call.starargs.lineno,
+                                   call.starargs.col_offset))
     if call.kwargs:
-        offsets.append(_abs_offset(call.kwargs.lineno, call.kwargs.col_offset))
+        offsets.append(_abs_offset(call.kwargs.lineno,
+                                   call.kwargs.col_offset))
     offsets.append(len(call_string))
     return offsets
 
 @shared.lru_cache(maxsize=1000)
-def _argpos(call_string, document_offset):
+def _argpos(call_string, document_offset, limit_to_keywords=False):
     #print(call_string)
     def _find_start(prev_end, offset):
         s = call_string[prev_end:offset]
@@ -88,7 +90,8 @@ def _argpos(call_string, document_offset):
         return start + m.start()
 
     try:
-        offsets = _collect_offsets(call_string)
+        offsets = _collect_offsets(call_string,
+                                   limit_to_keywords=limit_to_keywords)
     except ArgumentSearchingFailed:
         return ()
 
@@ -105,6 +108,10 @@ def _argpos(call_string, document_offset):
         except AttributeError:
             continue
         #print 'R:', start, end
+        if limit_to_keywords:
+            candidate = call_string[start:end]
+            if not re.match(r'''^ *[A-Za-z_][A-Za-z_0-9]* *=''', candidate):
+                continue
         result.append((start, end))
     final_result = tuple((start + document_offset, end + document_offset)
                          for (start, end) in result)
@@ -151,14 +158,15 @@ def get_argument_batch_positions(document):
         parenthesis_starts
     )
     
-def get_argument_positions(document):
+def get_argument_positions(document, limit_to_keywords=False):
     argument_batch_positions = get_argument_batch_positions(document)
     document_text = shared.get_text(document)
     raw_argument_positions = tuple(itertools.chain(
         *(_argpos(
             document_text[argument_batch_position[0]:
                                                    argument_batch_position[1]],
-            document_offset=argument_batch_position[0]
+            document_offset=argument_batch_position[0],
+            limit_to_keywords=limit_to_keywords
         )
                        for argument_batch_position in argument_batch_positions)
     ))
@@ -218,18 +226,25 @@ def select_prev_invocation(editor=wingapi.kArgEditor,
 ###############################################################################
 
 def select_next_argument(editor=wingapi.kArgEditor,
-                         app=wingapi.kArgApplication):
+                         app=wingapi.kArgApplication,
+                         limit_to_keywords=False):
     '''
     Select the next argument to a callable.
     
-    Suggested key combination: `Ctrl-Alt-7`
+    Set `limit_to_keywords=True` to go only to a keyword argument.
+    
+    Suggested key combinations: `Ctrl-R`
+                                `Ctrl-Alt-R` for `limit_to_keywords=True`
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)
     _, position = editor.GetSelection()
     position += 1
 
-    argument_positions = get_argument_positions(editor.GetDocument())
+    argument_positions = get_argument_positions(
+        editor.GetDocument(),
+        limit_to_keywords=limit_to_keywords
+    )
     #print(argument_positions)
     argument_positions = sorted(argument_positions,
                                 key=(lambda (start, end): end))
@@ -243,17 +258,24 @@ def select_next_argument(editor=wingapi.kArgEditor,
         
 
 def select_prev_argument(editor=wingapi.kArgEditor,
-                         app=wingapi.kArgApplication):
+                         app=wingapi.kArgApplication,
+                         limit_to_keywords=False):
     '''
     Select the previous argument to a callable.
     
-    Suggested key combination: `Ctrl-Alt-Ampersand`
+    Set `limit_to_keywords=True` to go only to a keyword argument.
+    
+    Suggested key combinations: `Ctrl-Shift-R`
+                                `Ctrl-Shift-Alt-R` for `limit_to_keywords=True`
     '''    
     assert isinstance(editor, wingapi.CAPIEditor)
     position, _ = editor.GetSelection()
     position -= 1
 
-    argument_positions = get_argument_positions(editor.GetDocument())
+    argument_positions = get_argument_positions(
+        editor.GetDocument(),
+        limit_to_keywords=limit_to_keywords
+    )
     #print(argument_positions)
     argument_positions = sorted(argument_positions,
                                 key=(lambda (start, end): start))
