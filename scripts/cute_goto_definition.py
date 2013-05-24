@@ -27,14 +27,10 @@ def cute_goto_definition(editor=wingapi.kArgEditor):
     wingapi.gApplication.ExecuteCommand('set-visit-history-anchor')    
     selection_start, selection_end = editor.GetSelection()
     editor.SetSelection(selection_end, selection_end)
-    backup = guimgr.multieditor.CMultiEditor.NextVisitInHistory
-    try:
-        guimgr.multieditor.CMultiEditor.NextVisitInHistory = \
-                                                   lambda *args, **kwargs: None
-        if wingapi.gApplication.CommandAvailable('goto-selected-symbol-defn'):
-            wingapi.gApplication.ExecuteCommand('goto-selected-symbol-defn')
-        else:
-            editor.SetSelection(selection_start, selection_end)
-    finally:
-        guimgr.multieditor.CMultiEditor.NextVisitInHistory = backup
-        wingapi.gApplication.ExecuteCommand('set-visit-history-anchor')    
+    guimgr.multieditor.CMultiEditor.NextVisitInHistory = \
+                                               lambda *args, **kwargs: None
+    if wingapi.gApplication.CommandAvailable('goto-selected-symbol-defn'):
+        wingapi.gApplication.ExecuteCommand('goto-selected-symbol-defn')
+    else:
+        editor.SetSelection(selection_start, selection_end)
+    wingapi.gApplication.ExecuteCommand('set-visit-history-anchor')    
