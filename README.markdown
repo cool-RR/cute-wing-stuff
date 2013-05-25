@@ -19,7 +19,7 @@ key. In order for that to work, you need to bind `Insert` to nothing in Wing.
 people who still like using the `Insert` key by itself, you can bind
 `Ctrl-Insert` to `toggle-overtype`.
 
-All the scripts are copyright Ram Rachum and released under the MIT open-source license.
+All the scripts are copyright Ram Rachum and released under the MIT open-source license. Some code is by Raymond Hettinger, and licensed to use under the MIT license. (License given by Hettinger in private email on May 25th, 2013.)
 
 
 # What do the scripts do? #
