@@ -484,6 +484,15 @@ Select the next right-hand-side of an assignment.
 Suggested key combination: `Ctrl-Alt-0`
 
 
+## select-next-scope-name ##
+
+Select the next scope name like `def thing():` or `class Thing():`.
+
+(Selects just the name.)
+
+Suggested key combination: `Alt-Semicolon`
+
+
 ## select-next-string ##
 
 Select the next (or current) string, starting from caret location.
@@ -530,6 +539,15 @@ Suggested key combination: Ctrl-9
 Select the previous right-hand-side of an assignment.
 
 Suggested key combination: `Ctrl-Alt-Parenright`
+
+
+## select-prev-scope-name ##
+
+Select the previous scope name like `def thing():` or `class Thing():`.
+
+(Selects just the name.)
+
+Suggested key combination: `Alt-Colon`
 
 
 ## select-prev-string ##

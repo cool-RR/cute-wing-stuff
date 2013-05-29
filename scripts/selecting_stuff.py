@@ -9,6 +9,7 @@ See its documentation for more information.
 
 from __future__ import with_statement
 
+import bisect
 import re
 import _ast
 
@@ -132,44 +133,28 @@ def select_whitespaceless_name(editor=wingapi.kArgEditor):
     _select_more_until_biggest_match(_is_whitespaceless_name, editor)
     
 
-_scope_name_regex = re.compile(
-    r'''^|[ \t\r\n](?:def|class) +([a-zA-Z_][0-9a-zA-Z_]*)[ \t\r\n]*[(:]''',
+_scope_name_pattern = re.compile(
+    r'''(?:^|[ \t\r\n])(?:def|class) +([a-zA-Z_][0-9a-zA-Z_]*)'''
+    r'''[ \t\r\n]*[(:]''',
     flags=re.DOTALL
 )
 
-def select_scope_name(editor=wingapi.kArgEditor):
-    '''
-    Select the name of the function or class that the cursor is currently on.
-    
-    Suggested key combination: `Alt-Colon`
-    '''
-    assert isinstance(editor, wingapi.CAPIEditor)
-    document = editor.GetDocument()
+
+def get_scope_name_positions(document):
     document_text = shared.get_text(document)
-    with shared.SelectionRestorer(editor):    
-        editor.ExecuteCommand('select-scope')
-        scope_start, scope_end = editor.GetSelection()
-        
-    scope_contents = document_text[scope_start : scope_end]
-    match = _scope_name_regex.match(scope_contents)
-    if not match:
-        return
-    stuff_before_scope_name, scope_name = match.groups()
-    scope_name_start = scope_start + len(stuff_before_scope_name)
-    scope_name_end = scope_name_start + len(scope_name)
-    assert document_text[scope_name_position :
-                             scope_name_position+len(scope_name)] == scope_name
-    
-    with shared.UndoableAction(document):
-        editor.SetSelection(scope_name_start, scope_name_end)
-    
-    
-    
-    
-    
+    matches = _scope_name_pattern.finditer(document_text)
+    return tuple(match.span(1) for match in matches)
+
+
 def select_next_scope_name(editor=wingapi.kArgEditor,
                            app=wingapi.kArgApplication):
+    '''
+    Select the next scope name like `def thing():` or `class Thing():`.
     
+    (Selects just the name.)
+    
+    Suggested key combination: `Alt-Semicolon`
+    '''    
     assert isinstance(editor, wingapi.CAPIEditor)
     _, position = editor.GetSelection()
     position += 1
@@ -187,9 +172,11 @@ def select_next_scope_name(editor=wingapi.kArgEditor,
 def select_prev_scope_name(editor=wingapi.kArgEditor,
                            app=wingapi.kArgApplication):
     '''
-    Select the previous scope_name of a callable, e.g `foo.bar(baz)`.
+    Select the previous scope name like `def thing():` or `class Thing():`.
     
-    Suggested key combination: `Ctrl-Alt-Asterisk`
+    (Selects just the name.)
+    
+    Suggested key combination: `Alt-Colon`
     '''    
     assert isinstance(editor, wingapi.CAPIEditor)
     position, _ = editor.GetSelection()
