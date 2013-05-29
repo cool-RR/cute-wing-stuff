@@ -133,7 +133,7 @@ def select_whitespaceless_name(editor=wingapi.kArgEditor):
     
 
 _scope_name_regex = re.compile(
-    r'''^(.*?(?:(?:def )|(?:class )))([a-zA-Z_][0-9a-zA-Z_]*)''',
+    r'''^(.*?(?:(?:def )|(?:class )))([a-zA-Z_][0-9a-zA-Z_]*)[ \t\r\n]*[(:]''',
     flags=re.DOTALL
 )
 
