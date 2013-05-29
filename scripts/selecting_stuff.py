@@ -133,7 +133,7 @@ def select_whitespaceless_name(editor=wingapi.kArgEditor):
     
 
 _scope_name_regex = re.compile(
-    r'''^(.*?(?:(?:def )|(?:class )))([a-zA-Z_][0-9a-zA-Z_]*)[ \t\r\n]*[(:]''',
+    r'''^|[ \t\r\n]([a-zA-Z_][0-9a-zA-Z_]*)[ \t\r\n]*[(:]''',
     flags=re.DOTALL
 )
 
@@ -167,3 +167,40 @@ def select_scope_name(editor=wingapi.kArgEditor):
     
     
     
+def select_next_scope_name(editor=wingapi.kArgEditor,
+                           app=wingapi.kArgApplication):
+    
+    assert isinstance(editor, wingapi.CAPIEditor)
+    _, position = editor.GetSelection()
+    position += 1
+
+    scope_name_positions = get_scope_name_positions(editor.GetDocument())
+    scope_name_ends = tuple(scope_name_position[1] for scope_name_position in
+                            scope_name_positions)
+    scope_name_index = bisect.bisect_left(scope_name_ends, position)
+    
+    if 0 <= scope_name_index < len(scope_name_ends):
+        app.ExecuteCommand('set-visit-history-anchor')
+        editor.SetSelection(*scope_name_positions[scope_name_index])
+        
+
+def select_prev_scope_name(editor=wingapi.kArgEditor,
+                           app=wingapi.kArgApplication):
+    '''
+    Select the previous scope_name of a callable, e.g `foo.bar(baz)`.
+    
+    Suggested key combination: `Ctrl-Alt-Asterisk`
+    '''    
+    assert isinstance(editor, wingapi.CAPIEditor)
+    position, _ = editor.GetSelection()
+    position -= 1
+
+    scope_name_positions = get_scope_name_positions(editor.GetDocument())
+    scope_name_starts = tuple(scope_name_position[0] for scope_name_position
+                              in scope_name_positions)
+    scope_name_index = bisect.bisect_left(scope_name_starts, position) - 1
+    
+    if 0 <= scope_name_index < len(scope_name_starts):
+        app.ExecuteCommand('set-visit-history-anchor')
+        editor.SetSelection(*scope_name_positions[scope_name_index])
+
