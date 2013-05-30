@@ -186,7 +186,7 @@ Suggested key combinations:
 
 Improved version of `query-replace` for finding and replacing in document.
 
-If text is selected, it will be used as the text to search for, and the
+BUGGY: If text is selected, it will be used as the text to search for, and the
 contents of the clipboard will be offered as the replace value.
 
 Implemented on Windows only.
@@ -198,7 +198,7 @@ Suggested key combination: `Alt-Comma`
 
 Improved version of `replace-string` for finding and replacing in document.
 
-If text is selected, it will be used as the text to search for, and the
+BUGGY: If text is selected, it will be used as the text to search for, and the
 contents of the clipboard will be offered as the replace value.
 
 Implemented on Windows only.
