@@ -53,6 +53,8 @@ def implicit_getattr_to_explicit(editor=wingapi.kArgEditor):
     #text = document.GetCharRange(head, tail)
     
     matches = _get_matches(document)
+    if not matches:
+        return
     match_spans = tuple(match.span(0) for match in matches)
     candidate_index = max(
         bisect.bisect_left(match_spans, (current_position, 0)) - 1,
@@ -69,6 +71,10 @@ def implicit_getattr_to_explicit(editor=wingapi.kArgEditor):
         #except:
             #pass
     
-    new_text = 'getattr(%s, %s, None)' % (candidate.group(0),
-                                          candidate.group(1))
+    new_text = 'getattr(%s, %s, None)' % (candidate.group(1),
+                                          repr(candidate.group(2)))
     print(new_text)
+    document.DeleteChars(*candidate_span)
+    document.InsertChars(candidate_span[0], new_text)
+    editor.SetSelection(candidate_span[0]+len(new_text)-6,
+                        candidate_span[0]+len(new_text)-1)
