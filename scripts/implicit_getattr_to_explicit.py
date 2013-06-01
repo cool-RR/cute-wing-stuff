@@ -74,7 +74,9 @@ def implicit_getattr_to_explicit(editor=wingapi.kArgEditor):
     new_text = 'getattr(%s, %s, None)' % (candidate.group(1),
                                           repr(candidate.group(2)))
     print(new_text)
-    document.DeleteChars(*candidate_span)
-    document.InsertChars(candidate_span[0], new_text)
-    editor.SetSelection(candidate_span[0]+len(new_text)-6,
-                        candidate_span[0]+len(new_text)-1)
+    wingapi.gApplication.ExecuteCommand('set-visit-history-anchor')    
+    with shared.UndoableAction(document):
+        document.DeleteChars(*candidate_span)
+        document.InsertChars(candidate_span[0], new_text)
+        editor.SetSelection(candidate_span[0]+len(new_text)-6,
+                            candidate_span[0]+len(new_text)-1)
