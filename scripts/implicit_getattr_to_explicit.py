@@ -23,10 +23,14 @@ import shared
 python_identifier_subpattern = r'''[a-zA-Z_][0-9a-zA-Z_]*'''
 
 pattern = re.compile(
-    r'''(?P<object>%s)\.(?P<attribute_name>%s)''' % (
-        python_identifier_subpattern, python_identifier_subpattern
+    r'''(?P<object>%s(?:\.%s)*)\.(?P<attribute_name>%s)''' % (
+        python_identifier_subpattern, python_identifier_subpattern,
+        python_identifier_subpattern
     )
 )
+
+def _get_matches():
+    
 
 def implicit_getattr_to_explicit(editor=wingapi.kArgEditor):
     '''
