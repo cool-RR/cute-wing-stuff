@@ -19,7 +19,7 @@ TAB_KEY = 15 if 'linux' in sys.platform else '48' if 'darwin' in sys.platform \
 
 _characters_that_need_shift = ('!@#$%^&*()_+~{}>:"?|<')
 
-def type_string(string):
+def _type_string(string):
     assert shared.autopy_available
     import autopy.key
     for character in string:
@@ -50,7 +50,7 @@ def _cute_general_replace(command_name,
             autopy.key.toggle(autopy.key.K_SHIFT, False)
             autopy.key.toggle(autopy.key.K_CONTROL, False)
             autopy.key.toggle(autopy.key.K_META, False)
-            #type_string(selection)
+            #_type_string(selection)
             #autopy.key.tap(autopy.key.K_ESCAPE)
             #autopy.key.toggle(autopy.key.K_ALT, False)
             #autopy.key.tap(TAB_KEY)

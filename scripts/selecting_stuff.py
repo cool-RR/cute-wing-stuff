@@ -140,7 +140,7 @@ _scope_name_pattern = re.compile(
 )
 
 
-def get_scope_name_positions(document):
+def _get_scope_name_positions(document):
     document_text = shared.get_text(document)
     matches = _scope_name_pattern.finditer(document_text)
     return tuple(match.span(1) for match in matches)
@@ -159,7 +159,7 @@ def select_next_scope_name(editor=wingapi.kArgEditor,
     _, position = editor.GetSelection()
     position += 1
 
-    scope_name_positions = get_scope_name_positions(editor.GetDocument())
+    scope_name_positions = _get_scope_name_positions(editor.GetDocument())
     scope_name_ends = tuple(scope_name_position[1] for scope_name_position in
                             scope_name_positions)
     scope_name_index = bisect.bisect_left(scope_name_ends, position)
@@ -182,7 +182,7 @@ def select_prev_scope_name(editor=wingapi.kArgEditor,
     position, _ = editor.GetSelection()
     position -= 1
 
-    scope_name_positions = get_scope_name_positions(editor.GetDocument())
+    scope_name_positions = _get_scope_name_positions(editor.GetDocument())
     scope_name_starts = tuple(scope_name_position[0] for scope_name_position
                               in scope_name_positions)
     scope_name_index = bisect.bisect_left(scope_name_starts, position) - 1

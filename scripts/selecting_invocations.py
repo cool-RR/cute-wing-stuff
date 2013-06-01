@@ -118,7 +118,7 @@ def _argpos(call_string, document_offset, limit_to_keywords=False):
     #print(final_result)
     return final_result
 
-def get_span_of_opening_parenthesis(document, position):
+def _get_span_of_opening_parenthesis(document, position):
     assert isinstance(document, wingapi.CAPIDocument)
     document_text = shared.get_text(document)
     if not document_text[position] == '(': raise Exception
@@ -145,21 +145,21 @@ def _get_matches_for_arguments(document):
                  invocation_pattern_for_arguments.finditer(document_text)
                  if not keyword.iskeyword(match.groups()[0]))
 
-def get_invocation_positions(document):
+def _get_invocation_positions(document):
     matches = _get_matches(document)
     return tuple(match.span(1) for match in matches)
     
-def get_argument_batch_positions(document):
+def _get_argument_batch_positions(document):
     matches = _get_matches_for_arguments(document)
     parenthesis_starts = tuple(match.span(0)[1]-1 for match in matches)
     return map(
         lambda parenthesis_start:
-                  get_span_of_opening_parenthesis(document, parenthesis_start),
+                  _get_span_of_opening_parenthesis(document, parenthesis_start),
         parenthesis_starts
     )
     
-def get_argument_positions(document, limit_to_keywords=False):
-    argument_batch_positions = get_argument_batch_positions(document)
+def _get_argument_positions(document, limit_to_keywords=False):
+    argument_batch_positions = _get_argument_batch_positions(document)
     document_text = shared.get_text(document)
     raw_argument_positions = tuple(itertools.chain(
         *(_argpos(
@@ -192,7 +192,7 @@ def select_next_invocation(editor=wingapi.kArgEditor,
     _, position = editor.GetSelection()
     position += 1
 
-    invocation_positions = get_invocation_positions(editor.GetDocument())
+    invocation_positions = _get_invocation_positions(editor.GetDocument())
     invocation_ends = tuple(invocation_position[1] for invocation_position in
                             invocation_positions)
     invocation_index = bisect.bisect_left(invocation_ends, position)
@@ -213,7 +213,7 @@ def select_prev_invocation(editor=wingapi.kArgEditor,
     position, _ = editor.GetSelection()
     position -= 1
 
-    invocation_positions = get_invocation_positions(editor.GetDocument())
+    invocation_positions = _get_invocation_positions(editor.GetDocument())
     invocation_starts = tuple(invocation_position[0] for invocation_position
                               in invocation_positions)
     invocation_index = bisect.bisect_left(invocation_starts, position) - 1
@@ -241,7 +241,7 @@ def select_next_argument(editor=wingapi.kArgEditor,
     _, position = editor.GetSelection()
     position += 1
 
-    argument_positions = get_argument_positions(
+    argument_positions = _get_argument_positions(
         editor.GetDocument(),
         limit_to_keywords=limit_to_keywords
     )
@@ -272,7 +272,7 @@ def select_prev_argument(editor=wingapi.kArgEditor,
     position, _ = editor.GetSelection()
     position -= 1
 
-    argument_positions = get_argument_positions(
+    argument_positions = _get_argument_positions(
         editor.GetDocument(),
         limit_to_keywords=limit_to_keywords
     )
