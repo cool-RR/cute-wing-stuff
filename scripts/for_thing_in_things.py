@@ -66,9 +66,7 @@ def for_thing_in_things(editor=wingapi.kArgEditor, comprehension=False):
             start_position, _ = editor.GetSelection()
             
 
-        print(start_position, end_position)
         base_text = document.GetCharRange(start_position, end_position)
-        print(base_text)
         ### Analyzing base text: ##############################################
         #                                                                     #
         if range_pattern.match(base_text):
