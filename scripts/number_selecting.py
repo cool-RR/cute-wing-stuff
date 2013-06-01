@@ -23,15 +23,15 @@ import shared
 number_pattern = re.compile(r'''([0-9]+(\.[0-9]+)?)|(\.[0-9]+)''')
 
 
-def get_all_number_positions(editor):
+def _get_all_number_positions(editor):
     text = shared.get_text(editor.GetDocument())
     matches = tuple(number_pattern.finditer(text))
     return tuple((match.start(), match.end()) for match in matches)
 
 
-def get_relevant_number_positions(editor, caret_position):
+def _get_relevant_number_positions(editor, caret_position):
     assert isinstance(editor, wingapi.CAPIEditor)
-    all_number_positions = get_all_number_positions(editor)
+    all_number_positions = _get_all_number_positions(editor)
     last_start_position = last_end_position = None
     for i, (start_position, end_position) in enumerate(all_number_positions):
         if end_position >= caret_position:
@@ -59,7 +59,7 @@ def select_next_number(editor=wingapi.kArgEditor,
 
     caret_position = editor.GetSelection()[1] + 1
     
-    _, next_number_position = get_relevant_number_positions(editor,
+    _, next_number_position = _get_relevant_number_positions(editor,
                                                             caret_position)
     if next_number_position != (None, None):
         app.ExecuteCommand('set-visit-history-anchor')
@@ -85,7 +85,7 @@ def select_prev_number(editor=wingapi.kArgEditor,
     
     caret_position = editor.GetSelection()[0]
     
-    prev_number_position, _  = get_relevant_number_positions(editor,
+    prev_number_position, _  = _get_relevant_number_positions(editor,
                                                              caret_position)
     if prev_number_position != (None, None):
         app.ExecuteCommand('set-visit-history-anchor')

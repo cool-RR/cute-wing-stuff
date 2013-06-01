@@ -5,6 +5,8 @@ from itertools import ifilterfalse
 from heapq import nsmallest
 from operator import itemgetter
 
+_ignore_scripts = True
+
 class Counter(dict):
     'Mapping where default values are zero'
     def __missing__(self, key):
