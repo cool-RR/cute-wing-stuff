@@ -16,7 +16,11 @@ import wingapi
 import shared
 
 
-def cute_open_line(editor=wingapi.kArgEditor):
+behaviors = ('stand-ground', 'before', 'after')
+
+
+
+def cute_open_line(editor=wingapi.kArgEditor, behavior='stand-ground'):
     '''
     Open a new line, but don't move the caret down to the new line.
     
@@ -29,12 +33,47 @@ def cute_open_line(editor=wingapi.kArgEditor):
     things like auto-indenting your code to the right level, opening your
     parentheses *just so* if you're doing function invocation, and a bunch of
     other goodies.
+    
+    If given `behavior='after'`, goes to the end of the current line, and opens
+    a new line from there. If given `behavior='before'`, goes to the end of the
+    previous line, and opens a new line from there.
 
-    Suggested key combination: `Alt-Return`
+    Suggested key combinations:
+    
+        `Alt-Return` for normal operation
+        `Ctrl-Return` for `behavior='after'`
+        `Shift-Return` for `behavior='before'`
+        
     (The `Alt-Return` combination requires a AHK shim, at least on Windows.)
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)
-    with shared.SelectionRestorer(editor):
-        wingapi.gApplication.ExecuteCommand('new-line')
-    
+    assert behavior in behaviors
+    document = editor.GetDocument()
+    with shared.UndoableAction(document):
+        if behavior == 'stand-ground':
+            with shared.SelectionRestorer(editor):
+                _undoless_new_line(editor)
+        else:
+            _, caret_position = editor.GetAnchorAndCaret()
+            line_number = document.GetLineNumberFromPosition(caret_position)
+            if behavior == 'before':
+                if line_number == 0:
+                    return
+                last_character_of_previous_line = \
+                                           document.GetLineEnd(line_number - 1)
+                editor.SetSelection(last_character_of_previous_line,
+                                    last_character_of_previous_line)
+                _undoless_new_line(editor)
+            else:
+                assert behavior == 'after'
+                last_character_of_line = document.GetLineEnd(line_number)
+                editor.SetSelection(last_character_of_line,
+                                    last_character_of_line)
+                _undoless_new_line(editor)
+
+
+def _undoless_new_line(editor):
+    assert isinstance(editor, wingapi.CAPIEditor)
+    with shared.NonUndoableAction(editor):
+        editor.ExecuteCommand('new-line')

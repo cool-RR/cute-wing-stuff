@@ -17,6 +17,8 @@ else:
     
 import wingapi
 
+from _lru_cache import *
+
 _ignore_scripts = True
 
 
@@ -158,6 +160,21 @@ def strip_selection_if_single_line(editor):
         new_end = end - right_strip_size
         editor.SetSelection(new_start, new_end)
     
+    
+_whitespace_and_newlines_stripping_pattern = re.compile(
+    r'''^(?P<leading>[ \r\n\t]*)(?P<content>.*?)(?P<trailing>[ \r\n\t]*)$''',
+    flags=re.DOTALL
+)    
+def strip_segment_from_whitespace_and_newlines(text, start, end):
+    
+    selection_text = text[start:end]
+    match = _whitespace_and_newlines_stripping_pattern.match(selection_text)
+    assert match
+    new_start = start + len(match.group('leading'))
+    new_end = end - len(match.group('trailing'))
+    
+    return new_start, new_end
+    
         
 class UndoableAction(object):
     '''
@@ -179,6 +196,24 @@ class UndoableAction(object):
         
     def __exit__(self, *args, **kwargs):
         self.document.EndUndoAction()
+        
+
+class NonUndoableAction(object):
+    def __init__(self, editor):
+        assert isinstance(editor, wingapi.CAPIEditor)
+        self.editor = editor
+        
+    def __enter__(self):
+        self._begin_undo_action = self.editor.fEditor._fScint.begin_undo_action
+        self._end_undo_action = self.editor.fEditor._fScint.end_undo_action
+        self.editor.fEditor._fScint.begin_undo_action = \
+                                  self.editor.fEditor._fScint.end_undo_action = \
+                                                   lambda *args, **kwargs: None
+        
+    def __exit__(self, *args, **kwargs):
+        pass
+        #self.editor.fCache.fDoc.begin_undo_action = self._begin_undo_action
+        #self.editor.fCache.fDoc.end_undo_action = self._end_undo_action
         
 
 def get_cursor_position(editor):

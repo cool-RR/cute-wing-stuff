@@ -27,6 +27,8 @@ def type_string(string):
             autopy.key.tap(character, autopy.key.MOD_SHIFT)
         else:
             autopy.key.tap(character)
+        autopy.key.tap(135) # F24 for making AHK not interfere
+        autopy.key.tap(35) # `End` for making AHK not interfere
 
 
 def _cute_general_replace(command_name,
@@ -39,6 +41,7 @@ def _cute_general_replace(command_name,
                                                   selection_end)
     
     if selection:
+        wingapi.gApplication.SetClipboard(selection)
         editor.SetSelection(selection_start, selection_start)
         app.ExecuteCommand(command_name)
         if shared.autopy_available:
@@ -47,12 +50,13 @@ def _cute_general_replace(command_name,
             autopy.key.toggle(autopy.key.K_SHIFT, False)
             autopy.key.toggle(autopy.key.K_CONTROL, False)
             autopy.key.toggle(autopy.key.K_META, False)
-            type_string(selection)
+            #type_string(selection)
             #autopy.key.tap(autopy.key.K_ESCAPE)
             #autopy.key.toggle(autopy.key.K_ALT, False)
-            autopy.key.tap(TAB_KEY, autopy.key.MOD_SHIFT)
-            autopy.key.tap('v', autopy.key.MOD_CONTROL)
-            autopy.key.tap('a', autopy.key.MOD_CONTROL)
+            #autopy.key.tap(TAB_KEY)
+            #autopy.key.tap('l', autopy.key.MOD_ALT)
+            #autopy.key.tap('v', autopy.key.MOD_CONTROL)
+            #autopy.key.tap('a', autopy.key.MOD_CONTROL)
             
         
     else: # not selection
@@ -64,8 +68,8 @@ def cute_query_replace(editor=wingapi.kArgEditor,
     '''
     Improved version of `query-replace` for finding and replacing in document.
     
-    If text is selected, it will be used as the text to search for, and the
-    contents of the clipboard will be offered as the replace value.
+    BUGGY: If text is selected, it will be used as the text to search for, and
+    the contents of the clipboard will be offered as the replace value.
     
     Implemented on Windows only.
     
@@ -79,8 +83,8 @@ def cute_replace_string(editor=wingapi.kArgEditor,
     '''
     Improved version of `replace-string` for finding and replacing in document.
     
-    If text is selected, it will be used as the text to search for, and the
-    contents of the clipboard will be offered as the replace value.
+    BUGGY: If text is selected, it will be used as the text to search for, and
+    the contents of the clipboard will be offered as the replace value.
     
     Implemented on Windows only.
     

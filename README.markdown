@@ -1,6 +1,6 @@
 # Cute Wing stuff #
 
-A collection of scripts for [Wing IDE 4.1](http://www.wingware.com/).
+A collection of scripts for [Wing IDE 5.0](http://www.wingware.com/).
 
 In order to use these scripts in your copy of Wing, download the repo to
 someplace in your computer, fire up Wing, go to `Edit` -> `Preferences` -> `IDE
@@ -19,7 +19,7 @@ key. In order for that to work, you need to bind `Insert` to nothing in Wing.
 people who still like using the `Insert` key by itself, you can bind
 `Ctrl-Insert` to `toggle-overtype`.
 
-All the scripts are copyright Ram Rachum and released under the MIT open-source license.
+All the scripts are copyright Ram Rachum and released under the MIT open-source license. Some code is by Raymond Hettinger, and licensed to use under the MIT license. (License given by Hettinger in private email on May 25th, 2013.)
 
 
 # What do the scripts do? #
@@ -124,6 +124,17 @@ Evaluate selection in debug probe, doing `select-more` if nothing selected.
     
 Suggested key combination: `Ctrl-Alt-D`
 
+
+## cute-goto-definition ##
+
+Go to the definition of the symbol that the caret is on.
+
+This is an improvement over Wing's `goto-selected-symbol-defn` because if
+operated when selecting a segment of code, it looks at the end of the
+selection instead of the start.
+
+Suggested key combination: `F4`
+
     
 ## cute-goto-line ##
 
@@ -147,17 +158,27 @@ Suggested key combination: `Ctrl-L`
 ## cute-open-line ##
 
 Open a new line, but don't move the caret down to the new line.
+
+Running this command is like pressing Enter, except your caret doesn't move
+into the new line that was created, but stays exactly where it was.
+
+The advantage of this over Wing's built-in `open-line` is that
+`cute-open-line` doesn't just insert a newline character like `open-line`
+does; it runs Wing's `new-line` command, which does various intelligent
+things like auto-indenting your code to the right level, opening your
+parentheses *just so* if you're doing function invocation, and a bunch of
+other goodies.
+
+If given `behavior='after'`, goes to the end of the current line, and opens
+a new line from there. If given `behavior='before'`, goes to the end of the
+previous line, and opens a new line from there.
+
+Suggested key combinations:
+
+    `Alt-Return` for normal operation
+    `Ctrl-Return` for `behavior='after'`
+    `Shift-Return` for `behavior='before'`
     
-Running this command is like pressing Enter, except your caret doesn't move into the
-new line that was created, but stays exactly where it was.
-
-The advantage of this over Wing's built-in `open-line` is that `cute-open-line`
-doesn't just insert a newline character like `open-line` does; it runs Wing's
-`new-line` command, which does various intelligent things like auto-indenting
-your code to the right level, opening your parentheses *just so* if you're
-doing function invocation, and a bunch of other goodies.
-
-Suggested key combination: `Alt-Return`
 (The `Alt-Return` combination requires a AHK shim, at least on Windows.)
 
 
@@ -165,7 +186,7 @@ Suggested key combination: `Alt-Return`
 
 Improved version of `query-replace` for finding and replacing in document.
 
-If text is selected, it will be used as the text to search for, and the
+BUGGY: If text is selected, it will be used as the text to search for, and the
 contents of the clipboard will be offered as the replace value.
 
 Implemented on Windows only.
@@ -177,7 +198,7 @@ Suggested key combination: `Alt-Comma`
 
 Improved version of `replace-string` for finding and replacing in document.
 
-If text is selected, it will be used as the text to search for, and the
+BUGGY: If text is selected, it will be used as the text to search for, and the
 contents of the clipboard will be offered as the replace value.
 
 Implemented on Windows only.
@@ -393,7 +414,17 @@ Wing sometimes draws rectangles on the editor, either for search results or
 for highlighting appearances of the currently selected word. This command
 clears all of those squares.
 
-Suggested key combination: `Ctrl-Alt-Shift-R`
+Suggested key combination: `Insert Ctrl-R`
+
+
+## reverse-selection ##
+
+Reverse the selection, putting the caret on the opposite side.
+
+If the caret was at the beginning of the selection, it'll be put at the
+end, and if it was in the end, it'll be put in the beginning.
+
+Suggested key combination: `Insert Shift-R`
 
 
 ## select-dotted-name ##
@@ -415,11 +446,51 @@ selected.
 Suggested key combination: `Ctrl-Alt-Plus`
 
 
+## select-next-argument ##
+
+Select the next argument to a callable.
+
+Set `limit_to_keywords=True` to go only to a keyword argument.
+
+Suggested key combinations: `Ctrl-R`
+                            `Ctrl-Alt-R` for `limit_to_keywords=True`
+
+
+## select-next-invocation ##
+
+Select the next invocation of a callable, e.g `foo.bar(baz)`.
+
+Suggested key combination: `Ctrl-Alt-8`
+    
+    
+## select-next-lhs ##
+
+Select the next left-hand-side of an assignment.
+
+Suggested key combination: `Ctrl-Alt-9`
+
+
 ## select-next-number ##
 
 Select the next (or current) number in the document.
 
 Suggested key combination: Ctrl-0
+
+
+## select-next-rhs ##
+
+Select the next right-hand-side of an assignment.
+
+Suggested key combination: `Ctrl-Alt-0`
+
+
+## select-next-scope-name ##
+
+Select the next scope name like `def thing():` or `class Thing():`.
+
+(Selects just the name.)
+
+Suggested key combination: `Alt-Semicolon`
 
 
 ## select-next-string ##
@@ -432,11 +503,51 @@ Suggested key combinations: `Ctrl-Apostrophe`
                             `Alt-Apostrophe` for `inner=True`
 
 
+## select-prev-argument ##
+
+Select the previous argument to a callable.
+
+Set `limit_to_keywords=True` to go only to a keyword argument.
+
+Suggested key combinations: `Ctrl-Shift-R`
+                            `Ctrl-Shift-Alt-R` for `limit_to_keywords=True`
+
+
+## select-prev-invocation ##
+
+Select the previous invocation of a callable, e.g `foo.bar(baz)`.
+
+Suggested key combination: `Ctrl-Alt-Asterisk`
+    
+    
+## select-prev-lhs ##
+
+Select the previous left-hand-side of an assignment.
+
+Suggested key combination: `Ctrl-Alt-Parenleft`
+
+
 ## select-prev-number ##
 
 Select the previous number in the document.
 
 Suggested key combination: Ctrl-9
+
+
+## select-prev-rhs ##
+
+Select the previous right-hand-side of an assignment.
+
+Suggested key combination: `Ctrl-Alt-Parenright`
+
+
+## select-prev-scope-name ##
+
+Select the previous scope name like `def thing():` or `class Thing():`.
+
+(Selects just the name.)
+
+Suggested key combination: `Alt-Colon`
 
 
 ## select-prev-string ##
@@ -485,32 +596,6 @@ Specify `at_caret=True` to use the current caret position as the slashing
 point, rather than finding one automatically.
 
 Suggested key combination: `Insert L` for default arguments, `Insert Shift-L` for line_offset=-1, and `Insert Ctrl-L` for at_caret=True.
-
-
-## start-debug-with-preset-args ##
-
-Start debugging with preset arguments.
-
-You need to have a git-ignored file `cute_wing_stuff_local_settings.py`
-right in this `scripts` folder, which defines a `dict` like this:
-
-    all_debug_argument_presets = {
-        'my_django_app.wpr': ['runserver --noreload', 'test']
-        'other_django_app.wpr': ['runserver 80 --noreload', 'test',
-                                 'syncdb']
-        None: ['runserver 80 --noreload', 'test'], 
-    }
-   
-What does this file mean? For each of your projects, you define the
-different presets for debug arguments that will be used for your main debug
-file. `None` is used as the default for any Wing projects that are not
-listed.
-
-Then you call this `start-debug-with-preset-args` with the `i_preset`
-argument equal to the preset index number, and debug will start with those
-arguments.
-
-Suggested key combinations: `Insert F5` for preset 0, `Insert Shift-F5` for preset 1, `Insert Ctrl-F5` for preset 2, `Insert Ctrl-Shift-F5` for preset 3
 
 
 ## unpack-tuple-to-one ##

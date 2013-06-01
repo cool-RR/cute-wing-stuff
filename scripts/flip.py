@@ -34,6 +34,7 @@ flip_pairs = (
     ('column', 'row'), 
     ('horizontal', 'vertical'), 
     ('horizontally', 'vertically'), 
+    ('on', 'off'), 
 )
 
 all_words = sum(flip_pairs, ())

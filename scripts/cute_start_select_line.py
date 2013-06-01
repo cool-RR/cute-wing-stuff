@@ -35,7 +35,7 @@ def cute_start_select_line(editor=wingapi.kArgEditor):
     new_selection_start = document.GetLineStart(selection_start_line)
     new_selection_end = document.GetLineEnd(selection_end_line)
     
-    caret_position = editor.fEditor._fScint.get_current_pos()
+    _, caret_position = editor.GetAnchorAndCaret()
     if caret_position == selection_end:
         arguments = (new_selection_start, new_selection_end)
     else:
