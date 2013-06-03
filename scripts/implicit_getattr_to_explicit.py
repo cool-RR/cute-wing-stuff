@@ -38,6 +38,9 @@ def _get_matches(document):
 
 def implicit_getattr_to_explicit(editor=wingapi.kArgEditor):
     '''
+    Convert something like `foo.bar` into `getattr(foo, 'bar', None)`.
+    
+    Also selects the `None` so it could be easily modified.
     
     Suggested key combination: `Insert Shift-G`
     '''

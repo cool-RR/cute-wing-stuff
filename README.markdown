@@ -339,7 +339,16 @@ in order to be taken to the closest higher stack frame that's on a project
 file rather than an external module.
     
 Suggested key combination: `Alt-F11`
-    
+
+
+## implicit-getattr-to-explicit ##
+
+Convert something like `foo.bar` into `getattr(foo, 'bar', None)`.
+
+Also selects the `None` so it could be easily modified.
+
+Suggested key combination: `Insert Shift-G`
+
 
 ## instantiate ##
     
