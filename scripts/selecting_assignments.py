@@ -23,7 +23,7 @@ assignment_pattern = re.compile(
     r'''(?<=\n)(?P<indent>[ \t]*)''' # Before LHS
     
     # LHS:
-    r'''(?P<lhs>(?!if |while |elif |assert )[^ \n][^=\n\(]+?)'''
+    r'''(?P<lhs>(?!if |while |elif |assert )[^ \n][^=\n\(]*?)'''
     
     r''' +(?:[+\-*/%|&^]|<<|>>|//|\*\*)?= +''' # operator and padding
     
