@@ -18,6 +18,7 @@ import shared
 flip_pairs = (
     ('True', 'False'), 
     ('true', 'false'), 
+    ('add', 'remove'), 
     ('start', 'end'), 
     ('head', 'tail'),
     ('low', 'high'),
