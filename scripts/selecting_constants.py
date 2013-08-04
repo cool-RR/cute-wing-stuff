@@ -54,7 +54,9 @@ def select_next_constant(editor=wingapi.kArgEditor,
     '''
     Select the next (or current) constant in the document.
     
-    Suggested key combination: Ctrl-0
+    Constant means a name in all caps, like DEBUG or LOGIN_REDIRECT_URL.
+    
+    Suggested key combination: Ctrl-Alt-O
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
@@ -73,17 +75,12 @@ def select_prev_constant(editor=wingapi.kArgEditor,
     '''
     Select the previous constant in the document.
     
-    Suggested key combination: Ctrl-9
+    Constant means a name in all caps, like DEBUG or LOGIN_REDIRECT_URL.
+    
+    Suggested key combination: Ctrl-Alt-Shift-O
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
-
-    #document_start = 0
-    #document_end = document.GetLength()
-    
-    #selection_start, selection_end = editor.GetSelection()
-    
-    #constant_positions_in_document = get_constant_positions_in_document()
     
     caret_position = editor.GetSelection()[0]
     
