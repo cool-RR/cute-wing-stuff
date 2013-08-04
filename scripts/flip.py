@@ -36,7 +36,8 @@ flip_pairs = (
     ('horizontal', 'vertical'), 
     ('horizontally', 'vertically'), 
     ('on', 'off'), 
-    ('before', 'after'), 
+    ('before', 'after'),
+    ('opening', 'closing')
 )
 
 all_words = sum(flip_pairs, ())
