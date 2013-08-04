@@ -52,7 +52,7 @@ def select_next_number(editor=wingapi.kArgEditor,
     '''
     Select the next (or current) number in the document.
     
-    Suggested key combination: Ctrl-0
+    Suggested key combination: `Ctrl-0`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
@@ -71,7 +71,7 @@ def select_prev_number(editor=wingapi.kArgEditor,
     '''
     Select the previous number in the document.
     
-    Suggested key combination: Ctrl-9
+    Suggested key combination: `Ctrl-9`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()

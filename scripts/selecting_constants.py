@@ -56,7 +56,7 @@ def select_next_constant(editor=wingapi.kArgEditor,
     
     Constant means a name in all caps, like DEBUG or LOGIN_REDIRECT_URL.
     
-    Suggested key combination: Ctrl-Alt-O
+    Suggested key combination: `Ctrl-Alt-O`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
@@ -77,7 +77,7 @@ def select_prev_constant(editor=wingapi.kArgEditor,
     
     Constant means a name in all caps, like DEBUG or LOGIN_REDIRECT_URL.
     
-    Suggested key combination: Ctrl-Alt-Shift-O
+    Suggested key combination: `Ctrl-Alt-Shift-O`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()

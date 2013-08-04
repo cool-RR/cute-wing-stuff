@@ -483,7 +483,7 @@ Suggested key combination: `Ctrl-Alt-9`
 
 Select the next (or current) number in the document.
 
-Suggested key combination: Ctrl-0
+Suggested key combination: `Ctrl-0`
 
 
 ## select-next-rhs ##
@@ -540,7 +540,7 @@ Suggested key combination: `Ctrl-Alt-Parenleft`
 
 Select the previous number in the document.
 
-Suggested key combination: Ctrl-9
+Suggested key combination: `Ctrl-9`
 
 
 ## select-prev-rhs ##
