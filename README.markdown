@@ -465,6 +465,15 @@ Suggested key combinations: `Ctrl-R`
                             `Ctrl-Alt-R` for `limit_to_keywords=True`
 
 
+## select-next-constant ##
+
+Select the next (or current) constant in the document.
+
+Constant means a name in all caps, like DEBUG or LOGIN_REDIRECT_URL.
+
+Suggested key combination: `Ctrl-Alt-O`
+
+
 ## select-next-invocation ##
 
 Select the next invocation of a callable, e.g `foo.bar(baz)`.
@@ -520,6 +529,15 @@ Set `limit_to_keywords=True` to go only to a keyword argument.
 
 Suggested key combinations: `Ctrl-Shift-R`
                             `Ctrl-Shift-Alt-R` for `limit_to_keywords=True`
+
+
+## select-prev-constant ##
+
+Select the previous constant in the document.
+
+Constant means a name in all caps, like DEBUG or LOGIN_REDIRECT_URL.
+
+Suggested key combination: `Ctrl-Alt-Shift-O`
 
 
 ## select-prev-invocation ##
