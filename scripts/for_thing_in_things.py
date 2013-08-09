@@ -18,7 +18,7 @@ import wingapi
 import shared
 
 
-range_pattern = re.compile('^range\(.*\)$')
+range_pattern = re.compile('^(x?range)\(.*\)$')
 
 
 def for_thing_in_things(editor=wingapi.kArgEditor, comprehension=False):
@@ -56,6 +56,8 @@ def for_thing_in_things(editor=wingapi.kArgEditor, comprehension=False):
                                                  and 'range(' in line_contents:
             
             start_position = document_text.find('range(', line_start)
+            if document_text[start_position - 1] == 'x':
+                start_position -= 1
             end_position = document_text.find(
                 ')',
                 start_position,
