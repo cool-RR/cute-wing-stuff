@@ -149,8 +149,6 @@ if __name__ == '__main__':
     for i in range(1000):
         r = f(choice(domain), choice(domain))
 
-    print(f.hits, f.misses)
-
     @lfu_cache(maxsize=20)
     def f(x, y):
         return 3*x+y
@@ -160,5 +158,4 @@ if __name__ == '__main__':
     for i in range(1000):
         r = f(choice(domain), choice(domain))
 
-    print(f.hits, f.misses)
 ## end of http://code.activestate.com/recipes/498245/ }}}
