@@ -21,7 +21,8 @@ import shared
 range_pattern = re.compile('^(x?range)\(.*\)$')
 
 
-def for_thing_in_things(editor=wingapi.kArgEditor, comprehension=False):
+def for_thing_in_things(editor=wingapi.kArgEditor, app=wingapi.kArgApplication,
+                        comprehension=False):
     '''
     Turn `things` into `for thing in things:`.
     
@@ -79,15 +80,18 @@ def for_thing_in_things(editor=wingapi.kArgEditor, comprehension=False):
         ### Finished analyzing base text. #####################################
         
         segment_to_insert = 'for %s in ' % variable_name
+        
+        with shared.SelectionRestorer(editor):
+            app.ExecuteCommand('beginning-of-line-text(toggle=False)')
+            home_position, _ = editor.GetSelection()
+            
         if comprehension:
             segment_to_insert = ' %s' % segment_to_insert
-        document.InsertChars(start_position, segment_to_insert)
-        
-        if comprehension:
-            editor.SetSelection(start_position, start_position)
+            document.InsertChars(home_position, segment_to_insert)
+            editor.SetSelection(home_position, home_position)
         else:
-            editor.ExecuteCommand('end-of-line')
-        
+            document.InsertChars(home_position, segment_to_insert)            
+            editor.ExecuteCommand('end-of-line')        
             if shared.autopy_available:
                 import autopy.key
-                autopy.key.tap(':')        
+                autopy.key.tap(':')
