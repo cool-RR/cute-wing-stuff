@@ -162,12 +162,14 @@ def get_word_spans_in_text(text, post_offset=0):
         word_spans += sub_sub_word_spans
         
     word_spans.sort()
+    print(word_span)
     for word_span in word_spans:
         if not isinstance(word_span, tuple):
             raise Exception
         if not len(word_span) == 2:
             raise Exception
         if not word_span[0] < word_span[1]:
+            print(word_span)
             raise Exception
         
     if post_offset:
