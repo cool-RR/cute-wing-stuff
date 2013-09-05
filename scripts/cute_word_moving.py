@@ -15,78 +15,86 @@ import wingapi
 
 import shared
 
-most_punctuation = r'''!"#$%&'()*+,-./:;<=>?@[\]^`{|}~'''
-# (This is `string.punctuation` without `_`.)
 
-most_punctuation_re_set = r'''[!"#$%&'()*+,\-./:;<=>?@[\\\]^`{|}~]'''
-
-word_pattern = re.compile(
-    r'''^(?:'''
-        r'''[ \t\n\r]*''' # Whitespace between any two words
-        r'''([!"#$%&'()*+,\-./:;<=>?@[\\\]^`{|}~]*)''' # Punctuation except `_`
-        r'''|'''
-        r'''([^!"#$%&'()*+,\-./:;<=>?@[\\\]^`{|}~ \t\r\n]*)'''
-    r''')*'''
-    r'''[ \t\n\r]*$'''
+punctuation_word_pattern = re.compile(
+    r'''[!"#$%&'()*+,\-./:;<=>?@[\\\]^`{|}~]*'''
+    # (This is `string.punctuation` without `_`.)
+)
+whitespace_word_pattern = re.compile(
+    r'''[ \r\t\n]*'''
+)
+alphanumerical_word_pattern = re.compile(
+    r'''[^!"#$%&'()*+,\-./:;<=>?@[\\\]^`{|}~ \t\r\n]*'''
 )
 
-def _type_string(string):
-    assert shared.autopy_available
-    import autopy.key
-    for character in string:
-        if character in _characters_that_need_shift:
-            autopy.key.tap(character, autopy.key.MOD_SHIFT)
-        else:
-            autopy.key.tap(character)
-        autopy.key.tap(135) # F24 for making AHK not interfere
-        autopy.key.tap(35) # `End` for making AHK not interfere
 
 
-def _cute_general_replace(command_name,
-                          editor=wingapi.kArgEditor,
-                          app=wingapi.kArgApplication):
-    assert isinstance(editor, wingapi.CAPIEditor)
-    assert isinstance(app, wingapi.CAPIApplication)
-    selection_start, selection_end = editor.GetSelection()
-    selection = editor.GetDocument().GetCharRange(selection_start,
-                                                  selection_end)
+def get_words_in_text(text):
+    word_spans = (
+        punctuation_word_pattern.findall(text) +
+                                          whitespace_word_pattern.findall(text)
+    )
     
-    if selection:
-        wingapi.gApplication.SetClipboard(selection)
-        editor.SetSelection(selection_start, selection_start)
-        app.ExecuteCommand(command_name)
-        if shared.autopy_available:
-            import autopy.key
-            autopy.key.toggle(autopy.key.K_ALT, False)
-            autopy.key.toggle(autopy.key.K_SHIFT, False)
-            autopy.key.toggle(autopy.key.K_CONTROL, False)
-            autopy.key.toggle(autopy.key.K_META, False)
-            #_type_string(selection)
-            #autopy.key.tap(autopy.key.K_ESCAPE)
-            #autopy.key.toggle(autopy.key.K_ALT, False)
-            #autopy.key.tap(TAB_KEY)
-            #autopy.key.tap('l', autopy.key.MOD_ALT)
-            #autopy.key.tap('v', autopy.key.MOD_CONTROL)
-            #autopy.key.tap('a', autopy.key.MOD_CONTROL)
-            
+    for alphanumerical_word_span in alphanumerical_word_pattern.findall(text):
+        alphanumerical_word = text[alphanumerical_word_span[0]:
+                                                   alphanumerical_word_span[1]]
+        relative_middle_underscore_indices = []
+        assert isinstance(alphanumerical_word, basestring)
         
-    else: # not selection
-        app.ExecuteCommand(command_name)
+        ### Finding middle underscores: #######################################
+        #                                                                     #
+        saw_non_underscore = False
+        for i, character in enumerate(alphanumerical_word):
+            if character == '_':
+                if saw_non_underscore:
+                    relative_middle_underscore_indices.append(i)
+            else: # character != '_'
+                saw_non_underscore = True
+        for i in reversed(enumerate(alphanumerical_word)):
+            if character == '_':
+                try:
+                    relative_middle_underscore_indices.remove(i)
+                except ValueError:
+                    pass
+            else: # character != '_'
+                break
+        #                                                                     #
+        ### Finished finding middle underscores. ##############################
         
+        middle_underscore_indices = map(
+            lambda i: i + alphanumerical_word_span[0],
+            relative_middle_underscore_indices
+        )
         
-def cute_query_replace(editor=wingapi.kArgEditor,
-                       app=wingapi.kArgApplication):
-    '''
-    Improved version of `query-replace` for finding and replacing in document.
-    
-    BUGGY: If text is selected, it will be used as the text to search for, and
-    the contents of the clipboard will be offered as the replace value.
-    
-    Implemented on Windows only.
-    
-    Suggested key combination: `Alt-Comma`
-    '''
-    return _cute_general_replace('query-replace', editor=editor, app=app)
+        non_middle_underscore_indices = filter(
+            lambda i: i not in middle_underscore_indices, 
+            xrange(
+                alphanumerical_word_span[0], 
+                alphanumerical_word_span[1]+1, 
+            )
+        )
+        
+        sub_word_spans = []
+        current_word_span = None
+        for i in non_middle_underscore_indices:
+            if current_word_span is None:
+                current_word_span = [i, i]
+            else: # current_word is not None
+                if current_word_span[1] == i - 1:
+                    current_word_span[1] = i
+                else:
+                    assert i - current_word_span[1] >= 2
+                    sub_word_spans.append(tuple(current_word_span))
+                    current_word_span = [i, i]
+        if current_word_span:
+            sub_word_spans.append(tuple(current_word_span))
+                
+        word_spans += sub_word_spans
+        
+    word_spans.sort()
+    return word_spans
+
+
 
 
 def cute_replace_string(editor=wingapi.kArgEditor,
