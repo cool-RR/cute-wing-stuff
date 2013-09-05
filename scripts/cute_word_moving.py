@@ -34,7 +34,7 @@ alphanumerical_word_pattern = re.compile(
 )
 
 
-def _round(n, step=40, direction=-1):
+def _round(n, step=100, direction=-1):
     assert isinstance(n, int)
     low = (n // step) * step
     high = low + step
@@ -54,7 +54,7 @@ def _find_spans(pattern, text):
                                            for match in pattern.finditer(text)]
     
 
-@shared.lfu_cache(maxsize=20)
+@shared.lru_cache(maxsize=20)
 def get_word_spans_in_text(text, post_offset=0):
     #print('post_offset is %s' %  post_offset)
     #print(repr(text))
@@ -243,11 +243,11 @@ def cute_word_move(direction=1, extend=False, delete=False,
     # be cached when doing many word-movings rapidly.
     
     text_start = max(
-        _round(selection_start - 70, step=40, direction=-1),
+        _round(selection_start - 70, step=100, direction=-1),
         0
     )
     text_end = min(
-        _round(selection_end + 70, step=40, direction=1),
+        _round(selection_end + 70, step=100, direction=1),
         document.GetLength()
     )
     
