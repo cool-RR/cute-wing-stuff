@@ -221,9 +221,9 @@ def get_word_spans_in_text(text, post_offset=0):
 
 
 
-def cute_word_move(direction=1, extend=False, delete=False, 
-                   editor=wingapi.kArgEditor,
-                   app=wingapi.kArgApplication):
+def cute_word(direction=1, extend=False, delete=False,
+              select_current=False, 
+              editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
     '''
     blocktododoc
     '''    
@@ -231,12 +231,13 @@ def cute_word_move(direction=1, extend=False, delete=False,
     assert isinstance(editor, wingapi.CAPIEditor)
     
     assert direction in (-1, 1)
-    if delete:
-        assert not extend
+    assert (delete, extend, select_current).count(True) in (0, 1)
     
     selection_start, selection_end = editor.GetSelection()
     document = editor.GetDocument()
-    _, caret_position = editor.GetAnchorAndCaret()
+    anchor_position, caret_position = editor.GetAnchorAndCaret()
+    current_selection_direction = \
+                                 1 if caret_position >= anchor_position else -1
     
     
     # Trying to round the text startpoint and endpoint, so it'll more likely to
@@ -264,18 +265,27 @@ def cute_word_move(direction=1, extend=False, delete=False,
     word_start_index = bisector(word_starts, caret_position)
     if direction == 1:
         if word_start_index == len(word_starts):
-            next_word_start = document.GetLength()
+            target_word_start = document.GetLength()
         else:
-            next_word_start = word_starts[word_start_index]
+            target_word_start = word_starts[word_start_index]
     else: # direction == -1:
         if word_start_index == 0:
-            next_word_start = 0
+            target_word_start = 0
         else:
-            next_word_start = word_starts[word_start_index - 1]
+            target_word_start = word_starts[word_start_index - 1]
             
     
     #print(next_word_start)
-    editor.SetSelection(next_word_start, next_word_start)
+    if select_current:
+        pass
+    if extend:
+        editor.SetSelection(anchor_position, target_word_start)
+    elif delete:
+        with shared.UndoableAction(document):
+            document.DeleteChars(caret_position, target_word_start)
+    else:
+        editor.SetSelection(target_word_start, target_word_start)
+        
     
     
     
