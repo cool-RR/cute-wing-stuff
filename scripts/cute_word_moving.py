@@ -282,7 +282,12 @@ def cute_word(direction=1, extend=False, delete=False,
         editor.SetSelection(anchor_position, target_word_start)
     elif delete:
         with shared.UndoableAction(document):
-            document.DeleteChars(caret_position, target_word_start)
+            document.DeleteChars(
+                *sorted((
+                    max(caret_position - 1, 0),
+                    max(target_word_start - 1, 0)
+                ))
+            )
     else:
         editor.SetSelection(target_word_start, target_word_start)
         
