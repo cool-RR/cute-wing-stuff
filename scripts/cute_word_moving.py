@@ -29,11 +29,14 @@ alphanumerical_word_pattern = re.compile(
 )
 
 
+def _find_spans(pattern, text):
+    return [match.span() for match in pattern.finditer(text)]
+    
 
 def get_word_spans_in_text(text, post_offset=0):
     word_spans = (
-        punctuation_word_pattern.findall(text) +
-                                          whitespace_word_pattern.findall(text)
+        _find_spans(punctuation_word_pattern, text) +
+                                     _find_spans(whitespace_word_pattern, text)
     )
     
     for alphanumerical_word_span in alphanumerical_word_pattern.findall(text):
