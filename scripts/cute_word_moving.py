@@ -171,7 +171,7 @@ def get_word_spans_in_text(text, post_offset=0):
                                 i, 
                                 sub_word_span[1], 
                             ))
-                            continue
+                            break
                 else:
                     assert character.isupper()
                     if not saw_first_alpha:
@@ -189,14 +189,13 @@ def get_word_spans_in_text(text, post_offset=0):
                                 i, 
                                 sub_word_span[1], 
                             ))
-                            continue
+                            break
                     
             else:
                 sub_sub_word_spans.append(sub_word_span)
                 continue
                 
         #######################################################################
-                
         word_spans += sub_sub_word_spans
         
     word_spans.sort()
@@ -216,6 +215,7 @@ def get_word_spans_in_text(text, post_offset=0):
             (word_span[0] + post_offset, word_span[1] + post_offset)
                                                     for word_span in word_spans
         ]
+    print(word_spans)
     return word_spans
 
 
