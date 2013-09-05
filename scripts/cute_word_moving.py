@@ -29,7 +29,7 @@ alphanumerical_word_pattern = re.compile(
 
 
 
-def get_words_in_text(text):
+def get_word_spans_in_text(text):
     word_spans = (
         punctuation_word_pattern.findall(text) +
                                           whitespace_word_pattern.findall(text)
@@ -88,6 +88,42 @@ def get_words_in_text(text):
                     current_word_span = [i, i]
         if current_word_span:
             sub_word_spans.append(tuple(current_word_span))
+            
+        ######################################################################
+        # Finished separating using underscores, now separating using case.
+            
+        sub_sub_word_spans = []
+        
+        while sub_word_spans:
+            sub_word_span = sub_word_spans.pop()
+            sub_word = text[sub_word_span[0] : sub_word_span[1] + 1]
+            alpha_characters = filter(str.isalpha, sub_word)
+            if not alpha_characters:
+                sub_sub_word_spans.append(sub_word_span)
+                continue
+            could_be_lower_case = True
+            could_be_upper_case = True
+            could_be_camel_case = True
+            saw_first_alpha = False
+
+            for i in xrange(sub_word_span[0]+1, sub_word_span[1] + 1):
+                character = text[i]
+                if not character.isalpha():
+                    continue
+                assert character.isalpha()
+                if character.islower():
+                    if not saw_first_alpha:
+                        saw_first_alpha = True
+                        could_be_camel_case = could_be_upper_case = False
+                    else: # saw_first_alpha is True
+                        
+            else:
+                sub_sub_word_spans.append(sub_word_span)
+                
+            
+
+        
+        #######################################################################
                 
         word_spans += sub_word_spans
         
@@ -97,16 +133,29 @@ def get_words_in_text(text):
 
 
 
-def cute_replace_string(editor=wingapi.kArgEditor,
-                       app=wingapi.kArgApplication):
+def cute_forward_word(editor=wingapi.kArgEditor,
+                      app=wingapi.kArgApplication):
     '''
-    Improved version of `replace-string` for finding and replacing in document.
-    
-    BUGGY: If text is selected, it will be used as the text to search for, and
-    the contents of the clipboard will be offered as the replace value.
-    
-    Implemented on Windows only.
-    
-    Suggested key combination: `Alt-Period`
+    blocktododoc
     '''    
-    return _cute_general_replace('replace-string', editor=editor, app=app)
+    
+    assert isinstance(editor, wingapi.CAPIEditor)
+    
+    selection_start, selection_end = editor.GetSelection()
+    document = editor.GetDocument()
+    _, caret_position = editor.GetAnchorAndCaret()
+    
+    text_start = max(selection_start - 70, 0)
+    text_end = max(selection_end + 70, document.GetLength())
+    
+    text = document.GetCharRange(text_start, text_end)
+    
+    word_spans = get_word_spans_in_text(text)
+    
+    
+    
+    
+    
+    
+    
+    
