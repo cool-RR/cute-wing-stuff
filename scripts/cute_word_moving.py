@@ -25,6 +25,9 @@ punctuation_word_pattern = re.compile(
 whitespace_word_pattern = re.compile(
     r'''[ \r\t\n]+'''
 )
+newline_word_pattern = re.compile(
+    r'''\r?\n[ \r\t\n]*'''
+)
 alphanumerical_word_pattern = re.compile(
     r'''[^!"#$%&'()*+,\-./:;<=>?@[\\\]^`{|}~ \t\r\n]+'''
 )
@@ -36,8 +39,10 @@ def _find_spans(pattern, text):
     
 
 def get_word_spans_in_text(text, post_offset=0):
+    #print('post_offset is %s' %  post_offset)
     #print(repr(text))
-    word_spans = _find_spans(punctuation_word_pattern, text)
+    word_spans = _find_spans(punctuation_word_pattern, text) + \
+                                        _find_spans(newline_word_pattern, text)
 
     #word_spans.sort()
     #print(word_spans)
@@ -184,10 +189,14 @@ def get_word_spans_in_text(text, post_offset=0):
             raise Exception
         if not len(word_span) == 2:
             raise Exception
+        if not isinstance(word_span[0], int):
+            raise Exception
+        if not isinstance(word_span[1], int):
+            raise Exception
         
     if post_offset:
         word_spans = [
-            (word_spans[0] + post_offset, word_spans[1] + post_offset)
+            (word_span[0] + post_offset, word_span[1] + post_offset)
                                                     for word_span in word_spans
         ]
     return word_spans
@@ -195,13 +204,18 @@ def get_word_spans_in_text(text, post_offset=0):
 
 
 
-def cute_forward_word(editor=wingapi.kArgEditor,
-                      app=wingapi.kArgApplication):
+def cute_word_move(direction=1, extend=False, delete=False, 
+                   editor=wingapi.kArgEditor,
+                   app=wingapi.kArgApplication):
     '''
     blocktododoc
     '''    
     
     assert isinstance(editor, wingapi.CAPIEditor)
+    
+    assert direction in (-1, 1)
+    if delete:
+        assert not extend
     
     selection_start, selection_end = editor.GetSelection()
     document = editor.GetDocument()
@@ -219,9 +233,13 @@ def cute_forward_word(editor=wingapi.kArgEditor,
     word_spans = get_word_spans_in_text(text, post_offset=text_start)
     word_starts = zip(*word_spans)[0]
     #print(word_starts)
-    next_word_start = word_starts[
-        bisect.bisect_right(word_starts, caret_position)
-    ]
+    word_start_index = bisect.bisect_right(word_starts, caret_position)
+    if direction == -1:
+        word_start_index -= 1
+    try:
+        next_word_start = word_starts[word_start_index]
+    except IndexError:
+        next_word_start = document.GetLength()
     
     #print(next_word_start)
     editor.SetSelection(next_word_start, next_word_start)
