@@ -36,7 +36,7 @@ def _find_spans(pattern, text):
     
 
 def get_word_spans_in_text(text, post_offset=0):
-    print(repr(text))
+    #print(repr(text))
     word_spans = _find_spans(punctuation_word_pattern, text)
 
     #word_spans.sort()
@@ -51,7 +51,7 @@ def get_word_spans_in_text(text, post_offset=0):
             #raise Exception
     
     alphanumerical_word_spans = _find_spans(alphanumerical_word_pattern, text)
-    print(alphanumerical_word_spans)
+    #print(alphanumerical_word_spans)
     for alphanumerical_word_span in alphanumerical_word_spans:
         alphanumerical_word = text[alphanumerical_word_span[0]:
                                                    alphanumerical_word_span[1]]
@@ -178,14 +178,11 @@ def get_word_spans_in_text(text, post_offset=0):
         word_spans += sub_sub_word_spans
         
     word_spans.sort()
-    print(word_spans)
+    #print(word_spans)
     for word_span in word_spans:
         if not isinstance(word_span, tuple):
             raise Exception
         if not len(word_span) == 2:
-            raise Exception
-        if not word_span[0] < word_span[1]:
-            print(word_span)
             raise Exception
         
     if post_offset:
@@ -210,23 +207,23 @@ def cute_forward_word(editor=wingapi.kArgEditor,
     document = editor.GetDocument()
     _, caret_position = editor.GetAnchorAndCaret()
     
-    #text_start = max(selection_start - 70, 0)
-    #text_end = min(selection_end + 70, document.GetLength())
+    text_start = max(selection_start - 70, 0)
+    text_end = min(selection_end + 70, document.GetLength())
     
     #caret_position = 0
-    text_start = 0
-    text_end = 100
+    #text_start = 0
+    #text_end = 100
     
     text = document.GetCharRange(text_start, text_end)
     
     word_spans = get_word_spans_in_text(text, post_offset=text_start)
     word_starts = zip(*word_spans)[0]
-    print(word_starts)
+    #print(word_starts)
     next_word_start = word_starts[
         bisect.bisect_right(word_starts, caret_position)
     ]
     
-    print(next_word_start)
+    #print(next_word_start)
     editor.SetSelection(next_word_start, next_word_start)
     
     
