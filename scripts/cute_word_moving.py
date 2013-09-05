@@ -49,13 +49,14 @@ def get_word_spans_in_text(text, post_offset=0):
         ### Finding middle underscores: #######################################
         #                                                                     #
         saw_non_underscore = False
-        for i, character in enumerate(alphanumerical_word):
+        enumerated = list(enumerate(alphanumerical_word))
+        for i, character in enumerated:
             if character == '_':
                 if saw_non_underscore:
                     relative_middle_underscore_indices.append(i)
             else: # character != '_'
                 saw_non_underscore = True
-        for i in reversed(enumerate(alphanumerical_word)):
+        for i in reversed(enumerated):
             if character == '_':
                 try:
                     relative_middle_underscore_indices.remove(i)
