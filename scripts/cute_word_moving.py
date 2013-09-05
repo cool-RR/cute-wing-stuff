@@ -8,6 +8,7 @@ import os.path, sys; sys.path.append(os.path.dirname(__file__))
 
 import sys
 import inspect
+import collections
 import re
 import string
 
@@ -74,7 +75,7 @@ def get_word_spans_in_text(text):
             )
         )
         
-        sub_word_spans = []
+        sub_word_spans = collections.deque()
         current_word_span = None
         for i in non_middle_underscore_indices:
             if current_word_span is None:
@@ -106,7 +107,7 @@ def get_word_spans_in_text(text):
             could_be_camel_case = True
             saw_first_alpha = False
 
-            for i in xrange(sub_word_span[0]+1, sub_word_span[1] + 1):
+            for i in xrange(sub_word_span[0], sub_word_span[1] + 1):
                 character = text[i]
                 if not character.isalpha():
                     continue
@@ -116,9 +117,15 @@ def get_word_spans_in_text(text):
                         saw_first_alpha = True
                         could_be_camel_case = could_be_upper_case = False
                     else: # saw_first_alpha is True
-                        
+                        if not could_be_lower_case:
+                            sub_sub_word_spans.append((
+                                sub_word_span[0], 
+                                i
+                            ))
+                            continue
             else:
                 sub_sub_word_spans.append(sub_word_span)
+                continue
                 
             
 
