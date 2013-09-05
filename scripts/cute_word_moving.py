@@ -277,15 +277,26 @@ def cute_word(direction=1, extend=False, delete=False,
     
     #print(next_word_start)
     if select_current:
-        pass
-    if extend:
+        words_we_are_in = [
+            (word_start, word_end + 1) for (word_start, word_end) in word_spans
+            if word_start <= caret_position <= word_end
+        ]
+        if words_we_are_in:
+            word_we_are_in = words_we_are_in[-1]
+            app.ExecuteCommand('set-visit-history-anchor')
+            editor.SetSelection(*word_we_are_in)
+    elif extend:
         editor.SetSelection(anchor_position, target_word_start)
     elif delete:
         with shared.UndoableAction(document):
+            if direction == 1:
+                target_word_start -= 1
+            else: # direction == -1
+                caret_position -= 1
             document.DeleteChars(
                 *sorted((
-                    max(caret_position - 1, 0),
-                    max(target_word_start - 1, 0)
+                    max(caret_position, 0),
+                    max(target_word_start, 0)
                 ))
             )
     else:
