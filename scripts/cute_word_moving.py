@@ -8,6 +8,7 @@ import os.path, sys; sys.path.append(os.path.dirname(__file__))
 
 import sys
 import inspect
+import bisect
 import collections
 import re
 import string
@@ -38,7 +39,17 @@ def get_word_spans_in_text(text, post_offset=0):
         _find_spans(punctuation_word_pattern, text) +
                                      _find_spans(whitespace_word_pattern, text)
     )
-    print(sorted(word_spans))
+
+    word_spans.sort()
+    print(word_spans)
+    for word_span in word_spans:
+        if not isinstance(word_span, tuple):
+            raise Exception
+        if not len(word_span) == 2:
+            raise Exception
+        if not word_span[0] < word_span[1]:
+            print(word_span)
+            raise Exception
     
     for alphanumerical_word_span in \
                                 _find_spans(alphanumerical_word_pattern, text):
@@ -195,9 +206,12 @@ def cute_forward_word(editor=wingapi.kArgEditor,
     document = editor.GetDocument()
     _, caret_position = editor.GetAnchorAndCaret()
     
-    text_start = max(selection_start - 70, 0)
-    text_end = min(selection_end + 70, document.GetLength())
-    text_end = document.GetLength()
+    #text_start = max(selection_start - 70, 0)
+    #text_end = min(selection_end + 70, document.GetLength())
+    
+    #caret_position = 0
+    text_start = 0
+    text_end = 100
     
     text = document.GetCharRange(text_start, text_end)
     
