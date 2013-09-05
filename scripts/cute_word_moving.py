@@ -18,14 +18,14 @@ import shared
 
 
 punctuation_word_pattern = re.compile(
-    r'''[!"#$%&'()*+,\-./:;<=>?@[\\\]^`{|}~]*'''
+    r'''[!"#$%&'()*+,\-./:;<=>?@[\\\]^`{|}~]+'''
     # (This is `string.punctuation` without `_`.)
 )
 whitespace_word_pattern = re.compile(
-    r'''[ \r\t\n]*'''
+    r'''[ \r\t\n]+'''
 )
 alphanumerical_word_pattern = re.compile(
-    r'''[^!"#$%&'()*+,\-./:;<=>?@[\\\]^`{|}~ \t\r\n]*'''
+    r'''[^!"#$%&'()*+,\-./:;<=>?@[\\\]^`{|}~ \t\r\n]+'''
 )
 
 
@@ -38,6 +38,7 @@ def get_word_spans_in_text(text, post_offset=0):
         _find_spans(punctuation_word_pattern, text) +
                                      _find_spans(whitespace_word_pattern, text)
     )
+    print(sorted(word_spans))
     
     for alphanumerical_word_span in \
                                 _find_spans(alphanumerical_word_pattern, text):
