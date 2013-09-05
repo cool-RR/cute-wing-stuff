@@ -2,6 +2,7 @@
 # This program is distributed under the MIT license.
 
 
+from __future__ import division
 from __future__ import with_statement
 
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
@@ -33,11 +34,27 @@ alphanumerical_word_pattern = re.compile(
 )
 
 
+def _round(n, step=40, direction=-1):
+    assert isinstance(n, int)
+    low = (n // step) * step
+    high = low + step
+    if low == n:
+        return low
+    elif high == n:
+        return high
+    elif direction == 1:
+        return high
+    else:
+        assert direction == -1
+        return low
+
+
 def _find_spans(pattern, text):
     return [(match.span()[0], match.span()[1] - 1)
                                            for match in pattern.finditer(text)]
     
 
+@shared.lfu_cache(maxsize=20)
 def get_word_spans_in_text(text, post_offset=0):
     #print('post_offset is %s' %  post_offset)
     #print(repr(text))
@@ -221,8 +238,18 @@ def cute_word_move(direction=1, extend=False, delete=False,
     document = editor.GetDocument()
     _, caret_position = editor.GetAnchorAndCaret()
     
-    text_start = max(selection_start - 70, 0)
-    text_end = min(selection_end + 70, document.GetLength())
+    
+    # Trying to round the text startpoint and endpoint, so it'll more likely to
+    # be cached when doing many word-movings rapidly.
+    
+    text_start = max(
+        _round(selection_start - 70, step=40, direction=-1),
+        0
+    )
+    text_end = min(
+        _round(selection_end + 70, step=40, direction=1),
+        document.GetLength()
+    )
     
     #caret_position = 0
     #text_start = 0
@@ -233,13 +260,19 @@ def cute_word_move(direction=1, extend=False, delete=False,
     word_spans = get_word_spans_in_text(text, post_offset=text_start)
     word_starts = zip(*word_spans)[0]
     #print(word_starts)
-    word_start_index = bisect.bisect_right(word_starts, caret_position)
-    if direction == -1:
-        word_start_index -= 1
-    try:
-        next_word_start = word_starts[word_start_index]
-    except IndexError:
-        next_word_start = document.GetLength()
+    bisector = bisect.bisect_right if direction == 1 else bisect.bisect_left
+    word_start_index = bisector(word_starts, caret_position)
+    if direction == 1:
+        if word_start_index == len(word_starts):
+            next_word_start = document.GetLength()
+        else:
+            next_word_start = word_starts[word_start_index]
+    else: # direction == -1:
+        if word_start_index == 0:
+            next_word_start = 0
+        else:
+            next_word_start = word_starts[word_start_index - 1]
+            
     
     #print(next_word_start)
     editor.SetSelection(next_word_start, next_word_start)
