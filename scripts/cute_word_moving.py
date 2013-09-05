@@ -215,7 +215,7 @@ def get_word_spans_in_text(text, post_offset=0):
             (word_span[0] + post_offset, word_span[1] + post_offset)
                                                     for word_span in word_spans
         ]
-    print(word_spans)
+    #print(word_spans)
     return word_spans
 
 
@@ -277,12 +277,13 @@ def cute_word(direction=1, extend=False, delete=False,
     
     #print(next_word_start)
     if select_current:
+        nominal_position = (selection_start + selection_end) // 2
         words_we_are_in = [
             (word_start, word_end + 1) for (word_start, word_end) in word_spans
-            if word_start <= caret_position <= word_end
+            if word_start <= nominal_position <= word_end + 1
         ]
         if words_we_are_in:
-            word_we_are_in = words_we_are_in[-1]
+            word_we_are_in = words_we_are_in[0]
             app.ExecuteCommand('set-visit-history-anchor')
             editor.SetSelection(*word_we_are_in)
     elif extend:
