@@ -162,7 +162,7 @@ def get_word_spans_in_text(text, post_offset=0):
         word_spans += sub_sub_word_spans
         
     word_spans.sort()
-    print(word_span)
+    print(word_spans)
     for word_span in word_spans:
         if not isinstance(word_span, tuple):
             raise Exception
@@ -195,7 +195,8 @@ def cute_forward_word(editor=wingapi.kArgEditor,
     _, caret_position = editor.GetAnchorAndCaret()
     
     text_start = max(selection_start - 70, 0)
-    text_end = max(selection_end + 70, document.GetLength())
+    text_end = min(selection_end + 70, document.GetLength())
+    text_end = document.GetLength()
     
     text = document.GetCharRange(text_start, text_end)
     
