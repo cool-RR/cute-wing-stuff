@@ -39,7 +39,8 @@ def get_word_spans_in_text(text, post_offset=0):
                                      _find_spans(whitespace_word_pattern, text)
     )
     
-    for alphanumerical_word_span in alphanumerical_word_pattern.findall(text):
+    for alphanumerical_word_span in \
+                                _find_spans(alphanumerical_word_pattern, text):
         alphanumerical_word = text[alphanumerical_word_span[0]:
                                                    alphanumerical_word_span[1]]
         relative_middle_underscore_indices = []
