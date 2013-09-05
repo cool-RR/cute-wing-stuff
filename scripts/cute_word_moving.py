@@ -31,10 +31,12 @@ alphanumerical_word_pattern = re.compile(
 
 
 def _find_spans(pattern, text):
-    return [match.span() for match in pattern.finditer(text)]
+    return [(match.span()[0], match.span()[1] - 1)
+                                           for match in pattern.finditer(text)]
     
 
 def get_word_spans_in_text(text, post_offset=0):
+    print(repr(text))
     word_spans = _find_spans(punctuation_word_pattern, text)
 
     #word_spans.sort()
