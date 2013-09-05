@@ -35,24 +35,22 @@ def _find_spans(pattern, text):
     
 
 def get_word_spans_in_text(text, post_offset=0):
-    word_spans = (
-        _find_spans(punctuation_word_pattern, text) +
-                                     _find_spans(whitespace_word_pattern, text)
-    )
+    word_spans = _find_spans(punctuation_word_pattern, text)
 
-    word_spans.sort()
-    print(word_spans)
-    for word_span in word_spans:
-        if not isinstance(word_span, tuple):
-            raise Exception
-        if not len(word_span) == 2:
-            raise Exception
-        if not word_span[0] < word_span[1]:
-            print(word_span)
-            raise Exception
+    #word_spans.sort()
+    #print(word_spans)
+    #for word_span in word_spans:
+        #if not isinstance(word_span, tuple):
+            #raise Exception
+        #if not len(word_span) == 2:
+            #raise Exception
+        #if not word_span[0] < word_span[1]:
+            #print(word_span)
+            #raise Exception
     
-    for alphanumerical_word_span in \
-                                _find_spans(alphanumerical_word_pattern, text):
+    alphanumerical_word_spans = _find_spans(alphanumerical_word_pattern, text)
+    print(alphanumerical_word_spans)
+    for alphanumerical_word_span in alphanumerical_word_spans:
         alphanumerical_word = text[alphanumerical_word_span[0]:
                                                    alphanumerical_word_span[1]]
         relative_middle_underscore_indices = []
@@ -91,6 +89,10 @@ def get_word_spans_in_text(text, post_offset=0):
                 alphanumerical_word_span[1]+1, 
             )
         )
+        
+        if any(i >= len(text) for i in non_middle_underscore_indices):
+            print(non_middle_underscore_indices)
+            raise Exception
         
         sub_word_spans = collections.deque()
         current_word_span = None
@@ -216,9 +218,13 @@ def cute_forward_word(editor=wingapi.kArgEditor,
     text = document.GetCharRange(text_start, text_end)
     
     word_spans = get_word_spans_in_text(text, post_offset=text_start)
-    word_starts = zip(word_spans)[0]
-    next_word_start = bisect.bisect_left(word_starts, caret_position)
+    word_starts = zip(*word_spans)[0]
+    print(word_starts)
+    next_word_start = word_starts[
+        bisect.bisect_right(word_starts, caret_position)
+    ]
     
+    print(next_word_start)
     editor.SetSelection(next_word_start, next_word_start)
     
     
