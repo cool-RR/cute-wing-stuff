@@ -56,6 +56,9 @@ def _find_spans(pattern, text):
 
 @shared.lru_cache(maxsize=20)
 def get_word_spans_in_text(text, post_offset=0):
+    '''
+    
+    '''
     #print('post_offset is %s' %  post_offset)
     #print(repr(text))
     word_spans = _find_spans(punctuation_word_pattern, text) + \
@@ -114,9 +117,6 @@ def get_word_spans_in_text(text, post_offset=0):
             )
         )
         
-        if any(i >= len(text) for i in non_middle_underscore_indices):
-            print(non_middle_underscore_indices)
-            raise Exception
         
         sub_word_spans = collections.deque()
         current_word_span = None
@@ -134,8 +134,16 @@ def get_word_spans_in_text(text, post_offset=0):
             sub_word_spans.append(tuple(current_word_span))
             
         ######################################################################
-        # Finished separating using underscores, now separating using case.
-            
+        # Finished separating using middle underscores, now separating using
+        # case.
+        
+        # We're popping word spans out of `sub_word_spans` one-by-one. We
+        # analyze them, sometimes we throw them into `sub_sub_word_spans`,
+        # which means they're words that are already separated by case, and
+        # sometimes we throw one part of them into `sub_sub_word_spans`, and
+        # throw the remaining substring back into `sub_word_spans`, where it
+        # will be analyzed on a later run of the loop.
+        
         sub_sub_word_spans = []
         
         while sub_word_spans:
@@ -197,25 +205,18 @@ def get_word_spans_in_text(text, post_offset=0):
                 
         #######################################################################
         word_spans += sub_sub_word_spans
+        # We've finished separating into case-separated words; we throw them
+        # into the large list of words, and continue the loop to do the same
+        # process to the next unseparated alphanumeric word.
         
     word_spans.sort()
-    #print(word_spans)
-    for word_span in word_spans:
-        if not isinstance(word_span, tuple):
-            raise Exception
-        if not len(word_span) == 2:
-            raise Exception
-        if not isinstance(word_span[0], int):
-            raise Exception
-        if not isinstance(word_span[1], int):
-            raise Exception
         
     if post_offset:
         word_spans = [
             (word_span[0] + post_offset, word_span[1] + post_offset)
                                                     for word_span in word_spans
         ]
-    #print(word_spans)
+
     return word_spans
 
 
