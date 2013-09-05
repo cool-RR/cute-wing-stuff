@@ -30,7 +30,7 @@ alphanumerical_word_pattern = re.compile(
 
 
 
-def get_word_spans_in_text(text):
+def get_word_spans_in_text(text, post_offset=0):
     word_spans = (
         punctuation_word_pattern.findall(text) +
                                           whitespace_word_pattern.findall(text)
@@ -117,24 +117,51 @@ def get_word_spans_in_text(text):
                         saw_first_alpha = True
                         could_be_camel_case = could_be_upper_case = False
                     else: # saw_first_alpha is True
-                        if not could_be_lower_case:
+                        if could_be_lower_case or could_be_camel_case:
+                            could_be_upper_case = False
+                        else:
                             sub_sub_word_spans.append((
                                 sub_word_span[0], 
-                                i
+                                i - 1
+                            ))
+                            sub_word_spans.append((
+                                i, 
+                                sub_word_span[1], 
                             ))
                             continue
+                else:
+                    assert character.isupper()
+                    if not saw_first_alpha:
+                        saw_first_alpha = True
+                        could_be_lower_case = False
+                    else: # saw_first_alpha is True
+                        if could_be_upper_case:
+                            could_be_camel_case = could_be_lower_case = False
+                        else:
+                            sub_sub_word_spans.append((
+                                sub_word_span[0], 
+                                i - 1
+                            ))
+                            sub_word_spans.append((
+                                i, 
+                                sub_word_span[1], 
+                            ))
+                            continue
+                    
             else:
                 sub_sub_word_spans.append(sub_word_span)
                 continue
                 
-            
-
-        
         #######################################################################
                 
-        word_spans += sub_word_spans
+        word_spans += sub_sub_word_spans
         
     word_spans.sort()
+    if post_offset:
+        word_spans = [
+            (word_spans[0] + post_offset, word_spans[1] + post_offset)
+                                                    for word_span in word_spans
+        ]
     return word_spans
 
 
@@ -157,10 +184,11 @@ def cute_forward_word(editor=wingapi.kArgEditor,
     
     text = document.GetCharRange(text_start, text_end)
     
-    word_spans = get_word_spans_in_text(text)
+    word_spans = get_word_spans_in_text(text, post_offset=text_start)
+    word_starts = zip(word_spans)[0]
+    next_word_start = bisect.bisect_left(word_starts, caret_position)
     
-    
-    
+    editor.SetSelection(next_word_start, next_word_start)
     
     
     
