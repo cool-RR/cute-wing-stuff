@@ -93,7 +93,7 @@ def get_word_spans_in_text(text, post_offset=0):
                     relative_middle_underscore_indices.append(i)
             else: # character != '_'
                 saw_non_underscore = True
-        for i in reversed(enumerated):
+        for i, character in reversed(enumerated):
             if character == '_':
                 try:
                     relative_middle_underscore_indices.remove(i)
