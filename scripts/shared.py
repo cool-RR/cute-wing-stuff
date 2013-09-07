@@ -420,3 +420,12 @@ def get_text(document):
     # `GetText` returns unicode.
     assert isinstance(document, wingapi.CAPIDocument)
     return document.GetCharRange(0, document.GetLength())
+
+def argmin(sequence, key_function=None):
+    if key_function is None:
+        key_function = lambda x: x
+        index
+    indices = range(len(sequence))
+    indices.sort(key=lambda index: key_function(sequence[index]))
+    return sequence[indices[0]]
+    

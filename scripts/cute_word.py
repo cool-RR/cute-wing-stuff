@@ -29,7 +29,7 @@ whitespace_word_pattern = re.compile(
 newline_word_pattern = re.compile(
     r'''\r?\n[ \r\t\n]*'''
 )
-alphanumerical_word_pattern = re.compile(
+alpha_word_pattern = re.compile(
     r'''[^!"#$%&'()*+,\-./:;<=>?@[\\\]^`{|}~ \t\r\n]+'''
 )
 
@@ -54,39 +54,43 @@ def _find_spans(pattern, text):
                                            for match in pattern.finditer(text)]
     
 
-@shared.lru_cache(maxsize=20)
 def get_word_spans_in_text(text, post_offset=0):
-    '''
-    
-    '''
-    #print('post_offset is %s' %  post_offset)
-    #print(repr(text))
-    word_spans = _find_spans(punctuation_word_pattern, text) + \
-                                        _find_spans(newline_word_pattern, text)
+    return sorted(
+        get_non_alpha_word_spans_in_text(text, post_offset=post_offset) +
+        get_alpha_word_spans_in_text(text, post_offset=post_offset)
+    )
 
-    #word_spans.sort()
-    #print(word_spans)
-    #for word_span in word_spans:
-        #if not isinstance(word_span, tuple):
-            #raise Exception
-        #if not len(word_span) == 2:
-            #raise Exception
-        #if not word_span[0] < word_span[1]:
-            #print(word_span)
-            #raise Exception
+
+@shared.lru_cache(maxsize=20)
+def get_non_alpha_word_spans_in_text(text, post_offset=0):
+    return _offset_word_spans(
+        sorted(_find_spans(punctuation_word_pattern, text) + 
+               _find_spans(newline_word_pattern, text)),
+        post_offset=post_offset
+    )
+
+
+@shared.lru_cache(maxsize=20)
+def get_alpha_word_spans_in_text(text, post_offset=0):
     
-    alphanumerical_word_spans = _find_spans(alphanumerical_word_pattern, text)
-    #print(alphanumerical_word_spans)
-    for alphanumerical_word_span in alphanumerical_word_spans:
-        alphanumerical_word = text[alphanumerical_word_span[0]:
-                                                   alphanumerical_word_span[1]]
+    # We have three phases here. In the first phase we get words like
+    # `IToldYou_soFooBar`, in the second phase we get words like `IToldYou`,
+    # `soFooBar`, in the third and final phase we get words like `I`, `Told`,
+    # `You`, `so`, `Foo`, `Bar`.
+    
+    pre_pre_alpha_word_spans = _find_spans(alpha_word_pattern, text)
+    pre_alpha_word_spans = collections.deque()
+    alpha_word_spans = []
+    
+    for pre_pre_alpha_word_span in pre_pre_alpha_word_spans:
+        pre_pre_alpha_word = \
+                    text[pre_pre_alpha_word_span[0]:pre_pre_alpha_word_span[1]]
         relative_middle_underscore_indices = []
-        assert isinstance(alphanumerical_word, basestring)
         
         ### Finding middle underscores: #######################################
         #                                                                     #
         saw_non_underscore = False
-        enumerated = list(enumerate(alphanumerical_word))
+        enumerated = list(enumerate(pre_pre_alpha_word))
         for i, character in enumerated:
             if character == '_':
                 if saw_non_underscore:
@@ -105,20 +109,18 @@ def get_word_spans_in_text(text, post_offset=0):
         ### Finished finding middle underscores. ##############################
         
         middle_underscore_indices = map(
-            lambda i: i + alphanumerical_word_span[0],
+            lambda i: i + pre_pre_alpha_word_span[0],
             relative_middle_underscore_indices
         )
         
         non_middle_underscore_indices = filter(
             lambda i: i not in middle_underscore_indices, 
             xrange(
-                alphanumerical_word_span[0], 
-                alphanumerical_word_span[1]+1, 
+                pre_pre_alpha_word_span[0], 
+                pre_pre_alpha_word_span[1] + 1, 
             )
         )
         
-        
-        sub_word_spans = collections.deque()
         current_word_span = None
         for i in non_middle_underscore_indices:
             if current_word_span is None:
@@ -128,96 +130,97 @@ def get_word_spans_in_text(text, post_offset=0):
                     current_word_span[1] = i
                 else:
                     assert i - current_word_span[1] >= 2
-                    sub_word_spans.append(tuple(current_word_span))
+                    pre_alpha_word_spans.append(tuple(current_word_span))
                     current_word_span = [i, i]
         if current_word_span:
-            sub_word_spans.append(tuple(current_word_span))
+            pre_alpha_word_spans.append(tuple(current_word_span))
+        
             
-        ######################################################################
-        # Finished separating using middle underscores, now separating using
-        # case.
-        
-        # We're popping word spans out of `sub_word_spans` one-by-one. We
-        # analyze them, sometimes we throw them into `sub_sub_word_spans`,
-        # which means they're words that are already separated by case, and
-        # sometimes we throw one part of them into `sub_sub_word_spans`, and
-        # throw the remaining substring back into `sub_word_spans`, where it
-        # will be analyzed on a later run of the loop.
-        
-        sub_sub_word_spans = []
-        
-        while sub_word_spans:
-            sub_word_span = sub_word_spans.pop()
-            sub_word = text[sub_word_span[0] : sub_word_span[1] + 1]
-            alpha_characters = filter(str.isalpha, sub_word)
-            if not alpha_characters:
-                sub_sub_word_spans.append(sub_word_span)
-                continue
-            could_be_lower_case = True
-            could_be_upper_case = True
-            could_be_camel_case = True
-            saw_first_alpha = False
+    ######################################################################
+    # Finished separating using middle underscores, now separating using
+    # case.
+    
+    # We're popping word spans out of `pre_alpha_word_spans` one-by-one. We
+    # analyze them, sometimes we throw them into `pre_alpha_word_spans`,
+    # which means they're words that are already separated by case, and
+    # sometimes we throw one part of them into `alpha_word_spans`, and
+    # throw the remaining substring back into `pre_alpha_word_spans`, where
+    # it will be analyzed on a later run of the loop.
+    
+    while pre_alpha_word_spans:
+        pre_alpha_word_span = pre_alpha_word_spans.pop()
+        pre_alpha_word = \
+                  text[pre_alpha_word_span[0] : pre_alpha_word_span[1] + 1]
+        alpha_characters = filter(str.isalpha, pre_alpha_word)
+        if not alpha_characters:
+            alpha_word_spans.append(pre_alpha_word_span)
+            continue
+        could_be_lower_case = True
+        could_be_upper_case = True
+        could_be_camel_case = True
+        saw_first_alpha = False
 
-            for i in xrange(sub_word_span[0], sub_word_span[1] + 1):
-                character = text[i]
-                if not character.isalpha():
-                    continue
-                assert character.isalpha()
-                if character.islower():
-                    if not saw_first_alpha:
-                        saw_first_alpha = True
-                        could_be_camel_case = could_be_upper_case = False
-                    else: # saw_first_alpha is True
-                        if could_be_lower_case or could_be_camel_case:
-                            could_be_upper_case = False
-                        else:
-                            sub_sub_word_spans.append((
-                                sub_word_span[0], 
-                                i - 1
-                            ))
-                            sub_word_spans.append((
-                                i, 
-                                sub_word_span[1], 
-                            ))
-                            break
-                else:
-                    assert character.isupper()
-                    if not saw_first_alpha:
-                        saw_first_alpha = True
-                        could_be_lower_case = False
-                    else: # saw_first_alpha is True
-                        if could_be_upper_case:
-                            could_be_camel_case = could_be_lower_case = False
-                        else:
-                            sub_sub_word_spans.append((
-                                sub_word_span[0], 
-                                i - 1
-                            ))
-                            sub_word_spans.append((
-                                i, 
-                                sub_word_span[1], 
-                            ))
-                            break
-                    
-            else:
-                sub_sub_word_spans.append(sub_word_span)
+        for i in \
+                xrange(pre_alpha_word_span[0], pre_alpha_word_span[1] + 1):
+            character = text[i]
+            if not character.isalpha():
                 continue
+            assert character.isalpha()
+            if character.islower():
+                if not saw_first_alpha:
+                    saw_first_alpha = True
+                    could_be_camel_case = could_be_upper_case = False
+                else: # saw_first_alpha is True
+                    if could_be_lower_case or could_be_camel_case:
+                        could_be_upper_case = False
+                    else:
+                        alpha_word_spans.append((
+                            pre_alpha_word_span[0], 
+                            i - 1
+                        ))
+                        pre_alpha_word_spans.append((
+                            i, 
+                            pre_alpha_word_span[1], 
+                        ))
+                        break
+            else:
+                assert character.isupper()
+                if not saw_first_alpha:
+                    saw_first_alpha = True
+                    could_be_lower_case = False
+                else: # saw_first_alpha is True
+                    if could_be_upper_case:
+                        could_be_camel_case = could_be_lower_case = False
+                    else:
+                        alpha_word_spans.append((
+                            pre_alpha_word_span[0], 
+                            i - 1
+                        ))
+                        pre_alpha_word_spans.append((
+                            i, 
+                            pre_alpha_word_span[1], 
+                        ))
+                        break
                 
-        #######################################################################
-        word_spans += sub_sub_word_spans
-        # We've finished separating into case-separated words; we throw them
-        # into the large list of words, and continue the loop to do the same
-        # process to the next unseparated alphanumeric word.
+        else:
+            alpha_word_spans.append(pre_alpha_word_span)
+            continue
+            
+    alpha_word_spans.sort()
         
-    word_spans.sort()
-        
+    alpha_word_spans = _offset_word_spans(alpha_word_spans, post_offset)
+
+    return alpha_word_spans
+
+
+def _offset_word_spans(word_spans, post_offset):
     if post_offset:
-        word_spans = [
+        return [
             (word_span[0] + post_offset, word_span[1] + post_offset)
                                                     for word_span in word_spans
         ]
-
-    return word_spans
+    else:
+        return word_spans
 
 
 
@@ -279,14 +282,31 @@ def cute_word(direction=1, extend=False, delete=False,
     #print(next_word_start)
     if select_current:
         nominal_position = (selection_start + selection_end) // 2
-        words_we_are_in = [
-            (word_start, word_end + 1) for (word_start, word_end) in word_spans
-            if word_start <= nominal_position <= word_end + 1
+        alpha_word_spans = get_alpha_word_spans_in_text(text,
+                                                        post_offset=text_start)
+        if not alpha_word_spans:
+            return 
+        fixed_alpha_word_spans = [
+            (word_start, word_end + 1) for (word_start, word_end) in
+            alpha_word_spans
         ]
-        if words_we_are_in:
-            word_we_are_in = words_we_are_in[0]
-            app.ExecuteCommand('set-visit-history-anchor')
-            editor.SetSelection(*word_we_are_in)
+        alpha_words_we_are_in = [
+            (word_start, word_end) for (word_start, word_end) in
+            fixed_alpha_word_spans
+                                  if word_start <= nominal_position <= word_end
+        ]
+        app.ExecuteCommand('set-visit-history-anchor')
+        if alpha_words_we_are_in:
+            alpha_word_we_are_in = alpha_words_we_are_in[-1]
+            editor.SetSelection(*alpha_word_we_are_in)
+        else:
+            closest_alpha_word_span = shared.argmin(
+                fixed_alpha_word_spans,
+                lambda (alpha_word_start, alpha_word_end):
+                    min(abs(alpha_word_start - nominal_position),
+                        abs(alpha_word_end - nominal_position),)
+            )
+            editor.SetSelection(*closest_alpha_word_span)            
     elif extend:
         editor.SetSelection(anchor_position, target_word_start)
     elif delete:
