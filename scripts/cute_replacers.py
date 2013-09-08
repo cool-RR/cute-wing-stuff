@@ -4,7 +4,12 @@
 
 from __future__ import with_statement
 
-import os.path, sys; sys.path.append(os.path.dirname(__file__))
+import os.path, sys
+sys.path += [
+    os.path.dirname(__file__), 
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+]
+
 
 import sys
 import inspect

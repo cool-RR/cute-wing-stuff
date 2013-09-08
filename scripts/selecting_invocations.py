@@ -15,7 +15,12 @@ import re
 import _ast
 import bisect
 
-import os.path, sys; sys.path.append(os.path.dirname(__file__))
+import os.path, sys
+sys.path += [
+    os.path.dirname(__file__), 
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+]
+
 
 import wingapi
 
