@@ -18,6 +18,8 @@ import collections
 import re
 import string
 
+from python_toolbox import caching
+
 import wingapi
 
 import shared
@@ -65,7 +67,7 @@ def get_word_spans_in_text(text, post_offset=0):
     )
 
 
-@shared.lru_cache(maxsize=20)
+@caching.cache(max_size=20)
 def get_non_alpha_word_spans_in_text(text, post_offset=0):
     return _offset_word_spans(
         sorted(_find_spans(punctuation_word_pattern, text) + 
@@ -74,7 +76,7 @@ def get_non_alpha_word_spans_in_text(text, post_offset=0):
     )
 
 
-@shared.lru_cache(maxsize=20)
+@caching.cache(max_size=20)
 def get_alpha_word_spans_in_text(text, post_offset=0):
     
     # We have three phases here. In the first phase we get words like
