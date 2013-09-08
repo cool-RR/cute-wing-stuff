@@ -225,8 +225,7 @@ def _offset_word_spans(word_spans, post_offset):
 
 
 
-def cute_word(direction=1, extend=False, delete=False,
-              select_current=False, 
+def cute_word(direction=1, extend=False, delete=False, traverse=False, 
               editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
     '''
     blocktododoc
@@ -235,7 +234,7 @@ def cute_word(direction=1, extend=False, delete=False,
     assert isinstance(editor, wingapi.CAPIEditor)
     
     assert direction in (-1, 1)
-    assert (delete, extend, select_current).count(True) in (0, 1)
+    assert (delete, extend, traverse).count(True) in (0, 1)
     
     selection_start, selection_end = editor.GetSelection()
     document = editor.GetDocument()
@@ -280,8 +279,8 @@ def cute_word(direction=1, extend=False, delete=False,
             
     
     #print(next_word_start)
-    if select_current:
-        nominal_position = (selection_start + selection_end) // 2
+    if traverse:
+        nominal_position = caret_position
         alpha_word_spans = get_alpha_word_spans_in_text(text,
                                                         post_offset=text_start)
         if not alpha_word_spans:
@@ -290,23 +289,28 @@ def cute_word(direction=1, extend=False, delete=False,
             (word_start, word_end + 1) for (word_start, word_end) in
             alpha_word_spans
         ]
-        alpha_words_we_are_in = [
+        alpha_word_spans_before_us = [
             (word_start, word_end) for (word_start, word_end) in
-            fixed_alpha_word_spans
-                                  if word_start <= nominal_position <= word_end
+                          fixed_alpha_word_spans if word_end < nominal_position
         ]
+        alpha_word_spans_after_us = [
+            (word_start, word_end) for (word_start, word_end) in
+                         fixed_alpha_word_spans if word_end >= nominal_position
+        ]
+        index_of_next_or_current = len(alpha_word_spans_before_us)
+        if not alpha_word_spans_after_us:
+            index_of_next_or_current -= 1
+            
+        target_index = index_of_next_or_current if direction == 1 else \
+                                           max(index_of_next_or_current - 1, 0)
+        
+        target_alpha_word_span = fixed_alpha_word_spans[target_index]
+        if direction == 1 and \
+              (selection_start, selection_end) ==  target_alpha_word_span and \
+                                target_index < len(fixed_alpha_word_spans) - 1:
+            target_alpha_word_span = fixed_alpha_word_spans[target_index+1]
         app.ExecuteCommand('set-visit-history-anchor')
-        if alpha_words_we_are_in:
-            alpha_word_we_are_in = alpha_words_we_are_in[-1]
-            editor.SetSelection(*alpha_word_we_are_in)
-        else:
-            closest_alpha_word_span = shared.argmin(
-                fixed_alpha_word_spans,
-                lambda (alpha_word_start, alpha_word_end):
-                    min(abs(alpha_word_start - nominal_position),
-                        abs(alpha_word_end - nominal_position),)
-            )
-            editor.SetSelection(*closest_alpha_word_span)            
+        editor.SetSelection(*target_alpha_word_span)
     elif extend:
         editor.SetSelection(anchor_position, target_word_start)
     elif delete:
