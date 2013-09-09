@@ -230,7 +230,6 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False,
     '''
     blocktododoc
     '''    
-    
     assert isinstance(editor, wingapi.CAPIEditor)
     
     assert direction in (-1, 1)
@@ -326,10 +325,6 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False,
                 ))
             )
     else:
+        editor.ExecuteCommand('forward-char') # Just to light up caret.
         editor.SetSelection(target_word_start, target_word_start)
         
-    
-    
-    
-    
-    
