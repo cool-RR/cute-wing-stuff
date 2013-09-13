@@ -54,15 +54,15 @@ def _find_spans(pattern, text):
                                            for match in pattern.finditer(text)]
     
 
-def get_word_spans_in_text(text, post_offset=0):
+def _get_word_spans_in_text(text, post_offset=0):
     return sorted(
-        get_non_alpha_word_spans_in_text(text, post_offset=post_offset) +
-        get_alpha_word_spans_in_text(text, post_offset=post_offset)
+        _get_non_alpha_word_spans_in_text(text, post_offset=post_offset) +
+        _get_alpha_word_spans_in_text(text, post_offset=post_offset)
     )
 
 
 @shared.lru_cache(maxsize=20)
-def get_non_alpha_word_spans_in_text(text, post_offset=0):
+def _get_non_alpha_word_spans_in_text(text, post_offset=0):
     return _offset_word_spans(
         sorted(_find_spans(punctuation_word_pattern, text) + 
                _find_spans(newline_word_pattern, text)),
@@ -71,7 +71,7 @@ def get_non_alpha_word_spans_in_text(text, post_offset=0):
 
 
 @shared.lru_cache(maxsize=20)
-def get_alpha_word_spans_in_text(text, post_offset=0):
+def _get_alpha_word_spans_in_text(text, post_offset=0):
     
     # We have three phases here. In the first phase we get words like
     # `IToldYou_soFooBar`, in the second phase we get words like `IToldYou`,
@@ -228,7 +228,45 @@ def _offset_word_spans(word_spans, post_offset):
 def cute_word(direction=1, extend=False, delete=False, traverse=False, 
               editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
     '''
-    blocktododoc
+    Move, select or delete words.
+    
+    This is a swiss-army knife command for handling "words". Unlike Wing's
+    default word-handling logic, this command separates using underscores and
+    case. For example, `foo_bar_baz` will be split to 3 words, and so will
+    `FooBarBaz` and `FOO_BAR_BAZ`.
+    
+    When used with no arguments, this command will move a word forward or
+    backward, depending on `direction`, similarly to Wing's built-in
+    `forward-word` and `backward-word` commands.
+    
+    When used with `extend=True`, this command will extend the existing
+    selection a word forward or backward, depending on `direction`, similarly
+    to Wing's built-in `forward-word-extend` and `backward-word-extend`
+    commands.
+    
+    When used with `delete=True`, this command will delete a word forward or
+    backward, depending on `direction`, similarly to Wing's built-in
+    `forward-delete-word` and `backward-delete-word` commands.
+    
+    When used with `traverse=True`, this command will select the next
+    alphanumeric word or the previous alphanumeric word, depending on
+    `direction`.
+    
+    Suggested key combinations:
+    
+        `Ctrl-Alt-Right` for direction=1
+        `Ctrl-Alt-Left` for direction=-1
+        `Ctrl-Alt-Shift-Right` for direction=1, extend=True
+        `Ctrl-Alt-Shift-Left` for direction=-1, extend=True
+        `Ctrl-Alt-Shift-Down` for direction=1, traverse=True
+        `Ctrl-Alt-Shift-Up` for direction=-1, traverse=True
+        `Alt-Delete` for direction=1, delete=True
+        `Alt-Backspace` for direction=-1, delete=True
+        
+    (Tip: If you do bind to `Ctrl-Alt-Right` and `Ctrl-Alt-Left` as I suggest,
+    then I also suggest you bind `Ctrl-Right-Up` and `Ctrl-Right-Down` to
+    `goto-previous-bookmark` and `goto-next-bookmark` respectively, so you'll
+    still have bookmark-traversing commands available.)
     '''    
     assert isinstance(editor, wingapi.CAPIEditor)
     
@@ -260,7 +298,7 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False,
     
     text = document.GetCharRange(text_start, text_end)
     
-    word_spans = get_word_spans_in_text(text, post_offset=text_start)
+    word_spans = _get_word_spans_in_text(text, post_offset=text_start)
     word_starts = zip(*word_spans)[0]
     #print(word_starts)
     bisector = bisect.bisect_right if direction == 1 else bisect.bisect_left
@@ -280,7 +318,7 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False,
     #print(next_word_start)
     if traverse:
         nominal_position = caret_position
-        alpha_word_spans = get_alpha_word_spans_in_text(text,
+        alpha_word_spans = _get_alpha_word_spans_in_text(text,
                                                         post_offset=text_start)
         if not alpha_word_spans:
             return 

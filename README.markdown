@@ -217,6 +217,47 @@ lines as the initial selection.
 Suggested key combination: `Ctrl-F8`
 
 
+## cute-word ##
+
+Move, select or delete words.
+
+This is a swiss-army knife command for handling "words". Unlike Wing's default
+word-handling logic, this command separates using underscores and case. For
+example, `foo_bar_baz` will be split to 3 words, and so will `FooBarBaz` and
+`FOO_BAR_BAZ`.
+
+When used with no arguments, this command will move a word forward or backward,
+depending on `direction`, similarly to Wing's built-in `forward-word` and
+`backward-word` commands.
+
+When used with `extend=True`, this command will extend the existing selection a
+word forward or backward, depending on `direction`, similarly to Wing's
+built-in `forward-word-extend` and `backward-word-extend` commands.
+
+When used with `delete=True`, this command will delete a word forward or
+backward, depending on `direction`, similarly to Wing's built-in
+`forward-delete-word` and `backward-delete-word` commands.
+
+When used with `traverse=True`, this command will select the next alphanumeric
+word or the previous alphanumeric word, depending on `direction`.
+
+Suggested key combinations:
+
+    `Ctrl-Alt-Right` for direction=1
+    `Ctrl-Alt-Left` for direction=-1
+    `Ctrl-Alt-Shift-Right` for direction=1, extend=True
+    `Ctrl-Alt-Shift-Left` for direction=-1, extend=True
+    `Ctrl-Alt-Shift-Down` for direction=1, traverse=True
+    `Ctrl-Alt-Shift-Up` for direction=-1, traverse=True
+    `Alt-Delete` for direction=1, delete=True
+    `Alt-Backspace` for direction=-1, delete=True
+    
+(Tip: If you do bind to `Ctrl-Alt-Right` and `Ctrl-Alt-Left` as I suggest, then
+I also suggest you bind `Ctrl-Right-Up` and `Ctrl-Right-Down` to
+`goto-previous-bookmark` and `goto-next-bookmark` respectively, so you'll still
+have bookmark-traversing commands available.)
+
+
 ## deep-to-var ##
     
 Create a variable from a deep expression.
