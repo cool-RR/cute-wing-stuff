@@ -32,8 +32,34 @@ def cute_start_select_line(editor=wingapi.kArgEditor):
     selection_start, selection_end = editor.GetSelection()
     selection_start_line = document.GetLineNumberFromPosition(selection_start)
     selection_end_line = document.GetLineNumberFromPosition(selection_end)
+    
     new_selection_start = document.GetLineStart(selection_start_line)
-    new_selection_end = document.GetLineEnd(selection_end_line)
+    
+    ###########################################################################
+    #                                                                         #
+    raw_new_selection_end = document.GetLineEnd(selection_end_line)
+    two_characters_after = document.GetCharRange(
+        raw_new_selection_end,
+        min(
+            raw_new_selection_end + 2,
+            document.GetLength()
+        )
+    )
+    if two_characters_after:
+        if two_characters_after[0] == '\n':
+            new_selection_end = raw_new_selection_end + 1
+        elif two_characters_after[0] == '\r':
+            if len(two_characters_after) == 2 and \
+                                               two_characters_after[1] == '\n':
+                new_selection_end = raw_new_selection_end + 2
+            else:
+                new_selection_end = raw_new_selection_end + 1
+        else:
+            new_selection_end = raw_new_selection_end
+    else:
+        new_selection_end = raw_new_selection_end
+    #                                                                         #
+    ###########################################################################
     
     _, caret_position = editor.GetAnchorAndCaret()
     if caret_position == selection_end:
