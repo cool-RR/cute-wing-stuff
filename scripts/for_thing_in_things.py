@@ -87,8 +87,8 @@ def for_thing_in_things(editor=wingapi.kArgEditor, app=wingapi.kArgApplication,
             
         if comprehension:
             segment_to_insert = ' %s' % segment_to_insert
-            document.InsertChars(home_position, segment_to_insert)
-            editor.SetSelection(home_position, home_position)
+            document.InsertChars(start_position, segment_to_insert)
+            editor.SetSelection(start_position, start_position)
         else:
             document.InsertChars(home_position, segment_to_insert)            
             editor.ExecuteCommand('end-of-line')        
