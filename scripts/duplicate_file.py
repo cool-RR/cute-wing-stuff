@@ -17,13 +17,13 @@ import shared
 
 def duplicate_file(new_file_name):
     
-    editor = wingapi.GetActiveEditor()
+    app = wingapi.gApplication
+    editor = app.GetActiveEditor()
     document = editor.GetDocument()
-    app = wingapi.GetActiveApplication()
     original_file_path = document.GetFilename()
     folder, original_file_name = os.path.split(original_file_path)
     if '.' in original_file_name and '.' not in new_file_name:
-        new_file_name += original_file_name.rsplit('.')[-1]
+        new_file_name += '.%s' % original_file_name.rsplit('.')[-1]
     new_file_path = os.path.join(folder, new_file_name)
     
     shutil.copy(original_file_path, new_file_path)
