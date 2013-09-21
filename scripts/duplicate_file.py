@@ -9,6 +9,8 @@ import shutil
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
 
 import wingapi
+import wingutils.datatype
+import guiutils.formbuilder
 
 import shared
 
@@ -31,3 +33,10 @@ def duplicate_file(new_file_name, editor=wingapi.kArgEditor,
     
     
     
+duplicate_file.arginfo = {
+    'new_file_name': wingapi.CArgInfo(
+        label='New file name (can omit extension)',
+        type=wingutils.datatype.CType(''),
+        formlet=guiutils.formbuilder.CType(''),
+    ),
+}
