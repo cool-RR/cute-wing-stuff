@@ -9,18 +9,17 @@ import shutil
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
 
 import wingapi
-import wingutils.datatypes
+import wingutils.datatype
 import guiutils.formbuilder
 
 import shared
 
 
-def duplicate_file(new_file_name, editor=wingapi.kArgEditor,
-                   app=wingapi.kArgApplication,):
+def duplicate_file(new_file_name):
     
-    assert isinstance(editor, wingapi.CAPIEditor)
-    assert isinstance(app, wingapi.CAPIApplication)
+    editor = wingapi.GetActiveEditor()
     document = editor.GetDocument()
+    app = wingapi.GetActiveApplication()
     original_file_path = document.GetFilename()
     folder, original_file_name = os.path.split(original_file_path)
     if '.' in original_file_name and '.' not in new_file_name:
@@ -36,7 +35,10 @@ def duplicate_file(new_file_name, editor=wingapi.kArgEditor,
 duplicate_file.arginfo = {
     'new_file_name': wingapi.CArgInfo(
         label='New file name (can omit extension)',
-        type=wingutils.datatypes.CType(''),
-        formlet=guiutils.formbuilder.CType(''),
+        type=wingutils.datatype.CType(''),
+        formlet=guiutils.formbuilder.CSmallTextGui(),
+        doc=''
     ),
 }
+
+_no_reload_scripts = True
