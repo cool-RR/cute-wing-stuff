@@ -9,6 +9,8 @@ See its documentation for more information.
 
 from __future__ import with_statement
 
+import contextlib
+
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
 
 import wingapi
@@ -16,48 +18,56 @@ import wingapi
 import shared
 
 
-behaviors = ('stand-ground', 'before', 'after')
 
-
-
-def cute_open_line(editor=wingapi.kArgEditor, behavior='stand-ground'):
+def cute_open_line(editor=wingapi.kArgEditor, line_offset=0,
+                   stand_ground=False):
     '''
-    Open a new line, but don't move the caret down to the new line.
+    Open a new line. (i.e. enter a newline character.)
     
-    Running this command is like pressing Enter, except your caret doesn't move
-    into the new line that was created, but stays exactly where it was.
+    If `line_offset` is set to `-1`, it will open a line at the line above. If
+    `line_offset` is set to `1`, it will open a line at the line below.
     
-    The advantage of this over Wing's built-in `open-line` is that
+    If `stand_ground=True`, it will make the caret not move when doing the
+    newline.
+    
+    (The advantage of this over Wing's built-in `open-line` is that
     `cute-open-line` doesn't just insert a newline character like `open-line`
     does; it runs Wing's `new-line` command, which does various intelligent
     things like auto-indenting your code to the right level, opening your
     parentheses *just so* if you're doing function invocation, and a bunch of
-    other goodies.
+    other goodies.)
     
-    If given `behavior='after'`, goes to the end of the current line, and opens
-    a new line from there. If given `behavior='before'`, goes to the end of the
-    previous line, and opens a new line from there.
-
     Suggested key combinations:
     
-        `Alt-Return` for normal operation
-        `Ctrl-Return` for `behavior='after'`
-        `Shift-Return` for `behavior='before'`
+        `Alt-Return` for `stand_ground=True`
+        `Shift-Return` for `line_offset=-1`
+        `Ctrl-Return` for `line_offset=1`
+        `Alt-Shift-Return` for `line_offset=-1, stand_ground=True`
+        `Ctrl-Alt-Return` for `line_offset=1, stand_ground=True`
         
     (The `Alt-Return` combination requires a AHK shim, at least on Windows.)
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)
-    assert behavior in behaviors
+    assert line_offset in (-1, 0, 1)
     document = editor.GetDocument()
-    with shared.UndoableAction(document):
-        if behavior == 'stand-ground':
-            with shared.SelectionRestorer(editor):
-                _undoless_new_line(editor)
+    
+    context_managers = [shared.UndoableAction(document)]
+    if stand_ground:
+        context_managers.append(
+            shared.SelectionRestorer(
+                editor, line_wise=True,
+                line_offset=(1 if line_offset==-1 else 0)
+            )
+        )
+        
+    with contextlib.nested(*context_managers):
+        if line_offset == 0:
+            _undoless_new_line(editor)
         else:
             _, caret_position = editor.GetAnchorAndCaret()
             line_number = document.GetLineNumberFromPosition(caret_position)
-            if behavior == 'before':
+            if line_offset == -1:
                 if line_number == 0:
                     return
                 last_character_of_previous_line = \
@@ -66,7 +76,7 @@ def cute_open_line(editor=wingapi.kArgEditor, behavior='stand-ground'):
                                     last_character_of_previous_line)
                 _undoless_new_line(editor)
             else:
-                assert behavior == 'after'
+                assert line_offset == 1
                 last_character_of_line = document.GetLineEnd(line_number)
                 editor.SetSelection(last_character_of_line,
                                     last_character_of_line)
