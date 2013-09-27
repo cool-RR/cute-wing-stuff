@@ -32,13 +32,20 @@ def duplicate_file(new_file_name):
     
     
     
-duplicate_file.arginfo = {
-    'new_file_name': wingapi.CArgInfo(
-        label='New file name (can omit extension)',
-        type=wingutils.datatype.CType(''),
-        formlet=guiutils.formbuilder.CSmallTextGui(),
-        doc=''
-    ),
-}
+duplicate_file.arginfo = lambda: \
+    {
+        'new_file_name': wingapi.CArgInfo(
+            label='New file name (can omit extension)',
+            type=wingutils.datatype.CType(''),
+            formlet=guiutils.formbuilder.CSmallTextGui(
+                default=os.path.split(
+                    wingapi.gApplication.GetActiveEditor().GetDocument().
+                                                                  GetFilename()
+                )[-1],
+                select_on_focus=True
+            ),
+            doc=''
+            ),
+    }
 
 _no_reload_scripts = True
