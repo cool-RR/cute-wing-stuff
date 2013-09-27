@@ -157,27 +157,28 @@ Suggested key combination: `Ctrl-L`
 
 ## cute-open-line ##
 
-Open a new line, but don't move the caret down to the new line.
+Open a new line. (i.e. enter a newline character.)
 
-Running this command is like pressing Enter, except your caret doesn't move
-into the new line that was created, but stays exactly where it was.
+If `line_offset` is set to `-1`, it will open a line at the line above. If
+`line_offset` is set to `1`, it will open a line at the line below.
 
-The advantage of this over Wing's built-in `open-line` is that
+If `stand_ground=True`, it will make the caret not move when doing the
+newline.
+
+(The advantage of this over Wing's built-in `open-line` is that
 `cute-open-line` doesn't just insert a newline character like `open-line`
 does; it runs Wing's `new-line` command, which does various intelligent
 things like auto-indenting your code to the right level, opening your
 parentheses *just so* if you're doing function invocation, and a bunch of
-other goodies.
-
-If given `behavior='after'`, goes to the end of the current line, and opens
-a new line from there. If given `behavior='before'`, goes to the end of the
-previous line, and opens a new line from there.
+other goodies.)
 
 Suggested key combinations:
 
-    `Alt-Return` for normal operation
-    `Ctrl-Return` for `behavior='after'`
-    `Shift-Return` for `behavior='before'`
+    `Alt-Return` for `stand_ground=True`
+    `Shift-Return` for `line_offset=-1`
+    `Ctrl-Return` for `line_offset=1`
+    `Alt-Shift-Return` for `line_offset=-1, stand_ground=True`
+    `Ctrl-Alt-Return` for `line_offset=1, stand_ground=True`
     
 (The `Alt-Return` combination requires a AHK shim, at least on Windows.)
 
