@@ -63,12 +63,10 @@ def django_switch_between_view_and_template():
         ]
         print(all_view_file_paths)
             
-        file_contents = itertools.imap(shared.get_file_content,
-                                       all_view_file_paths)
-        matching_file_paths_iterator = itertools.ifilter(
-            lambda file_content:
-                           specifies_our_template_pattern.search(file_content),
-            file_contents
+        matching_file_paths_iterator = (
+            file_path for file_path in all_view_file_paths if
+            specifies_our_template_pattern.search(
+                                            shared.get_file_content(file_path))
         )
         try:
             matching_file_path = next(matching_file_paths_iterator)
