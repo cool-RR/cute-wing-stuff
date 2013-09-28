@@ -7,7 +7,6 @@ import itertools
 import re
 import os.path
 import shutil
-import concurrent.futures
 
 import os.path, sys; sys.path.append(os.path.dirname(__file__))
 
@@ -60,19 +59,20 @@ def django_switch_between_view_and_template():
         )
         all_view_file_paths = [
             file_path for file_path in all_file_paths
-            if view_file_path_pattern.match(view_file_path_pattern)
+            if view_file_path_pattern.match(file_path)
         ]
+        print(all_view_file_paths)
             
-        with concurrent.futures.ThreadPoolExecutor(4) as executor:
-            file_content_futures = executor.map(shared.get_file_content,
-                                                all_view_file_paths)
-            matching_file_paths_iterator = itertools.ifilter(
-                lambda future:
-                        specifies_our_template_pattern.search(future.result()),
-                file_content_futures
-            )
-            try:
-                matching_file_path = next(matching_file_paths_iterator)
-            except StopIteration:
-                return
+        file_contents = itertools.imap(shared.get_file_content,
+                                       all_view_file_paths)
+        matching_file_paths_iterator = itertools.ifilter(
+            lambda file_content:
+                           specifies_our_template_pattern.search(file_content),
+            file_contents
+        )
+        try:
+            matching_file_path = next(matching_file_paths_iterator)
+            print('Got match: %s' % matching_file_path)
+        except StopIteration:
+            return
         app.OpenEditor(matching_file_path, raise_window=True)
