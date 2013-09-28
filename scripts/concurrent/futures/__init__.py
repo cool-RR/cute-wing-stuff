@@ -1,3 +1,5 @@
+# FORKED BY RAM TO REMOVE MULTIPROCESS FUNCTIONALITY, WING DOESN'T SUPPORT IT. 
+
 # Copyright 2009 Brian Quinlan. All Rights Reserved.
 # Licensed to PSF under a Contributor Agreement.
 
@@ -14,5 +16,4 @@ from concurrent.futures._base import (FIRST_COMPLETED,
                                       Executor,
                                       wait,
                                       as_completed)
-from concurrent.futures.process import ProcessPoolExecutor
 from concurrent.futures.thread import ThreadPoolExecutor
