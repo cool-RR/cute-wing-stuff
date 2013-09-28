@@ -1,4 +1,4 @@
-# Copyright 2009-2012 Ram Rachum.
+# Copyright 2009-2013 Ram Rachum.
 # This program is distributed under the MIT license.
 
 '''
@@ -17,7 +17,7 @@ import wingapi
 import shared
 
 
-def slash_line(editor=wingapi.kArgEditor, line_offset=0):
+def slash_line(editor=wingapi.kArgEditor, line_offset=0, at_caret=False):
     '''
     Slash a long line into 2 lines, putting a `\` character as a separator.
     
@@ -27,8 +27,23 @@ def slash_line(editor=wingapi.kArgEditor, line_offset=0):
                                os.path.exists(corresponding_python_source_file)
         nose.selector.Selector.wantFile = \
                        types.MethodType(wantFile, None, nose.selector.Selector)
+                       
+    Specify `line_offset` to slash a line different from the one that the caret
+    is on. For example, `line_offset=-1` would slash the previous line.
+    
+    Specify `at_caret=True` to use the current caret position as the slashing
+    point, rather than finding one automatically.
+
+    Suggested key combination: `Insert L` for default arguments,
+    `Insert Shift-L` for line_offset=-1, and `Insert Ctrl-L` for
+    at_caret=True.
     '''
     
+    if at_caret:
+        assert not line_offset
+        caret_position, _ = editor.GetSelection()
+        
+
     max_line_length = \
         wingapi.gApplication.GetPreference('edit.text-wrap-column')
     
@@ -50,10 +65,15 @@ def slash_line(editor=wingapi.kArgEditor, line_offset=0):
     ### Determining where to put the slash: ###################################
     #                                                                         #
     content_segment = line_content[:max_line_length-1]
-    if ' = ' in content_segment:
-        slash_position = content_segment.find(' = ') + 3
+    if at_caret:
+        caret_position_in_line = caret_position - line_start
+        slash_position = content_segment.find(' ',
+                                              caret_position_in_line - 1) + 1
     else:
-        slash_position = content_segment.rfind(' ') + 1
+        if ' = ' in content_segment:
+            slash_position = content_segment.find(' = ') + 3
+        else:
+            slash_position = content_segment.rfind(' ') + 1
     #                                                                         #
     ### Finished determining where to put the slash. ##########################
     

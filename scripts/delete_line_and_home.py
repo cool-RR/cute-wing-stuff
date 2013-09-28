@@ -1,4 +1,4 @@
-# Copyright 2009-2012 Ram Rachum.
+# Copyright 2009-2013 Ram Rachum.
 # This program is distributed under the MIT license.
 
 '''
@@ -24,6 +24,8 @@ def delete_line_and_home():
     sends the caret to column 0, which is annoying. This script fixes that by
     first deleting a line, then sending the caret to the beginning of the text
     on the next line.
+
+    Suggested key combination: `Ctrl-Shift-C`
     '''
     wingapi.gApplication.ExecuteCommand('delete-line')
     wingapi.gApplication.ExecuteCommand('beginning-of-line-text')

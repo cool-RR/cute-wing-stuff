@@ -1,4 +1,4 @@
-# Copyright 2009-2012 Ram Rachum.
+# Copyright 2009-2013 Ram Rachum.
 # This program is distributed under the MIT license.
 
 '''
@@ -18,25 +18,36 @@ import wingapi
 
 import shared
 
+get_verbs = ('get', 'calculate', 'identify', 'fetch', 'make', 'create',
+             'grant', 'open', 'determine', 'download', 'obtain', 'measure')
+get_verb_segment = '(?:%s)' % (
+    '|'.join(
+        '[%s%s]%s' % (verb[0], verb[0].upper(), verb[1:]) for verb in
+        get_verbs
+    )
+)
+
+###############################################################################
+###############################################################################
+
 attribute_pattern = re.compile(r'\.([a-zA-Z_][0-9a-zA-Z_]*)$')
 getitem_pattern = re.compile(r'''\[['"]([a-zA-Z_][0-9a-zA-Z_]*)['"]\]$''')
 
 ### Defining `getter_pattern`: ################################################
 #                                                                             #
-getter_verbs = ('get', 'calculate', 'identify', 'fetch', 'make', 'create',
-                'grant', 'open')
-
-getter_verb = '(?:%s)' % (
-    '|'.join(
-        '[%s%s]%s' % (verb[0], verb[0].upper(), verb[1:]) for verb in
-        getter_verbs
-    )
-)
-
 getter_pattern = re.compile(r'%s_?([a-zA-Z_][0-9a-zA-Z_]*)\(.*\)$' %
-                                                                   getter_verb)
+                                                              get_verb_segment)
 #                                                                             #
 ### Finished defining `getter_pattern`. #######################################
+
+### Defining `mapping_get_pattern`: ###########################################
+#                                                                             #
+mapping_get_pattern = re.compile(
+    r'''%s\(u?r?['"]{1,3}([a-zA-Z_][0-9a-zA-Z_]*)'''
+    r'''['"]{1,3}.*\)$''' % get_verb_segment
+)
+#                                                                             #
+### Finished defining `mapping_get_pattern`. ##################################
 
 ### Defining `django_orm_get_pattern`: ########################################
 #                                                                             #
@@ -55,9 +66,28 @@ django_orm_get_pattern = re.compile(
 #                                                                             #
 ### Finished defining `django_orm_get_pattern`. ###############################
 
+### Defining `re_match_group_pattern`: ########################################
+#                                                                             #
+re_match_group_pattern = re.compile(
+    r'''match\.group\(['"]([^'"]*?)['"]\)$'''
+)
+#                                                                             #
+### Finished defining `re_match_group_pattern`. ###############################
+
+instantiation_pattern = re.compile(
+    r'''([A-Z]\w+)\(.*?\)$'''
+)
+
+### Defining datetime module patterns: ########################################
+#                                                                             #
+now_pattern = re.compile(r'''datetime(?:_module)?\.datetime\.(now)\(\)$''')
+today_pattern = re.compile(r'''datetime(?:_module)?\.date\.(today)\(\)$''')
+#                                                                             #
+### Finished defining datetime module patterns. ###############################
 
 patterns = [django_orm_get_pattern, getter_pattern, attribute_pattern,
-            getitem_pattern]
+            mapping_get_pattern, getitem_pattern, re_match_group_pattern,
+            now_pattern, today_pattern, instantiation_pattern]
 
 
 
@@ -92,6 +122,8 @@ def deep_to_var(editor=wingapi.kArgEditor):
     Just write your deep expression, like `self._style_handler.html_color`,
     invoke this `deep-to-var` script, and you'll get the full line and have the
     caret put on the next line.
+
+    Suggested key combination: `Insert E`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()

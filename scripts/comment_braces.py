@@ -1,4 +1,4 @@
-# Copyright 2009-2012 Ram Rachum.
+# Copyright 2009-2013 Ram Rachum.
 # This program is distributed under the MIT license.
 
 '''
@@ -60,6 +60,8 @@ def comment_braces(title):
     The title usually has a first word ending with "ing". Don't bother
     capitalizing the first letter or ending the sentence with any punctuation
     mark. You may also use an empty title to get a title-less comment line.
+
+    Suggested key combination: `Insert B`
     '''
     
     editor = wingapi.gApplication.GetActiveEditor()

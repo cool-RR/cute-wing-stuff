@@ -1,4 +1,4 @@
-# Copyright 2009-2012 Ram Rachum.
+# Copyright 2009-2013 Ram Rachum.
 # This program is distributed under the MIT license.
 
 '''
@@ -24,6 +24,8 @@ def frame_show_and_home():
     current frame, it sends the caret to column 0, which is annoying. This
     script fixes that by first doing `frame-show`, then sending the caret to
     the beginning of the text.
+
+    Suggested key combination: `Shift-F11`
     '''
     wingapi.gApplication.ExecuteCommand('frame-show')
     wingapi.gApplication.ExecuteCommand('beginning-of-line-text')

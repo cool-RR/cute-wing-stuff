@@ -1,4 +1,4 @@
-# Copyright 2009-2012 Ram Rachum.
+# Copyright 2009-2013 Ram Rachum.
 # This program is distributed under the MIT license.
 
 '''Defines various tools for use in Wing scripts.'''
@@ -8,8 +8,16 @@ from  __future__ import with_statement
 import collections
 import re
 
+try:
+    import autopy.key
+except ImportError:
+    autopy_available = False
+else:
+    autopy_available = True
+    
 import wingapi
 
+from _lru_cache import *
 
 _ignore_scripts = True
 
@@ -65,7 +73,28 @@ class SelectionRestorer(object):
         else:
             start = self.start
             end = self.end
-        self.editor.SetSelection(start, end)
+            
+        if tuple(self.editor.GetSelection()) != (start, end):
+            self.editor.SetSelection(start, end)
+            # (Only conditionally setting selection, because if it's already
+            # correct it's best to leave it as it is, because when we set it
+            # ourselves some things (like `select-less`) stop working.)
+
+
+class ClipboardRestorer(object):
+    
+    def __init__(self, app):
+        assert isinstance(app, wingapi.CAPIApplication)
+        self.app = app
+        self.clipboard_data = None
+        
+    def __enter__(self):
+        self.clipboard_data = self.app.GetClipboard()
+
+                
+    def __exit__(self, *args, **kwargs):
+        self.app.SetClipboard(self.clipboard_data)
+
 
 
 def scroll_to_line(editor, line_number):
@@ -131,6 +160,21 @@ def strip_selection_if_single_line(editor):
         new_end = end - right_strip_size
         editor.SetSelection(new_start, new_end)
     
+    
+_whitespace_and_newlines_stripping_pattern = re.compile(
+    r'''^(?P<leading>[ \r\n\t]*)(?P<content>.*?)(?P<trailing>[ \r\n\t]*)$''',
+    flags=re.DOTALL
+)    
+def strip_segment_from_whitespace_and_newlines(text, start, end):
+    
+    selection_text = text[start:end]
+    match = _whitespace_and_newlines_stripping_pattern.match(selection_text)
+    assert match
+    new_start = start + len(match.group('leading'))
+    new_end = end - len(match.group('trailing'))
+    
+    return new_start, new_end
+    
         
 class UndoableAction(object):
     '''
@@ -152,6 +196,24 @@ class UndoableAction(object):
         
     def __exit__(self, *args, **kwargs):
         self.document.EndUndoAction()
+        
+
+class NonUndoableAction(object):
+    def __init__(self, editor):
+        assert isinstance(editor, wingapi.CAPIEditor)
+        self.editor = editor
+        
+    def __enter__(self):
+        self._begin_undo_action = self.editor.fEditor._fScint.begin_undo_action
+        self._end_undo_action = self.editor.fEditor._fScint.end_undo_action
+        self.editor.fEditor._fScint.begin_undo_action = \
+                                  self.editor.fEditor._fScint.end_undo_action = \
+                                                   lambda *args, **kwargs: None
+        
+    def __exit__(self, *args, **kwargs):
+        pass
+        #self.editor.fCache.fDoc.begin_undo_action = self._begin_undo_action
+        #self.editor.fCache.fDoc.end_undo_action = self._end_undo_action
         
 
 def get_cursor_position(editor):
@@ -196,7 +258,7 @@ def get_indent_size_in_pos(editor, pos):
     # todo: figure out something like `indent-to-match` except it looks at the
     # lines *below* the current one.
     
-    # blocktodo: I think that 'indent-to-match' actually modifies the document,
+    # blocktodo: I think that `indent-to-match` actually modifies the document,
     # adding or removing spaces! This is bad, should find substitute that
     # doesn't modify the document.
     
@@ -344,4 +406,32 @@ def plural_word_to_singular_word(plural_word):
         assert plural_word.endswith('s')
         return plural_word[:-1]
     
+
+def clip_ahk():
+    '''
+    Cause AHK to think that a new word is being typed, for its auto-completion.
+    '''
+    assert autopy_available
+    autopy.key.tap(135) # F24 for making AHK think it's a new word
+    
+    
+def get_text(document):
+    # Getting the text using `GetCharRange` instead of `GetText` because
+    # `GetText` returns unicode.
+    assert isinstance(document, wingapi.CAPIDocument)
+    return document.GetCharRange(0, document.GetLength())
+
+def argmin(sequence, key_function=None):
+    if key_function is None:
+        key_function = lambda x: x
+        index
+    indices = range(len(sequence))
+    indices.sort(key=lambda index: key_function(sequence[index]))
+    return sequence[indices[0]]
+    
+def reset_caret_blinking(editor):
+    selection = editor.GetSelection()
+    editor.ExecuteCommand('forward-char')
+    editor.SetSelection(*selection)
+
     

@@ -1,4 +1,4 @@
-# Copyright 2009-2012 Ram Rachum.
+# Copyright 2009-2013 Ram Rachum.
 # This program is distributed under the MIT license.
 
 '''
@@ -40,10 +40,12 @@ def arg_to_attr(editor=wingapi.kArgEditor):
     
     Instead, type `crunchiness`. (You'll get autocompletion because it exists
     as an argument.) Then run this `arg_to_attr` script. (I personally use
-    `Alt-Insert A` for it.)
+    `Insert A` for it.)
     
     The final result is that you'll get a `self.crunchiness = crunchiness` line
     and have the cursor ready in the next line.
+    
+    Suggested key combination: `Insert A`    
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()

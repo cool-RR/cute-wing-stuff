@@ -1,4 +1,4 @@
-# Copyright 2009-2012 Ram Rachum.
+# Copyright 2009-2013 Ram Rachum.
 # This program is distributed under the MIT license.
 
 '''
@@ -23,6 +23,8 @@ def flip_case(editor=wingapi.kArgEditor):
     For example, if the cursor is on `something_like_this` and you activate
     this script, you'll get `SomethingLikeThis`. Do it again and you'll get
     `something_like_this` again.
+
+    Suggested key combination: `Insert C`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()

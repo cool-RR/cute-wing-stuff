@@ -1,4 +1,4 @@
-# Copyright 2009-2012 Ram Rachum.
+# Copyright 2009-2013 Ram Rachum.
 # This program is distributed under the MIT license.
 
 '''
@@ -26,6 +26,7 @@ def comment_hr(editor=wingapi.kArgEditor):
     
         #######################################################################
         
+    Suggested key combination: `Insert H`
     '''
     
     assert isinstance(editor, wingapi.CAPIEditor)

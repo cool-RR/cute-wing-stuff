@@ -1,4 +1,4 @@
-# Copyright 2009-2012 Ram Rachum.
+# Copyright 2009-2013 Ram Rachum.
 # This program is distributed under the MIT license.
 
 '''
@@ -36,6 +36,8 @@ def go_up_to_project_frame(application=wingapi.gApplication):
     `go-up-to-project-frame` to the rescue! Invoke this script while debugging
     in order to be taken to the closest higher stack frame that's on a project
     file rather than an external module.
+
+    Suggested key combination: `Alt-F11`
     '''
     project = application.GetProject()
     debugger = application.GetDebugger()

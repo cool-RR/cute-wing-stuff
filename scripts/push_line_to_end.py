@@ -1,4 +1,4 @@
-# Copyright 2009-2012 Ram Rachum.
+# Copyright 2009-2013 Ram Rachum.
 # This program is distributed under the MIT license.
 
 '''
@@ -59,6 +59,8 @@ def push_line_to_end(editor=wingapi.kArgEditor, line_offset=0):
                                           second_long_condition(fubaz, bazbar):
                                           
     Also deletes trailing spaces.
+
+    Suggested key combination: `Insert End`
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
