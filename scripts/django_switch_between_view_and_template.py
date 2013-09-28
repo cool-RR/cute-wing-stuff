@@ -20,7 +20,7 @@ import shared
 template_name_pattern = re.compile(r'''template_name *= * ['"]([^'"]+)['"]''')
 view_file_path_pattern = re.compile(r'''view.*py.?$''')
 shorten_template_file_path_pattern = re.compile(
-    r'''^.*template[^/]*(/.*$)'''
+    r'''^.*template[^/]*/(.*$)'''
 )
 
 
@@ -59,7 +59,7 @@ def django_switch_between_view_and_template():
         )
         all_view_file_paths = [
             file_path for file_path in all_file_paths
-            if view_file_path_pattern.match(file_path)
+            if view_file_path_pattern.search(file_path)
         ]
         print(all_view_file_paths)
             
