@@ -23,6 +23,20 @@ existing_class_name_pattern = re.compile(
 
 
 def guess_class_name():
+    '''
+    Guess the class name based on file name, and replace class name.
+    
+    Imagine you had a file `foo_manager.py` with a class `FooManager` defined
+    in it, and you duplicated it, calling the new file `bar_grokker.py`. If you
+    run `guess-class-name`, it'll replace all instances of `FooManager` in your
+    new file to `BarGrokker`.
+    
+    (It finds the original class name by taking the first class defined in the
+    file. If the file defined multiple classes, you might get the wrong
+    results.)
+    
+    Suggested key combination: `Insert Ctrl-C`
+    '''
     
     app = wingapi.gApplication
     editor = app.GetActiveEditor()

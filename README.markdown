@@ -313,6 +313,30 @@ Turn `foo[bar]` into `foo.get(bar, None)`.
 Suggested key combination: `Insert Ctrl-G`
 
 
+## django-toggle-between-view-and-template ##
+
+Toggle between a view file in Django and the corresponding template file.
+
+If you're currently viewing a template file, this'll open the corresponding
+view file. If you're currently viewing a view file, this'll open the
+corresponding template file.
+
+This assumes that the view file has the word `view` in it and has a
+definition for the class attribute `template_name`.
+
+Suggested key combination: `Insert Quoteleft` (i.e. backtick)
+
+
+## duplicate-file ##
+
+Create a copy of the current file (in the same folder) and open it.
+
+If a filename with no extension will be entered, the same extension used
+for the original file will be used for the new file.
+
+Suggested key combination: `Insert Ctrl-D`
+
+
 ## flip ##
 
 Flip between `True` and `False`.
@@ -381,6 +405,22 @@ in order to be taken to the closest higher stack frame that's on a project
 file rather than an external module.
     
 Suggested key combination: `Alt-F11`
+
+
+## guess-class-name ##
+
+Guess the class name based on file name, and replace class name.
+
+Imagine you had a file `foo_manager.py` with a class `FooManager` defined
+in it, and you duplicated it, calling the new file `bar_grokker.py`. If you
+run `guess-class-name`, it'll replace all instances of `FooManager` in your
+new file to `BarGrokker`.
+
+(It finds the original class name by taking the first class defined in the
+file. If the file defined multiple classes, you might get the wrong
+results.)
+
+Suggested key combination: `Insert Ctrl-C`
 
 
 ## implicit-getattr-to-explicit ##
@@ -665,6 +705,16 @@ Specify `at_caret=True` to use the current caret position as the slashing
 point, rather than finding one automatically.
 
 Suggested key combination: `Insert L` for default arguments, `Insert Shift-L` for line_offset=-1, and `Insert Ctrl-L` for at_caret=True.
+
+
+## type-super ##
+
+Type `super(MyClass, self).my_method()`
+
+`MyClass` and `my_method` will be copied with the current class and method
+of the active scope.
+
+Suggested key combination: `Insert Ctrl-S`
 
 
 ## unpack-tuple-to-one ##

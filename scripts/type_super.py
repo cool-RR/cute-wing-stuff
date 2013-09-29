@@ -17,6 +17,14 @@ import shared
 
 
 def type_super():
+    '''
+    Type `super(MyClass, self).my_method()`
+    
+    `MyClass` and `my_method` will be copied with the current class and method
+    of the active scope.
+    
+    Suggested key combination: `Insert Ctrl-S`
+    '''
     
     app = wingapi.gApplication
     editor = app.GetActiveEditor()

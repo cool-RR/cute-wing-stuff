@@ -25,6 +25,18 @@ shorten_template_file_path_pattern = re.compile(
 
 
 def django_toggle_between_view_and_template():
+    '''
+    Toggle between a view file in Django and the corresponding template file.
+    
+    If you're currently viewing a template file, this'll open the corresponding
+    view file. If you're currently viewing a view file, this'll open the
+    corresponding template file.
+    
+    This assumes that the view file has the word `view` in it and has a
+    definition for the class attribute `template_name`.
+    
+    Suggested key combination: `Insert Quoteleft` (i.e. backtick)
+    '''
     
     app = wingapi.gApplication
     editor = app.GetActiveEditor()

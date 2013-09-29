@@ -16,7 +16,14 @@ import shared
 
 
 def duplicate_file(new_file_name):
+    '''
+    Create a copy of the current file (in the same folder) and open it.
     
+    If a filename with no extension will be entered, the same extension used
+    for the original file will be used for the new file.
+    
+    Suggested key combination: `Insert Ctrl-D`
+    '''
     app = wingapi.gApplication
     editor = app.GetActiveEditor()
     document = editor.GetDocument()
