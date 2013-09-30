@@ -1,5 +1,5 @@
-# Copyright 2009-2011 Ram Rachum.
-# This program is distributed under the LGPL2.1 license.
+# Copyright 2009-2013 Ram Rachum.
+# This program is distributed under the MIT license.
 
 '''
 This module defines the `comment_braces` script.
@@ -23,6 +23,13 @@ def _decapitalize(string):
     if not string:
         return string
     return string[0].lower() + string[1:]
+
+
+def _capitalize(string):
+    '''Capitalize a string's first letter.'''
+    if not string:
+        return string
+    return string[0].upper() + string[1:]
 
 
 def comment_braces(title):
@@ -53,6 +60,8 @@ def comment_braces(title):
     The title usually has a first word ending with "ing". Don't bother
     capitalizing the first letter or ending the sentence with any punctuation
     mark. You may also use an empty title to get a title-less comment line.
+
+    Suggested key combination: `Insert B`
     '''
     
     editor = wingapi.gApplication.GetActiveEditor()
@@ -76,7 +85,7 @@ def comment_braces(title):
         indent_size = shared.get_indent_size_in_pos(editor, original_start)
         
         if title:
-            raw_start_title = (' %s: ' % title.capitalize())
+            raw_start_title = (' %s: ' % _capitalize(title))
             raw_end_title = (' Finished %s. ' % _decapitalize(title))
         else:
             assert title == ''

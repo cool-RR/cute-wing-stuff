@@ -1,5 +1,5 @@
-# Copyright 2009-2011 Ram Rachum.
-# This program is distributed under the LGPL2.1 license.
+# Copyright 2009-2013 Ram Rachum.
+# This program is distributed under the MIT license.
 
 '''
 This module defines the `comment_hr` script.
@@ -26,9 +26,8 @@ def comment_hr(editor=wingapi.kArgEditor):
     
         #######################################################################
         
+    Suggested key combination: `Insert H`
     '''
-    # todo: deal with non-clear lines
-    # todo: go to next line after done
     
     assert isinstance(editor, wingapi.CAPIEditor)
     
@@ -44,11 +43,14 @@ def comment_hr(editor=wingapi.kArgEditor):
         original_line_count = document.GetLineCount()
         
         indent_size = shared.get_indent_size_in_pos(editor, original_start)
-        
-        string_to_write = (' ' * indent_size) + ('#' * (79 - indent_size))
+
+        string_to_write = (' ' * indent_size) + ('#' * (79 - indent_size)) + \
+                                                                           '\n'
         
         assert len(string_to_write) == 79
         
         start_line_number = document.GetLineNumberFromPosition(original_start)
         start_line_first_char = document.GetLineStart(start_line_number)
         document.InsertChars(start_line_first_char, string_to_write)
+
+        editor.ExecuteCommand('home')
