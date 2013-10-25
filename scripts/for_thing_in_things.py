@@ -61,20 +61,24 @@ def for_thing_in_things(editor=wingapi.kArgEditor, app=wingapi.kArgApplication,
         if ')' in document.GetCharRange(end_position - 1, end_position + 1) \
                                                  and 'range(' in line_contents:
             
-            start_position = document_text.find('range(', line_start)
-            if document_text[start_position - 1] == 'x':
-                start_position -= 1
+            text_start_position = document_text.find('range(', line_start)
+            if document_text[text_start_position - 1] == 'x':
+                text_start_position -= 1
             end_position = document_text.find(
                 ')',
-                start_position,
+                text_start_position,
                 min((line_end, end_position + 1))
             ) + 1
         else:
             wingapi.gApplication.ExecuteCommand('backward-word')
-            start_position, _ = editor.GetSelection()
+            text_start_position, _ = editor.GetSelection()
+            wingapi.gApplication.ExecuteCommand('forward-word')
+            wingapi.gApplication.ExecuteCommand('select-expression')
+            shared.strip_selection_if_single_line(editor)
+            expression_start_position, _ = editor.GetSelection()
             
 
-        base_text = document.GetCharRange(start_position, end_position)
+        base_text = document.GetCharRange(text_start_position, end_position)
         ### Analyzing base text: ##############################################
         #                                                                     #
         if range_pattern.match(base_text):
@@ -92,8 +96,9 @@ def for_thing_in_things(editor=wingapi.kArgEditor, app=wingapi.kArgApplication,
             
         if comprehension:
             segment_to_insert = ' %s' % segment_to_insert
-            document.InsertChars(home_position, segment_to_insert)
-            editor.SetSelection(home_position, home_position)
+            document.InsertChars(expression_start_position, segment_to_insert)
+            editor.SetSelection(expression_start_position,
+                                expression_start_position)
         else:
             document.InsertChars(home_position, segment_to_insert)            
             editor.ExecuteCommand('end-of-line')        

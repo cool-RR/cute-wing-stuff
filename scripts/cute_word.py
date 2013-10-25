@@ -60,15 +60,15 @@ def _find_spans(pattern, text):
                                            for match in pattern.finditer(text)]
     
 
-def get_word_spans_in_text(text, post_offset=0):
+def _get_word_spans_in_text(text, post_offset=0):
     return sorted(
-        get_non_alpha_word_spans_in_text(text, post_offset=post_offset) +
-        get_alpha_word_spans_in_text(text, post_offset=post_offset)
+        _get_non_alpha_word_spans_in_text(text, post_offset=post_offset) +
+        _get_alpha_word_spans_in_text(text, post_offset=post_offset)
     )
 
 
 @caching.cache(max_size=20)
-def get_non_alpha_word_spans_in_text(text, post_offset=0):
+def _get_non_alpha_word_spans_in_text(text, post_offset=0):
     return _offset_word_spans(
         sorted(_find_spans(punctuation_word_pattern, text) + 
                _find_spans(newline_word_pattern, text)),
@@ -77,7 +77,7 @@ def get_non_alpha_word_spans_in_text(text, post_offset=0):
 
 
 @caching.cache(max_size=20)
-def get_alpha_word_spans_in_text(text, post_offset=0):
+def _get_alpha_word_spans_in_text(text, post_offset=0):
     
     # We have three phases here. In the first phase we get words like
     # `IToldYou_soFooBar`, in the second phase we get words like `IToldYou`,
@@ -231,17 +231,53 @@ def _offset_word_spans(word_spans, post_offset):
 
 
 
-def cute_word(direction=1, extend=False, delete=False,
-              select_current=False, 
+def cute_word(direction=1, extend=False, delete=False, traverse=False, 
               editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
     '''
-    blocktododoc
-    '''    
+    Move, select or delete words.
     
+    This is a swiss-army knife command for handling "words". Unlike Wing's
+    default word-handling logic, this command separates using underscores and
+    case. For example, `foo_bar_baz` will be split to 3 words, and so will
+    `FooBarBaz` and `FOO_BAR_BAZ`.
+    
+    When used with no arguments, this command will move a word forward or
+    backward, depending on `direction`, similarly to Wing's built-in
+    `forward-word` and `backward-word` commands.
+    
+    When used with `extend=True`, this command will extend the existing
+    selection a word forward or backward, depending on `direction`, similarly
+    to Wing's built-in `forward-word-extend` and `backward-word-extend`
+    commands.
+    
+    When used with `delete=True`, this command will delete a word forward or
+    backward, depending on `direction`, similarly to Wing's built-in
+    `forward-delete-word` and `backward-delete-word` commands.
+    
+    When used with `traverse=True`, this command will select the next
+    alphanumeric word or the previous alphanumeric word, depending on
+    `direction`.
+    
+    Suggested key combinations:
+    
+        `Ctrl-Alt-Right` for direction=1
+        `Ctrl-Alt-Left` for direction=-1
+        `Ctrl-Alt-Shift-Right` for direction=1, extend=True
+        `Ctrl-Alt-Shift-Left` for direction=-1, extend=True
+        `Ctrl-Alt-Shift-Down` for direction=1, traverse=True
+        `Ctrl-Alt-Shift-Up` for direction=-1, traverse=True
+        `Alt-Delete` for direction=1, delete=True
+        `Alt-Backspace` for direction=-1, delete=True
+        
+    (Tip: If you do bind to `Ctrl-Alt-Right` and `Ctrl-Alt-Left` as I suggest,
+    then I also suggest you bind `Ctrl-Right-Up` and `Ctrl-Right-Down` to
+    `goto-previous-bookmark` and `goto-next-bookmark` respectively, so you'll
+    still have bookmark-traversing commands available.)
+    '''    
     assert isinstance(editor, wingapi.CAPIEditor)
     
     assert direction in (-1, 1)
-    assert (delete, extend, select_current).count(True) in (0, 1)
+    assert (delete, extend, traverse).count(True) in (0, 1)
     
     selection_start, selection_end = editor.GetSelection()
     document = editor.GetDocument()
@@ -268,7 +304,7 @@ def cute_word(direction=1, extend=False, delete=False,
     
     text = document.GetCharRange(text_start, text_end)
     
-    word_spans = get_word_spans_in_text(text, post_offset=text_start)
+    word_spans = _get_word_spans_in_text(text, post_offset=text_start)
     word_starts = zip(*word_spans)[0]
     #print(word_starts)
     bisector = bisect.bisect_right if direction == 1 else bisect.bisect_left
@@ -286,9 +322,9 @@ def cute_word(direction=1, extend=False, delete=False,
             
     
     #print(next_word_start)
-    if select_current:
-        nominal_position = (selection_start + selection_end) // 2
-        alpha_word_spans = get_alpha_word_spans_in_text(text,
+    if traverse:
+        nominal_position = caret_position
+        alpha_word_spans = _get_alpha_word_spans_in_text(text,
                                                         post_offset=text_start)
         if not alpha_word_spans:
             return 
@@ -296,23 +332,28 @@ def cute_word(direction=1, extend=False, delete=False,
             (word_start, word_end + 1) for (word_start, word_end) in
             alpha_word_spans
         ]
-        alpha_words_we_are_in = [
+        alpha_word_spans_before_us = [
             (word_start, word_end) for (word_start, word_end) in
-            fixed_alpha_word_spans
-                                  if word_start <= nominal_position <= word_end
+                          fixed_alpha_word_spans if word_end < nominal_position
         ]
+        alpha_word_spans_after_us = [
+            (word_start, word_end) for (word_start, word_end) in
+                         fixed_alpha_word_spans if word_end >= nominal_position
+        ]
+        index_of_next_or_current = len(alpha_word_spans_before_us)
+        if not alpha_word_spans_after_us:
+            index_of_next_or_current -= 1
+            
+        target_index = index_of_next_or_current if direction == 1 else \
+                                           max(index_of_next_or_current - 1, 0)
+        
+        target_alpha_word_span = fixed_alpha_word_spans[target_index]
+        if direction == 1 and \
+              (selection_start, selection_end) ==  target_alpha_word_span and \
+                                target_index < len(fixed_alpha_word_spans) - 1:
+            target_alpha_word_span = fixed_alpha_word_spans[target_index+1]
         app.ExecuteCommand('set-visit-history-anchor')
-        if alpha_words_we_are_in:
-            alpha_word_we_are_in = alpha_words_we_are_in[-1]
-            editor.SetSelection(*alpha_word_we_are_in)
-        else:
-            closest_alpha_word_span = shared.argmin(
-                fixed_alpha_word_spans,
-                lambda (alpha_word_start, alpha_word_end):
-                    min(abs(alpha_word_start - nominal_position),
-                        abs(alpha_word_end - nominal_position),)
-            )
-            editor.SetSelection(*closest_alpha_word_span)            
+        editor.SetSelection(*target_alpha_word_span)
     elif extend:
         editor.SetSelection(anchor_position, target_word_start)
     elif delete:
@@ -328,10 +369,6 @@ def cute_word(direction=1, extend=False, delete=False,
                 ))
             )
     else:
+        editor.ExecuteCommand('forward-char') # Just to light up caret.
         editor.SetSelection(target_word_start, target_word_start)
         
-    
-    
-    
-    
-    

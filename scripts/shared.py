@@ -429,3 +429,12 @@ def argmin(sequence, key_function=None):
     indices.sort(key=lambda index: key_function(sequence[index]))
     return sequence[indices[0]]
     
+def reset_caret_blinking(editor):
+    selection = editor.GetSelection()
+    editor.ExecuteCommand('forward-char')
+    editor.SetSelection(*selection)
+
+    
+def get_file_content(file_path):
+    with open(file_path) as file:
+        return file.read()

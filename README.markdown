@@ -157,27 +157,28 @@ Suggested key combination: `Ctrl-L`
 
 ## cute-open-line ##
 
-Open a new line, but don't move the caret down to the new line.
+Open a new line. (i.e. enter a newline character.)
 
-Running this command is like pressing Enter, except your caret doesn't move
-into the new line that was created, but stays exactly where it was.
+If `line_offset` is set to `-1`, it will open a line at the line above. If
+`line_offset` is set to `1`, it will open a line at the line below.
 
-The advantage of this over Wing's built-in `open-line` is that
+If `stand_ground=True`, it will make the caret not move when doing the
+newline.
+
+(The advantage of this over Wing's built-in `open-line` is that
 `cute-open-line` doesn't just insert a newline character like `open-line`
 does; it runs Wing's `new-line` command, which does various intelligent
 things like auto-indenting your code to the right level, opening your
 parentheses *just so* if you're doing function invocation, and a bunch of
-other goodies.
-
-If given `behavior='after'`, goes to the end of the current line, and opens
-a new line from there. If given `behavior='before'`, goes to the end of the
-previous line, and opens a new line from there.
+other goodies.)
 
 Suggested key combinations:
 
-    `Alt-Return` for normal operation
-    `Ctrl-Return` for `behavior='after'`
-    `Shift-Return` for `behavior='before'`
+    `Alt-Return` for `stand_ground=True`
+    `Shift-Return` for `line_offset=-1`
+    `Ctrl-Return` for `line_offset=1`
+    `Alt-Shift-Return` for `line_offset=-1, stand_ground=True`
+    `Ctrl-Alt-Return` for `line_offset=1, stand_ground=True`
     
 (The `Alt-Return` combination requires a AHK shim, at least on Windows.)
 
@@ -215,6 +216,47 @@ selection when this command is invoked and expands it to cover all of its
 lines as the initial selection.
 
 Suggested key combination: `Ctrl-F8`
+
+
+## cute-word ##
+
+Move, select or delete words.
+
+This is a swiss-army knife command for handling "words". Unlike Wing's default
+word-handling logic, this command separates using underscores and case. For
+example, `foo_bar_baz` will be split to 3 words, and so will `FooBarBaz` and
+`FOO_BAR_BAZ`.
+
+When used with no arguments, this command will move a word forward or backward,
+depending on `direction`, similarly to Wing's built-in `forward-word` and
+`backward-word` commands.
+
+When used with `extend=True`, this command will extend the existing selection a
+word forward or backward, depending on `direction`, similarly to Wing's
+built-in `forward-word-extend` and `backward-word-extend` commands.
+
+When used with `delete=True`, this command will delete a word forward or
+backward, depending on `direction`, similarly to Wing's built-in
+`forward-delete-word` and `backward-delete-word` commands.
+
+When used with `traverse=True`, this command will select the next alphanumeric
+word or the previous alphanumeric word, depending on `direction`.
+
+Suggested key combinations:
+
+    `Ctrl-Alt-Right` for direction=1
+    `Ctrl-Alt-Left` for direction=-1
+    `Ctrl-Alt-Shift-Right` for direction=1, extend=True
+    `Ctrl-Alt-Shift-Left` for direction=-1, extend=True
+    `Ctrl-Alt-Shift-Down` for direction=1, traverse=True
+    `Ctrl-Alt-Shift-Up` for direction=-1, traverse=True
+    `Alt-Delete` for direction=1, delete=True
+    `Alt-Backspace` for direction=-1, delete=True
+    
+(Tip: If you do bind to `Ctrl-Alt-Right` and `Ctrl-Alt-Left` as I suggest, then
+I also suggest you bind `Ctrl-Right-Up` and `Ctrl-Right-Down` to
+`goto-previous-bookmark` and `goto-next-bookmark` respectively, so you'll still
+have bookmark-traversing commands available.)
 
 
 ## deep-to-var ##
@@ -269,6 +311,30 @@ Suggested key combination: `Ctrl-Shift-C`
 Turn `foo[bar]` into `foo.get(bar, None)`.
 
 Suggested key combination: `Insert Ctrl-G`
+
+
+## django-toggle-between-view-and-template ##
+
+Toggle between a view file in Django and the corresponding template file.
+
+If you're currently viewing a template file, this'll open the corresponding
+view file. If you're currently viewing a view file, this'll open the
+corresponding template file.
+
+This assumes that the view file has the word `view` in it and has a
+definition for the class attribute `template_name`.
+
+Suggested key combination: `Insert Quoteleft` (i.e. backtick)
+
+
+## duplicate-file ##
+
+Create a copy of the current file (in the same folder) and open it.
+
+If a filename with no extension will be entered, the same extension used
+for the original file will be used for the new file.
+
+Suggested key combination: `Insert Ctrl-D`
 
 
 ## flip ##
@@ -339,6 +405,22 @@ in order to be taken to the closest higher stack frame that's on a project
 file rather than an external module.
     
 Suggested key combination: `Alt-F11`
+
+
+## guess-class-name ##
+
+Guess the class name based on file name, and replace class name.
+
+Imagine you had a file `foo_manager.py` with a class `FooManager` defined
+in it, and you duplicated it, calling the new file `bar_grokker.py`. If you
+run `guess-class-name`, it'll replace all instances of `FooManager` in your
+new file to `BarGrokker`.
+
+(It finds the original class name by taking the first class defined in the
+file. If the file defined multiple classes, you might get the wrong
+results.)
+
+Suggested key combination: `Insert Ctrl-C`
 
 
 ## implicit-getattr-to-explicit ##
@@ -623,6 +705,16 @@ Specify `at_caret=True` to use the current caret position as the slashing
 point, rather than finding one automatically.
 
 Suggested key combination: `Insert L` for default arguments, `Insert Shift-L` for line_offset=-1, and `Insert Ctrl-L` for at_caret=True.
+
+
+## type-super ##
+
+Type `super(MyClass, self).my_method()`
+
+`MyClass` and `my_method` will be copied with the current class and method
+of the active scope.
+
+Suggested key combination: `Insert Ctrl-S`
 
 
 ## unpack-tuple-to-one ##
