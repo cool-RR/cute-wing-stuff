@@ -8,6 +8,8 @@ from  __future__ import with_statement
 import collections
 import re
 
+from python_toolbox import context_management
+
 try:
     import autopy.key
 except ImportError:
@@ -22,7 +24,7 @@ from _lru_cache import *
 _ignore_scripts = True
 
 
-class SelectionRestorer(object):
+class SelectionRestorer(context_management.ContextManager):
     '''
     Context manager for restoring selection to what it was before the suite.
     
@@ -81,7 +83,7 @@ class SelectionRestorer(object):
             # ourselves some things (like `select-less`) stop working.)
 
 
-class ClipboardRestorer(object):
+class ClipboardRestorer(context_management.ContextManager):
     
     def __init__(self, app):
         assert isinstance(app, wingapi.CAPIApplication)
@@ -127,7 +129,7 @@ def scroll_to_line(editor, line_number):
 scroll_to_line.last_offset = collections.defaultdict(lambda: 0)
 
 
-class ScrollRestorer(object):
+class ScrollRestorer(context_management.ContextManager):
     '''
     Context manager for restoring scroll position to what it was before suite.
     '''
@@ -176,7 +178,7 @@ def strip_segment_from_whitespace_and_newlines(text, start, end):
     return new_start, new_end
     
         
-class UndoableAction(object):
+class UndoableAction(context_management.ContextManager):
     '''
     Context manager for marking an action that can be undone by the user.
     
@@ -198,7 +200,7 @@ class UndoableAction(object):
         self.document.EndUndoAction()
         
 
-class NonUndoableAction(object):
+class NonUndoableAction(context_management.ContextManager):
     def __init__(self, editor):
         assert isinstance(editor, wingapi.CAPIEditor)
         self.editor = editor
@@ -306,33 +308,6 @@ def lower_case_to_camel_case(s):
     return s
 
 
-def get_n_identical_edge_characters(string, character=None, head=True):
-    '''
-    Get the number of identical characters at `string`'s head.
-    
-    For example, the result for 'qqqwe' would be `3`, while the result for
-    'meow' will be `1`.
-    
-    Specify `character` to only consider that character; if a different
-    character is found at the head, `0` will be returned.
-    
-    Specify `head=False` to search the tail instead of the head.
-    '''
-    if not string:
-        return 0
-    index = 0 if head is True else -1
-    direction = 1 if head is True else -1
-    if character is None:
-        character = string[index]
-    else:
-        assert isinstance(character, basestring) and len(character) == 1
-    for i, c in enumerate(string[::direction]):
-        if c != character:
-            return i
-    else:
-        return len(string)
-    
-    
 def _clip_to_document_range(position, document):
     '''Correct `position` to be within the confines of the `document`.'''
     assert isinstance(document, wingapi.CAPIDocument)

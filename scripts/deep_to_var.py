@@ -19,9 +19,12 @@ sys.path += [
 
 import re
 
+from python_toolbox import string_tools
+
 import wingapi
 
 import shared
+
 
 get_verbs = ('get', 'calculate', 'identify', 'fetch', 'make', 'create',
              'grant', 'open', 'determine', 'download', 'obtain', 'measure')
@@ -53,6 +56,14 @@ mapping_get_pattern = re.compile(
 )
 #                                                                             #
 ### Finished defining `mapping_get_pattern`. ##################################
+
+### Defining `iter_pattern`: ##################################################
+#                                                                             #
+iter_pattern = re.compile(
+    r'''^iter\(.*\)$'''
+)
+#                                                                             #
+### Finished defining `iter_pattern`. #########################################
 
 ### Defining `django_orm_get_pattern`: ########################################
 #                                                                             #
@@ -92,9 +103,11 @@ today_pattern = re.compile(r'''datetime(?:_module)?\.date\.(today)\(\)$''')
 
 patterns = [django_orm_get_pattern, getter_pattern, attribute_pattern,
             mapping_get_pattern, getitem_pattern, re_match_group_pattern,
-            now_pattern, today_pattern, instantiation_pattern]
+            now_pattern, today_pattern, instantiation_pattern, iter_pattern]
 
-
+variable_name_map = {
+    iter_pattern: 'iterator',
+}
 
 def deep_to_var(editor=wingapi.kArgEditor):
     '''
@@ -146,7 +159,10 @@ def deep_to_var(editor=wingapi.kArgEditor):
     for pattern in patterns:
         match = pattern.search(line_stripped)
         if match:
-            (variable_name,) = match.groups()
+            if pattern in variable_name_map:
+                variable_name = variable_name_map[pattern]
+            else:
+                (variable_name,) = match.groups()
             break
         
     if match:
@@ -156,7 +172,7 @@ def deep_to_var(editor=wingapi.kArgEditor):
             variable_name = shared.camel_case_to_lower_case(variable_name)
         string_to_insert = '%s = ' % variable_name
         actual_line_start = line_start + \
-                    shared.get_n_identical_edge_characters(line, character=' ')
+              string_tools.get_n_identical_edge_characters(line, character=' ')
         
         with shared.UndoableAction(document):
             

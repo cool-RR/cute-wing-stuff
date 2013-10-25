@@ -16,6 +16,7 @@ sys.path += [
     os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
 ]
 
+from python_toolbox import string_tools
 
 import wingapi
 
@@ -94,7 +95,7 @@ def push_line_to_end(editor=wingapi.kArgEditor, line_offset=0):
             assert n_spaces_to_add < 0
             n_spaces_to_delete = min(
                 -n_spaces_to_add,
-                shared.get_n_identical_edge_characters(
+                string_tools.get_n_identical_edge_characters(
                     line_content,
                     character=' '
                 )
