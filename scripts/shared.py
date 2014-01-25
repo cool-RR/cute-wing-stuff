@@ -7,6 +7,8 @@ from  __future__ import with_statement
 
 import collections
 import re
+import sys
+import subprocess
 
 from python_toolbox import context_management
 
@@ -413,3 +415,11 @@ def reset_caret_blinking(editor):
 def get_file_content(file_path):
     with open(file_path) as file:
         return file.read()
+    
+def open_path_in_explorer(path):
+    if sys.platform == 'darwin':
+        subprocess.call(['open', '--', path])
+    elif sys.platform == 'linux2':
+        subprocess.call(['gnome-open', '--', path])
+    elif sys.platform == 'win32':
+        subprocess.call(['explorer', path])

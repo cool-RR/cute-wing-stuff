@@ -13,10 +13,12 @@ sys.path += [
 
 import string as string_module
 import sys
+import os
 import inspect
 
 import wingapi
 import guiutils.widgets_qt4
+import wingide
 import cache.textcache
 
 import shared
@@ -76,6 +78,51 @@ if monkeypatch:
     
     old_ExpandFileFragment = guiutils.widgets_qt4.ExpandFileFragment
     guiutils.widgets_qt4.ExpandFileFragment = ExpandFileFragment
+    
+    ###########################################################################
+    
+    def _get_location_path(location):
+        import wingutils.location
+        if sys.platform == 'win32':
+            return location._fOSName
+        else:
+            return location._fOSName.encode(
+                wingutils.location.kFileSystemEncoding
+            )
+        
+ 
+    def _open(self, filenames):
+        from wingide.topcommands import location, logging, prefs
+        # Get file location object
+        loc_list = [location.CreateFromName(name) for name in filenames]
+    
+        for loc in loc_list:
+            if loc.IsDirectory():
+                ###############################################################
+                #                                                             #
+                path = _get_location_path(loc)
+                open('c:\\tits.txt', 'a').write(path)
+                shared.open_path_in_explorer(path)
+                #                                                             #
+                ###############################################################
+            else:
+                opened = False
+    
+                # If so configured, open any project as a project if possible; if fail
+                # to do so, then open it as text
+                if not self.fGuiMgr.fPrefMgr.GetValue(prefs.kOpenProjectsAsText):
+                    parts = loc.fUrl.split('.')
+                    if parts[-1] == 'wpr' or parts[-1] == 'wpu':
+                        self.fSingletons.fWingIDEApp.fProjMgr.OpenProject(loc)
+                        opened = True
+    
+                if not opened:
+                    # Open the file into active document window
+                    win = self.fGuiMgr.GetActiveDocumentWindow()
+                    src_text = self.fGuiMgr.DisplayDocument(loc, blank_if_not_found=True,
+                                                            win=win, sticky=True)
+                    
+    wingide.topcommands.CApplicationControlCommands._open = _open
     
     ###########################################################################
 
