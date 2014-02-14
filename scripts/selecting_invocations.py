@@ -21,10 +21,12 @@ sys.path += [
     os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
 ]
 
+from python_toolbox import caching
 
 import wingapi
 
 import shared
+
 
 invocation_pattern = re.compile(
     r'''(?<!def )(?<!class )(?<![A-Za-z_0-9])([A-Za-z_][A-Za-z_0-9]*) *\('''
@@ -81,7 +83,7 @@ def _collect_offsets(call_string, limit_to_keywords=False):
     offsets.append(len(call_string))
     return offsets
 
-@shared.lru_cache(maxsize=1000)
+@caching.cache(max_size=1000)
 def _argpos(call_string, document_offset, limit_to_keywords=False):
     #print(call_string)
     def _find_start(prev_end, offset):

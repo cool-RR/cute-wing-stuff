@@ -21,8 +21,6 @@ else:
     
 import wingapi
 
-from _lru_cache import *
-
 _ignore_scripts = True
 
 
