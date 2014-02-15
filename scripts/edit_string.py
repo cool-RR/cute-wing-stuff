@@ -13,6 +13,8 @@ import ast
 import collections
 
 import wingapi
+import wingutils.datatype
+import guiutils.formbuilder
 
 import shared
 
@@ -77,6 +79,16 @@ def enter_string(string):
     editor.SetSelection(new_selection, new_selection)
     
     
+enter_string.arginfo = lambda: \
+    {
+        'string': wingapi.CArgInfo(
+            label='String',
+            type=wingutils.datatype.CType(''),
+            formlet=guiutils.formbuilder.CLargeTextGui(),
+            doc=''
+        ),
+    }
+
 enter_string.plugin_override = True
 enter_string.label = 'Enter string'
 enter_string.flags = {'force_dialog_argentry': True}
