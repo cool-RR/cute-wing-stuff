@@ -84,7 +84,7 @@ enter_string.arginfo = lambda: \
         'string': wingapi.CArgInfo(
             label='String',
             type=wingutils.datatype.CType(''),
-            formlet=guiutils.formbuilder.CLargeTextGui(),
+            formlet=guiutils.formbuilder.CLargeTextGui(allow_newlines=True),
             doc=''
         ),
     }
