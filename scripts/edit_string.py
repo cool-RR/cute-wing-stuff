@@ -94,3 +94,4 @@ enter_string.label = 'Enter string'
 enter_string.flags = {'force_dialog_argentry': True}
 
 edit_string = enter_string
+
