@@ -69,6 +69,25 @@ def format_string(string, double_quotes=False, triple_quotes=False,
 
 def enter_string(string):
     app = wingapi.gApplication
+    from guiutils import wgtk
+    from guiutils import dialogs    
+    items = wgtk.VBox()
+
+    entry = wgtk.TextView()
+    items.add(entry)
+
+    def ok():
+        pass
+
+    button_spec = [
+        dialogs.CButtonSpec("_OK", ok),
+        dialogs.CButtonSpec("_Cancel", None)
+    ]
+    title = "Test dialog"
+
+    dlg = dialogs.CWidgetDialog(None, 'my-dialog', title, items, button_spec)
+    dlg.Show()    
+
     editor = app.GetActiveEditor()
     document = editor.GetDocument()
     selection_start, selection_end = editor.GetSelection()
@@ -79,19 +98,39 @@ def enter_string(string):
     editor.SetSelection(new_selection, new_selection)
     
     
-enter_string.arginfo = lambda: \
+#enter_string.arginfo = lambda: \
+    #{
+        #'string': wingapi.CArgInfo(
+            #label='String',
+            #type=wingutils.datatype.CType(''),
+            #formlet=guiutils.formbuilder.CLargeTextGui(allow_newlines=True),
+            #doc=''
+        #),
+    #}
+
+##enter_string.plugin_override = True
+#enter_string.label = 'Enter string'
+#enter_string.flags = {'force_dialog_argentry': 1}
+
+edit_string = enter_string
+
+
+
+import wingapi
+import guiutils
+import wingutils
+
+def test_aaa(string):
+    pass
+
+test_aaa.arginfo = lambda: \
     {
         'string': wingapi.CArgInfo(
             label='String',
             type=wingutils.datatype.CType(''),
-            formlet=guiutils.formbuilder.CLargeTextGui(allow_newlines=True),
+
+formlet=guiutils.formbuilder.CLargeTextGui(allow_newlines=True),
             doc=''
         ),
     }
-
-enter_string.plugin_override = True
-enter_string.label = 'Enter string'
-enter_string.flags = {'force_dialog_argentry': True}
-
-edit_string = enter_string
-
+test_aaa.flags = {'force_dialog_argentry': 1}
