@@ -294,3 +294,27 @@ def select_prev_argument(editor=wingapi.kArgEditor,
         app.ExecuteCommand('set-visit-history-anchor')
         editor.SetSelection(*argument_positions[argument_index])
         
+        
+def remove_invocation(editor=wingapi.kArgEditor,
+                      app=wingapi.kArgApplication):
+    '''
+    Remove the last invocation, turning `whatever.function(value)` to `value`.
+    
+    Suggested key combinations: `Insert 8`
+    '''
+    assert isinstance(editor, wingapi.CAPIEditor)
+    document = editor.GetDocument()
+    app.ExecuteCommand('select-prev-invocation')
+    app.ExecuteCommand('select-dotted-name')
+    callable_start, callable_end = editor.GetSelection()
+    app.ExecuteCommand('brace-match')
+    opening_brace, closing_brace = editor.GetSelection()
+    document.DeleteChars(closing_brace - 1, closing_brace - 1)
+    document.DeleteChars(callable_start, opening_brace)
+    
+    
+    
+    
+    
+    
+    
