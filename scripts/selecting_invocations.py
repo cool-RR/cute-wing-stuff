@@ -304,13 +304,14 @@ def remove_invocation(editor=wingapi.kArgEditor,
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
-    app.ExecuteCommand('select-prev-invocation')
-    app.ExecuteCommand('select-dotted-name')
-    callable_start, callable_end = editor.GetSelection()
-    app.ExecuteCommand('brace-match')
-    opening_brace, closing_brace = editor.GetSelection()
-    document.DeleteChars(closing_brace - 1, closing_brace - 1)
-    document.DeleteChars(callable_start, opening_brace)
+    with shared.UndoableAction(document):
+        app.ExecuteCommand('select-prev-invocation')
+        app.ExecuteCommand('select-dotted-name')
+        callable_start, callable_end = editor.GetSelection()
+        app.ExecuteCommand('brace-match')
+        opening_brace, closing_brace = editor.GetSelection()
+        document.DeleteChars(closing_brace - 1, closing_brace - 1)
+        document.DeleteChars(callable_start, opening_brace)
     
     
     
