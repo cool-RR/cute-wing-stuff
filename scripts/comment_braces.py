@@ -90,8 +90,8 @@ def comment_braces(title):
         indent_size = shared.get_indent_size_in_pos(editor, original_start)
         
         if title:
-            raw_start_title = (' %s: ' % _capitalize(title))
-            raw_end_title = (' Finished %s. ' % _decapitalize(title))
+            raw_start_title = (' %s: ' % _capitalize(title.strip()))
+            raw_end_title = (' Finished %s. ' % _decapitalize(title.strip()))
         else:
             assert title == ''
             raw_start_title = ''
