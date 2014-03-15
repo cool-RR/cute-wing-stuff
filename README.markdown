@@ -495,7 +495,7 @@ This is useful for creating lines of this style:
 Also deletes trailing spaces.                                          
 
 
-## remove_invocation ##
+## remove-invocation ##
 
 Remove the last invocation, turning `whatever.function(value)` to `value`.
 
