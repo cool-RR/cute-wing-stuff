@@ -494,7 +494,12 @@ This is useful for creating lines of this style:
 
 Also deletes trailing spaces.                                          
 
-Suggested key combination: `Insert End`
+
+## remove-invocation ##
+
+Remove the last invocation, turning `whatever.function(value)` to `value`.
+
+Suggested key combinations: `Insert 8`
 
 
 ## remove-rectangles ##
@@ -545,6 +550,15 @@ Set `limit_to_keywords=True` to go only to a keyword argument.
 
 Suggested key combinations: `Ctrl-R`
                             `Ctrl-Alt-R` for `limit_to_keywords=True`
+
+## select-next-camelcase ##
+
+Select the next (or current) camelcase in the document.
+
+Camelcase means a variable name that has a combination of lowercase and
+uppercase letters.
+
+Suggested key combination: `Ctrl-Alt-C`
 
 
 ## select-next-constant ##
@@ -611,6 +625,16 @@ Set `limit_to_keywords=True` to go only to a keyword argument.
 
 Suggested key combinations: `Ctrl-Shift-R`
                             `Ctrl-Shift-Alt-R` for `limit_to_keywords=True`
+                            
+
+## select-prev-camelcase ##
+
+Select the previous camelcase in the document.
+
+Camelcase means a variable name that has a combination of lowercase and
+uppercase letters.
+
+Suggested key combination: `Ctrl-Alt-Shift-C`
 
 
 ## select-prev-constant ##

@@ -44,6 +44,7 @@ flip_pairs = (
     ('before', 'after'),
     ('opening', 'closing'),
     ('read', 'write'),
+    ('private', 'public'),
 )
 
 all_words = sum(flip_pairs, ())
