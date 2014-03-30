@@ -67,7 +67,7 @@ def format_string(string, double_quotes=False, triple_quotes=False,
     
 
 
-def enter_string(string):
+def enter_string():
     app = wingapi.gApplication
     from guiutils import wgtk
     from guiutils import dialogs    
