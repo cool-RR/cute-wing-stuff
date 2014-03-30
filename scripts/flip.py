@@ -44,7 +44,12 @@ flip_pairs = (
     ('before', 'after'),
     ('opening', 'closing'),
     ('read', 'write'),
+    ('reader', 'writer'),
+    ('reading', 'writing'),
+    ('readable', 'writable'),
     ('private', 'public'),
+    ('encode', 'decode'),
+    ('encoding', 'decoding'),
 )
 
 all_words = sum(flip_pairs, ())
