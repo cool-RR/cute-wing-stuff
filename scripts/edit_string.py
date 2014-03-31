@@ -22,13 +22,13 @@ base_escape_map = {
     '\\': '\\\\',
     '\'': '\\\'',
     '\"': '\\\"',
-    '\a': '\\\a',
-    '\b': '\\\b',
-    '\f': '\\\f',
-    '\n': '\\\n',
-    '\r': '\\\r',
-    '\t': '\\\t',
-    '\v': '\\\v',
+    '\a': '\\a',
+    '\b': '\\b',
+    '\f': '\\f',
+    '\n': '\\n',
+    '\r': '\\r',
+    '\t': '\\t',
+    '\v': '\\v',
 }
 
 def escape_character(c, double_quotes, triple_quotes, raw):
@@ -43,7 +43,6 @@ def escape_character(c, double_quotes, triple_quotes, raw):
 
 def format_string(string, double_quotes=False, triple_quotes=False,
                   binary=False, raw=False, unicode_=False):
-    formatted = repr(string)
     quote_string = \
                   ('"' if double_quotes else "'") * (3 if triple_quotes else 1)
     escape_character_ = lambda character: escape_character(
@@ -51,6 +50,7 @@ def format_string(string, double_quotes=False, triple_quotes=False,
         raw=raw
     )
     content = ''.join(map(escape_character_, string))
+    
     formatted_string = '%s%s%s%s' % (
         ''.join((
             ('b' if binary else ''),
@@ -61,9 +61,12 @@ def format_string(string, double_quotes=False, triple_quotes=False,
         content,
         quote_string
     )
+    #if isinstance(formatted_string, unicode):
+        #formatted_string = formatted_string.encode()
     if not ast.literal_eval(formatted_string) == string:
-        raise Exception
-    return formatted
+        raise Exception('Formatting unsuccessful: @%s@  |||  @%s@  ||| @%s@'
+              % (string, ast.literal_eval(formatted_string), formatted_string))
+    return formatted_string
     
 
 
@@ -71,31 +74,26 @@ def enter_string():
     app = wingapi.gApplication
     from guiutils import wgtk
     from guiutils import dialogs    
-    items = wgtk.VBox()
 
-    entry = wgtk.TextView()
-    items.add(entry)
-
-    def ok():
-        pass
-
-    button_spec = [
-        dialogs.CButtonSpec("_OK", ok),
-        dialogs.CButtonSpec("_Cancel", None)
-    ]
-    title = "Test dialog"
-
-    dlg = dialogs.CWidgetDialog(None, 'my-dialog', title, items, button_spec)
-    dlg.Show()    
+    w = wgtk.QTextEdit()
 
     editor = app.GetActiveEditor()
     document = editor.GetDocument()
     selection_start, selection_end = editor.GetSelection()
-    document.DeleteChars(selection_start, selection_end-1)
-    formatted_string = format_string(string)
-    document.InsertChars(selection_start, formatted_string)
-    new_selection = selection_start + len(formatted_string)
-    editor.SetSelection(new_selection, new_selection)
+    def ok():
+        string = w.toPlainText()
+        document.DeleteChars(selection_start, selection_end-1)
+        formatted_string = format_string(string)
+        document.InsertChars(selection_start, formatted_string)
+        new_selection = selection_start + len(formatted_string)
+        editor.SetSelection(new_selection, new_selection)
+    buttons = [
+        dialogs.CButtonSpec("_OK", ok),
+        dialogs.CButtonSpec("_Cancel", None),
+    ]
+    dlg = dialogs.CWidgetDialog(None, 'testdlg', "Title", w, buttons)
+    dlg.RunAsModal()    
+    
     
     
 #enter_string.arginfo = lambda: \
