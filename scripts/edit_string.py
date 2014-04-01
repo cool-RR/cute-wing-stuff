@@ -112,7 +112,7 @@ def enter_string():
         dialogs.CButtonSpec("_OK", ok),
         dialogs.CButtonSpec("_Cancel", None),
     ]
-    dlg = dialogs.CWidgetDialog(None, 'testdlg', "Title", w, buttons)
+    dlg = dialogs.CWidgetDialog(None, 'Edit string', 'Edit string', w, buttons)
     dlg.RunAsModal()    
     
     
