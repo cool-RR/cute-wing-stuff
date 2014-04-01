@@ -15,6 +15,8 @@ import collections
 import wingapi
 import wingutils.datatype
 import guiutils.formbuilder
+import guiutils.wgtk
+import guiutils.dialogs
 
 import shared
 import string_selecting
@@ -78,10 +80,8 @@ def format_string(string, double_quotes=False, triple_quotes=False,
 
 def enter_string():
     app = wingapi.gApplication
-    from guiutils import wgtk
-    from guiutils import dialogs    
 
-    w = wgtk.QTextEdit()
+    text_edit = guiutils.wgtk.QTextEdit()
 
     editor = app.GetActiveEditor()
     document = editor.GetDocument()
@@ -95,10 +95,10 @@ def enter_string():
         old_string = ast.literal_eval(
             document.GetCharRange(old_string_start, old_string_end)
         )
-        w.setText(old_string)
+        text_edit.setText(old_string)
     
     def ok():
-        string = w.toPlainText()
+        string = text_edit.toPlainText()
         formatted_string = format_string(string)
         if replacing_old_string:
             document.DeleteChars(old_string_start, old_string_end)
@@ -110,10 +110,11 @@ def enter_string():
             new_selection = selection_start + len(formatted_string)
         editor.SetSelection(new_selection, new_selection)
     buttons = [
-        dialogs.CButtonSpec("_OK", ok),
-        dialogs.CButtonSpec("_Cancel", None),
+        guiutils.dialogs.CButtonSpec('_OK', ok),
+        guiutils.dialogs.CButtonSpec('_Cancel', None),
     ]
-    dlg = dialogs.CWidgetDialog(None, 'Edit string', 'Edit string', w, buttons)
-    dlg.RunAsModal()    
+    dialog = guiutils.dialogs.CWidgetDialog(None, 'Edit string',
+                                            'Edit string', text_edit, buttons)
+    dialog.RunAsModal()    
     
     
