@@ -23,8 +23,9 @@ import shared
 import string_selecting
 
 
-string_head_pattern = re.compile('''^((P<modifiers>b|u|r|br|ur|rb|ru|)'''
-                                 '''(?:\'(?:\'\')?|\"(?:\"\")?))''', re.I)
+string_head_pattern = re.compile('''^(?P<modifiers>(?:b|u|)r?)'''
+                                 '''(?P<quote>\'(?:\'\')?|\"(?:\"\")?)''',
+                                 re.I)
 
 base_escape_map = {
     '\\': '\\\\',
@@ -39,9 +40,9 @@ base_escape_map = {
     '\v': '\\v',
 }
 
-def escape_character(c, double_quotes, triple_quotes, raw):
-    if ((c in ('"', "'")) and triple_quotes) or \
-              (c == '"' and not double_quotes) or (c == "'" and double_quotes):
+def escape_character(c, double, triple, raw):
+    if ((c in ('"', "'")) and triple) or \
+                            (c == '"' and not double) or (c == "'" and double):
         return c
     elif c in base_escape_map:
         return base_escape_map[c]
@@ -49,13 +50,12 @@ def escape_character(c, double_quotes, triple_quotes, raw):
         return c
     
 
-def format_string(string, double_quotes=False, triple_quotes=False,
+def format_string(string, double=False, triple=False,
                   bytes_=False, raw=False, unicode_=False):
     assert bytes_ + unicode_ in (0, 1)
-    quote_string = \
-                  ('"' if double_quotes else "'") * (3 if triple_quotes else 1)
+    quote_string = ('"' if double else "'") * (3 if triple else 1)
     escape_character_ = lambda character: escape_character(
-        character, double_quotes=double_quotes, triple_quotes=triple_quotes, 
+        character, double=double, triple=triple, 
         raw=raw
     )
     content = ''.join(map(escape_character_, string))
@@ -63,8 +63,8 @@ def format_string(string, double_quotes=False, triple_quotes=False,
     formatted_string = '%s%s%s%s' % (
         ''.join((
             ('b' if bytes_ else ''),
-            ('r' if raw else ''),
             ('u' if unicode_ else ''),
+            ('r' if raw else ''),
         )),
         quote_string,
         content,
@@ -77,6 +77,10 @@ def format_string(string, double_quotes=False, triple_quotes=False,
               % (string, ast.literal_eval(formatted_string), formatted_string))
     return formatted_string
     
+
+def _bool_to_qt_check_state(bool_):
+    return guiutils.wgtk.Qt.Checked if bool_ else guiutils.wgtk.Qt.Unchecked
+
 
 def enter_string():
     app = wingapi.gApplication
@@ -93,7 +97,13 @@ def enter_string():
     text_edit = guiutils.wgtk.QTextEdit()
     sub_layout = guiutils.wgtk.QHBoxLayout()
     bytes_checkbox = guiutils.wgtk.QCheckBox('&Bytes')
-    sub_layout.addWidget(bytes_checkbox)
+    unicode_checkbox = guiutils.wgtk.QCheckBox('&Unicode')
+    raw_checkbox = guiutils.wgtk.QCheckBox('&Raw')
+    double_checkbox = guiutils.wgtk.QCheckBox('&Double')
+    triple_checkbox = guiutils.wgtk.QCheckBox('Tri&ple')
+    for checkbox in (bytes_checkbox, unicode_checkbox, raw_checkbox,
+                     double_checkbox, triple_checkbox):
+        sub_layout.addWidget(checkbox)
     layout.addWidget(text_edit_label)
     layout.addWidget(text_edit)
     layout.addLayout(sub_layout)
@@ -103,27 +113,38 @@ def enter_string():
     if replacing_old_string:
         old_string_start, old_string_end = \
            string_selecting._find_string_from_position(editor, selection_start)
-        old_string = ast.literal_eval(
-            document.GetCharRange(old_string_start, old_string_end)
-        )
+        old_string_raw = document.GetCharRange(old_string_start, old_string_end)
+        old_string = ast.literal_eval(old_string_raw)
+        modifiers = string_head_pattern.match(old_string_raw). \
+                                                     group('modifiers').lower()
+        quote = string_head_pattern.match(old_string_raw).group('quote')
+        bytes_checkbox.setCheckState(_bool_to_qt_check_state('b' in modifiers))
+        unicode_checkbox.setCheckState(_bool_to_qt_check_state('u' in modifiers))
+        raw_checkbox.setCheckState(_bool_to_qt_check_state('r' in modifiers))
+        double_checkbox.setCheckState(_bool_to_qt_check_state('"' in quote))
+        triple_checkbox.setCheckState(_bool_to_qt_check_state(len(quote) == 3))
         text_edit.setText(old_string)
-        modifiers = \
-               string_head_pattern.match(old_string).group('modifiers').lower()
-        bytes_checkbox.setCheckState('b' in modifiers)
         
     def ok():
-        string = text_edit.toPlainText()
-        formatted_string = format_string(string)
-        bytes_ = bool(bytes_checkbox.checkState())
-        if replacing_old_string:
-            document.DeleteChars(old_string_start, old_string_end)
-            document.InsertChars(old_string_start, formatted_string)
-            new_selection = old_string_start + len(formatted_string)
-        else:
-            document.DeleteChars(selection_start, selection_end-1)
-            document.InsertChars(selection_start, formatted_string)
-            new_selection = selection_start + len(formatted_string)
-        editor.SetSelection(new_selection, new_selection)
+        with shared.UndoableAction(document):
+            string = text_edit.toPlainText()
+            bytes_ = bool(bytes_checkbox.checkState())
+            unicode_ = bool(unicode_checkbox.checkState())
+            raw = bool(raw_checkbox.checkState())
+            double = bool(double_checkbox.checkState())
+            triple = bool(triple_checkbox.checkState())
+            formatted_string = format_string(string, bytes_=bytes_,
+                                             unicode_=unicode_, raw=raw,
+                                             double=double, triple=triple)
+            if replacing_old_string:
+                document.DeleteChars(old_string_start, old_string_end - 1)
+                document.InsertChars(old_string_start, formatted_string)
+                new_selection = old_string_start + len(formatted_string)
+            else:
+                document.DeleteChars(selection_start, selection_end-1)
+                document.InsertChars(selection_start, formatted_string)
+                new_selection = selection_start + len(formatted_string)
+            editor.SetSelection(new_selection, new_selection)
     buttons = [
         guiutils.dialogs.CButtonSpec('_OK', ok),
         guiutils.dialogs.CButtonSpec('_Cancel', None),
