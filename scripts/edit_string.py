@@ -20,7 +20,8 @@ import shared
 import string_selecting
 
 
-#string_head_pattern = re.compile('')
+string_head_pattern = re.compile('''^((P<modifiers>b|u|r|br|ur|rb|ru|)'''
+                                 '''(?:\'(?:\'\')?|\"(?:\"\")?))''', re.I)
 
 base_escape_map = {
     '\\': '\\\\',
