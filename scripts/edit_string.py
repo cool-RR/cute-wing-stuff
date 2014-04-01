@@ -17,6 +17,10 @@ import wingutils.datatype
 import guiutils.formbuilder
 
 import shared
+import string_selecting
+
+
+#string_head_pattern = re.compile('')
 
 base_escape_map = {
     '\\': '\\\\',
@@ -43,6 +47,7 @@ def escape_character(c, double_quotes, triple_quotes, raw):
 
 def format_string(string, double_quotes=False, triple_quotes=False,
                   binary=False, raw=False, unicode_=False):
+    assert binary + unicode_ in (0, 1)
     quote_string = \
                   ('"' if double_quotes else "'") * (3 if triple_quotes else 1)
     escape_character_ = lambda character: escape_character(
@@ -80,12 +85,28 @@ def enter_string():
     editor = app.GetActiveEditor()
     document = editor.GetDocument()
     selection_start, selection_end = editor.GetSelection()
+    
+    replacing_old_string = \
+        string_selecting._is_position_on_strict_string(editor, selection_start)
+    if replacing_old_string:
+        old_string_start, old_string_end = \
+           string_selecting._find_string_from_position(editor, selection_start)
+        old_string = ast.literal_eval(
+            document.GetCharRange(old_string_start, old_string_end)
+        )
+        w.setText(old_string)
+    
     def ok():
         string = w.toPlainText()
-        document.DeleteChars(selection_start, selection_end-1)
         formatted_string = format_string(string)
-        document.InsertChars(selection_start, formatted_string)
-        new_selection = selection_start + len(formatted_string)
+        if replacing_old_string:
+            document.DeleteChars(old_string_start, old_string_end)
+            document.InsertChars(old_string_start, formatted_string)
+            new_selection = old_string_start + len(formatted_string)
+        else:
+            document.DeleteChars(selection_start, selection_end-1)
+            document.InsertChars(selection_start, formatted_string)
+            new_selection = selection_start + len(formatted_string)
         editor.SetSelection(new_selection, new_selection)
     buttons = [
         dialogs.CButtonSpec("_OK", ok),
@@ -95,40 +116,3 @@ def enter_string():
     dlg.RunAsModal()    
     
     
-    
-#enter_string.arginfo = lambda: \
-    #{
-        #'string': wingapi.CArgInfo(
-            #label='String',
-            #type=wingutils.datatype.CType(''),
-            #formlet=guiutils.formbuilder.CLargeTextGui(allow_newlines=True),
-            #doc=''
-        #),
-    #}
-
-##enter_string.plugin_override = True
-#enter_string.label = 'Enter string'
-#enter_string.flags = {'force_dialog_argentry': 1}
-
-edit_string = enter_string
-
-
-
-import wingapi
-import guiutils
-import wingutils
-
-def test_aaa(string):
-    pass
-
-test_aaa.arginfo = lambda: \
-    {
-        'string': wingapi.CArgInfo(
-            label='String',
-            type=wingutils.datatype.CType(''),
-
-formlet=guiutils.formbuilder.CLargeTextGui(allow_newlines=True),
-            doc=''
-        ),
-    }
-test_aaa.flags = {'force_dialog_argentry': 1}
