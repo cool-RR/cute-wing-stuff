@@ -10,6 +10,7 @@ sys.path += [
 ]
 
 import ast
+import re
 import collections
 
 import wingapi
@@ -49,8 +50,8 @@ def escape_character(c, double_quotes, triple_quotes, raw):
     
 
 def format_string(string, double_quotes=False, triple_quotes=False,
-                  binary=False, raw=False, unicode_=False):
-    assert binary + unicode_ in (0, 1)
+                  bytes_=False, raw=False, unicode_=False):
+    assert bytes_ + unicode_ in (0, 1)
     quote_string = \
                   ('"' if double_quotes else "'") * (3 if triple_quotes else 1)
     escape_character_ = lambda character: escape_character(
@@ -61,7 +62,7 @@ def format_string(string, double_quotes=False, triple_quotes=False,
     
     formatted_string = '%s%s%s%s' % (
         ''.join((
-            ('b' if binary else ''),
+            ('b' if bytes_ else ''),
             ('r' if raw else ''),
             ('u' if unicode_ else ''),
         )),
@@ -77,15 +78,25 @@ def format_string(string, double_quotes=False, triple_quotes=False,
     return formatted_string
     
 
-
 def enter_string():
     app = wingapi.gApplication
 
-    text_edit = guiutils.wgtk.QTextEdit()
 
     editor = app.GetActiveEditor()
     document = editor.GetDocument()
     selection_start, selection_end = editor.GetSelection()
+    
+    widget = guiutils.wgtk.QWidget()
+    layout = guiutils.wgtk.QVBoxLayout()
+    widget.setLayout(layout)
+    text_edit_label = guiutils.wgtk.QLabel('_Text:')
+    text_edit = guiutils.wgtk.QTextEdit()
+    sub_layout = guiutils.wgtk.QHBoxLayout()
+    bytes_checkbox = guiutils.wgtk.QCheckBox('&Bytes')
+    sub_layout.addWidget(bytes_checkbox)
+    layout.addWidget(text_edit_label)
+    layout.addWidget(text_edit)
+    layout.addLayout(sub_layout)
     
     replacing_old_string = \
         string_selecting._is_position_on_strict_string(editor, selection_start)
@@ -96,10 +107,14 @@ def enter_string():
             document.GetCharRange(old_string_start, old_string_end)
         )
         text_edit.setText(old_string)
-    
+        modifiers = \
+               string_head_pattern.match(old_string).group('modifiers').lower()
+        bytes_checkbox.setCheckState('b' in modifiers)
+        
     def ok():
         string = text_edit.toPlainText()
         formatted_string = format_string(string)
+        bytes_ = bool(bytes_checkbox.checkState())
         if replacing_old_string:
             document.DeleteChars(old_string_start, old_string_end)
             document.InsertChars(old_string_start, formatted_string)
@@ -114,7 +129,7 @@ def enter_string():
         guiutils.dialogs.CButtonSpec('_Cancel', None),
     ]
     dialog = guiutils.dialogs.CWidgetDialog(None, 'Edit string',
-                                            'Edit string', text_edit, buttons)
+                                            'Edit string', widget, buttons)
     dialog.RunAsModal()    
     
     
