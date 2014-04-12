@@ -27,7 +27,8 @@ import shared
 
 
 get_verbs = ('get', 'calculate', 'identify', 'fetch', 'make', 'create',
-             'grant', 'open', 'determine', 'download', 'obtain', 'measure')
+             'grant', 'open', 'determine', 'download', 'obtain', 'measure',
+             'choose')
 get_verb_segment = '(?:%s)' % (
     '|'.join(
         '[%s%s]%s' % (verb[0], verb[0].upper(), verb[1:]) for verb in

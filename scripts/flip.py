@@ -50,6 +50,7 @@ flip_pairs = (
     ('private', 'public'),
     ('encode', 'decode'),
     ('encoding', 'decoding'),
+    ('request', 'response'), 
 )
 
 all_words = sum(flip_pairs, ())

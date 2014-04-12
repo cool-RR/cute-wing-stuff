@@ -11,3 +11,15 @@ proj.directory-list = [{'dirloc': loc('.'),
                         'recursive': True,
                         'watch_for_changes': True}]
 proj.file-type = 'shared'
+proj.shared-attribute-names = ['proj.shared-attribute-names',
+                               'proj.directory-list',
+                               'proj.file-list',
+                               'proj.file-type',
+                               'proj.main-file',
+                               'proj.home-dir',
+                               'testing.auto-test-file-specs',
+                               'testing.test-file-list',
+                               'testing.test-framework',
+                               'debug.named-entry-points',
+                               'debug.launch-configs',
+                               'console.toolbox']
