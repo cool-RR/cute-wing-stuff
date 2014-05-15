@@ -256,26 +256,13 @@ def get_indent_size_in_pos(editor, pos):
     Get the size of the indent, in spaces, in position `pos` in `editor`.
     
     Returns an `int` like 4, 8, 12, etc.
-    '''    
-    # todo: figure out something like `indent-to-match` except it looks at the
-    # lines *below* the current one.
-    
-    # blocktodo: I think that `indent-to-match` actually modifies the document,
-    # adding or removing spaces! This is bad, should find substitute that
-    # doesn't modify the document.
-    
+    '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
-    assert isinstance(document, wingapi.CAPIDocument)
-    
-    with SelectionRestorer(editor):
-        line_number = document.GetLineNumberFromPosition(pos)
-        line_start_pos = document.GetLineStart(line_number)
-        editor.SetSelection(pos, pos)
-        editor.ExecuteCommand('indent-to-match')
-        line_text_start_pos = editor.GetSelection()[0]
-        
-        return line_text_start_pos - line_start_pos
+    indent_size, indent_string = editor.fEditor._CalcNaturalIndent(
+        document.GetLineNumberFromPosition(pos)
+    )
+    return indent_size
     
 
 def camel_case_to_lower_case(s):
