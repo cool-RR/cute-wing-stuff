@@ -124,17 +124,6 @@ Evaluate selection in debug probe, doing `select-more` if nothing selected.
     
 Suggested key combination: `Ctrl-Alt-D`
 
-
-## cute-goto-definition ##
-
-Go to the definition of the symbol that the caret is on.
-
-This is an improvement over Wing's `goto-selected-symbol-defn` because if
-operated when selecting a segment of code, it looks at the end of the
-selection instead of the start.
-
-Suggested key combination: `F4`
-
     
 ## cute-goto-line ##
 
