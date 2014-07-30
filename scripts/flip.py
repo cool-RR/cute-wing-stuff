@@ -51,6 +51,8 @@ flip_pairs = (
     ('encode', 'decode'),
     ('encoding', 'decoding'),
     ('request', 'response'), 
+    ('big', 'small'), 
+    ('color', 'grayscale'), 
 )
 
 all_words = sum(flip_pairs, ())
