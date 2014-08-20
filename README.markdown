@@ -741,3 +741,8 @@ Useful for writing things like:
 See this blog post for more context: http://blog.ram.rachum.com/post/1198230058/python-idiom-for-taking-the-single-item-from-a-list
 
 Suggested key combination: `Insert U`
+
+
+## wrap-lines-toggle ##
+
+Toggle whether Wing wraps lines or not.
