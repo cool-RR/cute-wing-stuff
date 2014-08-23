@@ -53,6 +53,8 @@ flip_pairs = (
     ('request', 'response'), 
     ('big', 'small'), 
     ('color', 'grayscale'), 
+    ('get', 'set'), 
+    ('accept', 'reject'), 
 )
 
 all_words = sum(flip_pairs, ())
