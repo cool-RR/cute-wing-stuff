@@ -97,14 +97,16 @@ instantiation_pattern = re.compile(
 
 ### Defining datetime module patterns: ########################################
 #                                                                             #
-now_pattern = re.compile(r'''datetime(?:_module)?\.datetime\.(now)\(\)$''')
 today_pattern = re.compile(r'''datetime(?:_module)?\.date\.(today)\(\)$''')
+now_pattern = re.compile(r'''datetime(?:_module)?\.datetime\.(now)\(\)$''')
+timezone_now_pattern = re.compile(r'''timezone\.(now)\(\)$''')
 #                                                                             #
 ### Finished defining datetime module patterns. ###############################
 
 patterns = [django_orm_get_pattern, getter_pattern, attribute_pattern,
             mapping_get_pattern, getitem_pattern, re_match_group_pattern,
-            now_pattern, today_pattern, instantiation_pattern, iter_pattern]
+            today_pattern, now_pattern, timezone_now_pattern,
+            instantiation_pattern, iter_pattern]
 
 variable_name_map = {
     iter_pattern: 'iterator',
