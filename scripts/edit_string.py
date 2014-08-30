@@ -40,25 +40,38 @@ base_escape_map = {
     '\v': '\\v',
 }
 
-def escape_character(c, double, triple, raw):
-    if ((c in ('"', "'")) and triple) or \
-                            (c == '"' and not double) or (c == "'" and double):
-        return c
-    elif c in base_escape_map:
-        return base_escape_map[c]
-    else:
-        return c
-    
 
 def format_string(string, double=False, triple=False,
                   bytes_=False, raw=False, unicode_=False):
     assert bytes_ + unicode_ in (0, 1)
     quote_string = ('"' if double else "'") * (3 if triple else 1)
-    escape_character_ = lambda character: escape_character(
-        character, double=double, triple=triple, 
-        raw=raw
-    )
-    content = ''.join(map(escape_character_, string))
+    
+    content_list = []
+        
+    i = 0
+    while i < len(string):
+        if triple and string.startswith(quote_string, i):
+            content_list.append('\\%s' % quote_string)
+            i += 3
+            continue
+        elif triple and (i == len(string) - 1) and string[i] == quote_string[0]:
+            content_list.append('\\%s' % quote_string[0])
+            i += 1
+            continue # Will now end loop because we're at end of string
+        else:
+            current_substring = string[i]
+            i += 1
+
+        if ((current_substring in ('"', "'")) and triple) or \
+                                 (current_substring == '"' and not double) or \
+                                         (current_substring == "'" and double):
+            content_list.append(current_substring)
+        elif current_substring in base_escape_map:
+            content_list.append(base_escape_map[current_substring])
+        else:
+            content_list.append(current_substring)
+            
+    content = ''.join(content_list)
     
     formatted_string = '%s%s%s%s' % (
         ''.join((
@@ -81,6 +94,9 @@ def format_string(string, double=False, triple=False,
 def _bool_to_qt_check_state(bool_):
     return guiutils.wgtk.Qt.Checked if bool_ else guiutils.wgtk.Qt.Unchecked
 
+# def shit_print(s):
+    # open('c:\\tits.txt', 'a').write(s)
+    
 
 def enter_string():
     app = wingapi.gApplication
@@ -128,6 +144,7 @@ def enter_string():
         
     def ok():
         with shared.UndoableAction(document):
+            # try:
             string = text_edit.toPlainText()
             bytes_ = bool(bytes_checkbox.checkState())
             unicode_ = bool(unicode_checkbox.checkState())
@@ -146,6 +163,11 @@ def enter_string():
                 document.InsertChars(selection_start, formatted_string)
                 new_selection = selection_start + len(formatted_string)
             editor.SetSelection(new_selection, new_selection)
+            # except Exception as exception:
+                # import traceback, sys
+                # shit_print(
+                    # ''.join(traceback.format_exception(*sys.exc_info()))
+                # )
     buttons = [
         guiutils.dialogs.CButtonSpec('_OK', ok),
         guiutils.dialogs.CButtonSpec('_Cancel', None),
