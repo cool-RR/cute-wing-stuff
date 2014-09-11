@@ -44,7 +44,12 @@ base_escape_map = {
 def format_string(string, double=False, triple=False,
                   bytes_=False, raw=False, unicode_=False):
     assert bytes_ + unicode_ in (0, 1)
-    quote_string = ('"' if double else "'") * (3 if triple else 1)
+    quote_character = '"' if double else "'"
+    quote_string = quote_character * (3 if triple else 1)
+    
+    if raw and string.endswith(quote_character):
+        raise Exception("Can't do a raw string that ends with its quote "
+                        "character.")
     
     content_list = []
         
@@ -86,8 +91,16 @@ def format_string(string, double=False, triple=False,
     #if isinstance(formatted_string, unicode):
         #formatted_string = formatted_string.encode()
     if not ast.literal_eval(formatted_string) == string:
-        raise Exception('Formatting unsuccessful: @%s@  |||  @%s@  ||| @%s@'
-              % (string, ast.literal_eval(formatted_string), formatted_string))
+        raise Exception('Formatting unsuccessful. Tried to format this:\r\n'
+                        '%s\r\n'
+                        '\r\n'
+                        'The algorithm come up with this:\r\n'
+                        '%s\r\n'
+                        '\r\n'
+                        'Which actually comes out as a different string, '
+                                                           'which is this:\r\n'
+                        '%s\r\n'
+              % (string, formatted_string, ast.literal_eval(formatted_string), ))
     return formatted_string
     
 
@@ -143,8 +156,7 @@ def edit_string():
         text_edit.setText(old_string)
         
     def ok():
-        with shared.UndoableAction(document):
-            # try:
+        try:
             string = text_edit.toPlainText()
             bytes_ = bool(bytes_checkbox.checkState())
             unicode_ = bool(unicode_checkbox.checkState())
@@ -154,20 +166,21 @@ def edit_string():
             formatted_string = format_string(string, bytes_=bytes_,
                                              unicode_=unicode_, raw=raw,
                                              double=double, triple=triple)
-            if replacing_old_string:
-                document.DeleteChars(old_string_start, old_string_end - 1)
-                document.InsertChars(old_string_start, formatted_string)
-                new_selection = old_string_start + len(formatted_string)
-            else:
-                document.DeleteChars(selection_start, selection_end-1)
-                document.InsertChars(selection_start, formatted_string)
-                new_selection = selection_start + len(formatted_string)
-            editor.SetSelection(new_selection, new_selection)
-            # except Exception as exception:
-                # import traceback, sys
-                # shit_print(
-                    # ''.join(traceback.format_exception(*sys.exc_info()))
-                # )
+            with shared.UndoableAction(document):
+                if replacing_old_string:
+                    document.DeleteChars(old_string_start, old_string_end - 1)
+                    document.InsertChars(old_string_start, formatted_string)
+                    new_selection = old_string_start + len(formatted_string)
+                else:
+                    document.DeleteChars(selection_start, selection_end-1)
+                    document.InsertChars(selection_start, formatted_string)
+                    new_selection = selection_start + len(formatted_string)
+                editor.SetSelection(new_selection, new_selection)
+        except Exception as exception:
+            error_dialog = guiutils.wgtk.QErrorMessage(widget)
+            error_dialog.showMessage(str(exception))
+            error_dialog.exec_()
+            return True
     buttons = [
         guiutils.dialogs.CButtonSpec('_OK', ok),
         guiutils.dialogs.CButtonSpec('_Cancel', None),
