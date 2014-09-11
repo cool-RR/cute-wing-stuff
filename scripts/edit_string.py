@@ -98,7 +98,7 @@ def _bool_to_qt_check_state(bool_):
     # open('c:\\tits.txt', 'a').write(s)
     
 
-def enter_string():
+def edit_string():
     app = wingapi.gApplication
 
 
