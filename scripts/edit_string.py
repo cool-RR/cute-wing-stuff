@@ -177,9 +177,8 @@ def edit_string():
                     new_selection = selection_start + len(formatted_string)
                 editor.SetSelection(new_selection, new_selection)
         except Exception as exception:
-            error_dialog = guiutils.wgtk.QErrorMessage(widget)
-            error_dialog.showMessage(str(exception))
-            error_dialog.exec_()
+            app.ShowMessageDialog('Error', str(exception),
+                                  buttons=[('OK', None)])
             return True
     buttons = [
         guiutils.dialogs.CButtonSpec('_OK', ok),
