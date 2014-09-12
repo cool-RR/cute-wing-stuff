@@ -178,7 +178,7 @@ def edit_string():
                 editor.SetSelection(new_selection, new_selection)
         except Exception as exception:
             app.ShowMessageDialog('Error', str(exception),
-                                  buttons=[('OK', None)])
+                                  buttons=[('_OK', None)])
             return True
     buttons = [
         guiutils.dialogs.CButtonSpec('_OK', ok),
