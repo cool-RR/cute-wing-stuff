@@ -55,6 +55,7 @@ flip_pairs = (
     ('color', 'grayscale'), 
     ('get', 'set'), 
     ('accept', 'reject'), 
+    ('enter', 'exit'), 
 )
 
 all_words = sum(flip_pairs, ())

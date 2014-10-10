@@ -200,23 +200,6 @@ class UndoableAction(context_management.ContextManager):
         self.document.EndUndoAction()
         
 
-class NonUndoableAction(context_management.ContextManager):
-    def __init__(self, editor):
-        assert isinstance(editor, wingapi.CAPIEditor)
-        self.editor = editor
-        
-    def __enter__(self):
-        self._begin_undo_action = self.editor.fEditor._fScint.begin_undo_action
-        self._end_undo_action = self.editor.fEditor._fScint.end_undo_action
-        self.editor.fEditor._fScint.begin_undo_action = \
-                                  self.editor.fEditor._fScint.end_undo_action = \
-                                                   lambda *args, **kwargs: None
-        
-    def __exit__(self, *args, **kwargs):
-        pass
-        #self.editor.fCache.fDoc.begin_undo_action = self._begin_undo_action
-        #self.editor.fCache.fDoc.end_undo_action = self._end_undo_action
-        
 
 def get_cursor_position(editor):
     '''
