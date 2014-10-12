@@ -98,13 +98,8 @@ if monkeypatch:
     
         for loc in loc_list:
             if loc.IsDirectory():
-                ###############################################################
-                #                                                             #
                 path = _get_location_path(loc)
-                open('c:\\tits.txt', 'a').write(path)
                 shared.open_path_in_explorer(path)
-                #                                                             #
-                ###############################################################
             else:
                 opened = False
     
