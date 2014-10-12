@@ -71,7 +71,7 @@ def format_string(string, double=False, triple=False,
                                  (current_substring == '"' and not double) or \
                                          (current_substring == "'" and double):
             content_list.append(current_substring)
-        elif current_substring in base_escape_map:
+        elif current_substring in base_escape_map and not raw:
             content_list.append(base_escape_map[current_substring])
         else:
             content_list.append(current_substring)
@@ -187,5 +187,4 @@ def edit_string():
     dialog = guiutils.dialogs.CWidgetDialog(None, 'Edit string',
                                             'Edit string', widget, buttons)
     dialog.RunAsModal()    
-    
     
