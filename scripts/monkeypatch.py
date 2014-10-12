@@ -125,6 +125,17 @@ if monkeypatch:
     wingide.topcommands.CApplicationControlCommands._open = _open
     
     ###########################################################################
+    
+    def set_perspective_nicely(*args, **kwargs):
+        wingapi.gApplication.ExecuteCommand('perspective-restore',
+                                            name='Turing')
+        if shared.autopy_available:
+            autopy.key.tap('q', autopy.key.MOD_ALT | autopy.key.MOD_META)
+        
+    # wingapi.gApplication.connect('project-open', set_perspective_nicely)
+    
+    ###########################################################################
+    
 
     if shared.autopy_available:
         import autopy.key
@@ -161,3 +172,6 @@ if monkeypatch:
             
         wingapi.gApplication.fSingletons.fCmdMgr.connect('args-needed',
                                                          args_needed)
+        
+        
+        
