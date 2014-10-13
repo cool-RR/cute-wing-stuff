@@ -392,9 +392,8 @@ def open_path_in_explorer(path):
     elif sys.platform == 'win32':
         subprocess.call(['explorer', path])
         
-def get_n_monitors():
-    return 1
-    import win32api
-    return len(win32api.EnumDisplayMonitors())
+# def get_n_monitors():
+    # import win32api
+    # return len(win32api.EnumDisplayMonitors())
     
     
