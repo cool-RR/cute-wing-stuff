@@ -122,7 +122,7 @@ if monkeypatch:
     ###########################################################################
     
     def set_perspective_nicely(*args, **kwargs):
-        import winsound
+        # import winsound
         # winsound.Beep(220, 400)
         computer_name = os.environ['COMPUTERNAME'].lower()
         if computer_name == 'turing':
