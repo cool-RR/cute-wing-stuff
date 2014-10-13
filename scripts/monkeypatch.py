@@ -122,7 +122,7 @@ if monkeypatch:
     ###########################################################################
     
     def set_perspective_nicely(*args, **kwargs):
-        # import winsound
+        import winsound
         # winsound.Beep(220, 400)
         computer_name = os.environ['COMPUTERNAME'].lower()
         if computer_name == 'turing':
@@ -140,6 +140,15 @@ if monkeypatch:
                                             name=perspective_name)
         if shared.autopy_available:
             autopy.key.tap('q', autopy.key.MOD_ALT | autopy.key.MOD_META)
+            wingapi.gApplication.InstallTimeout(
+                2000 if computer_name == 'turing' else 6000,
+                lambda: autopy.key.tap(
+                    'w',
+                    autopy.key.MOD_ALT | autopy.key.MOD_META
+                )
+            )
+            
+            
         
     wingapi.gApplication.connect(
         'project-open',
