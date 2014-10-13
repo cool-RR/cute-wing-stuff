@@ -122,12 +122,30 @@ if monkeypatch:
     ###########################################################################
     
     def set_perspective_nicely(*args, **kwargs):
+        # import winsound
+        # winsound.Beep(220, 400)
+        computer_name = os.environ['COMPUTERNAME'].lower()
+        if computer_name == 'turing':
+            perspective_name = 'Turing'
+        elif computer_name == 'hopper':
+            if shared.get_n_monitors() == 2:
+                perspective_name = 'Hopper KT'
+            else:
+                perspective_name = 'Hopper'
+        else:
+            # Default
+            perspective_name = 'Turing'
+        
         wingapi.gApplication.ExecuteCommand('perspective-restore',
-                                            name='Turing')
+                                            name=perspective_name)
         if shared.autopy_available:
             autopy.key.tap('q', autopy.key.MOD_ALT | autopy.key.MOD_META)
         
-    # wingapi.gApplication.connect('project-open', set_perspective_nicely)
+    wingapi.gApplication.connect(
+        'project-open',
+        lambda _: wingapi.gApplication.InstallTimeout(0,
+                                                      set_perspective_nicely)
+    )
     
     ###########################################################################
     

@@ -391,3 +391,9 @@ def open_path_in_explorer(path):
         subprocess.call(['gnome-open', '--', path])
     elif sys.platform == 'win32':
         subprocess.call(['explorer', path])
+        
+def get_n_monitors():
+    import win32api
+    return len(win32api.EnumDisplayMonitors())
+    
+    
