@@ -130,7 +130,7 @@ if monkeypatch:
                 # perspective_name = 'Hopper KT'
             # else:
             perspective_name = 'Hopper'
-        ewlse:
+        else:
             # Default
             perspective_name = 'Turing'
         
