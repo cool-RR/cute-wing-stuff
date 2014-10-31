@@ -138,9 +138,15 @@ if monkeypatch:
                                             name=perspective_name)
         
         if shared.autopy_available:
-            autopy.key.tap('q', autopy.key.MOD_ALT | autopy.key.MOD_META)
             wingapi.gApplication.InstallTimeout(
-                2000 if computer_name == 'turing' else 8000,
+                1500 if computer_name == 'turing' else 3000,
+                lambda: autopy.key.tap(
+                    'q',
+                    autopy.key.MOD_ALT | autopy.key.MOD_META
+                )
+            )
+            wingapi.gApplication.InstallTimeout(
+                3000 if computer_name == 'turing' else 8000,
                 lambda: autopy.key.tap(
                     'w',
                     autopy.key.MOD_ALT | autopy.key.MOD_META
