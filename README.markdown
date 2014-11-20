@@ -571,6 +571,13 @@ Constant means a name in all caps, like DEBUG or LOGIN_REDIRECT_URL.
 Suggested key combination: `Ctrl-Alt-O`
 
 
+## select-next-dotted ##
+
+Select the next (or current) dotted name in the document, like `foo.bar`.
+
+Suggested key combination: `Ctrl-D`
+
+
 ## select-next-invocation ##
 
 Select the next invocation of a callable, e.g `foo.bar(baz)`.
@@ -667,6 +674,13 @@ Select the previous constant in the document.
 Constant means a name in all caps, like DEBUG or LOGIN_REDIRECT_URL.
 
 Suggested key combination: `Ctrl-Alt-Shift-O`
+
+
+## select-prev-dotted ##
+
+Select the previous dotted name in the document, like `foo.bar`.
+
+Suggested key combination: `Ctrl-Shift-D`
 
 
 ## select-prev-invocation ##
