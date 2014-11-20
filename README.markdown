@@ -540,6 +540,18 @@ Set `limit_to_keywords=True` to go only to a keyword argument.
 Suggested key combinations: `Ctrl-R`
                             `Ctrl-Alt-R` for `limit_to_keywords=True`
 
+
+## select-next-assignment ##
+
+Select the next (or current) assignment in the document.
+
+This includes:
+
+    = += -= *= /= **= //= %= |= &= ^= <<= >>=
+
+Suggested key combination: `Ctrl-Alt-Backslash`
+
+
 ## select-next-camelcase ##
 
 Select the next (or current) camelcase in the document.
@@ -580,6 +592,17 @@ Select the next (or current) number in the document.
 Suggested key combination: `Ctrl-0`
 
 
+## select-next-operator ##
+
+Select the next (or current) operator in the document.
+
+Operators are:
+
+    + - * / ** // % | & ^ << >> == != < <= > >=
+
+Suggested key combination: `Alt-Backslash`
+
+
 ## select-next-rhs ##
 
 Select the next right-hand-side of an assignment.
@@ -615,6 +638,17 @@ Set `limit_to_keywords=True` to go only to a keyword argument.
 Suggested key combinations: `Ctrl-Shift-R`
                             `Ctrl-Shift-Alt-R` for `limit_to_keywords=True`
                             
+                            
+## select-prev-assignment ##
+
+Select the previous assignment in the document.
+
+This includes:
+
+    = += -= *= /= **= //= %= |= &= ^= <<= >>=
+
+Suggested key combination: `Ctrl-Alt-Bar`
+
 
 ## select-prev-camelcase ##
 
@@ -654,6 +688,17 @@ Suggested key combination: `Ctrl-Alt-Parenleft`
 Select the previous number in the document.
 
 Suggested key combination: `Ctrl-9`
+
+
+## select-prev-operator ##
+
+Select the previous operator in the document.
+
+Operators are:
+
+    + - * / ** // % | & ^ << >> == != < <= > >=
+
+Suggested key combination: `Alt-Bar`
 
 
 ## select-prev-rhs ##
