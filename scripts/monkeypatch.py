@@ -38,6 +38,31 @@ else:
     
     
 if monkeypatch:
+    
+    ###########################################################################
+    
+    # Todo: Perhaps remove this when Wing learns to kill all debug processes
+    # when launching a named entry point.
+    
+    import debug.client.cmdmanager
+    
+    old_debug_named_entry_point = \
+              debug.client.cmdmanager.CDebuggerCommands.debug_named_entry_point
+    def debug_named_entry_point(self, name):
+        """Debug the named entry point"""
+        #######################################################################
+        #                                                                     #
+        # Added part:
+        self.debug_kill_all()
+        #                                                                     #
+        #######################################################################
+        return old_debug_named_entry_point(self, name)
+    
+    debug.client.cmdmanager.CDebuggerCommands.debug_named_entry_point = \
+                                                        debug_named_entry_point
+        
+
+    ###########################################################################
 
     # Monkeypatching `ExpandFileFragment` so Wing won't show .pyc, .pyo and
     # .pyd files when browsing using `open-from-keyboard`:
