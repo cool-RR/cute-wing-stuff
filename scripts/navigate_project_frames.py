@@ -1,12 +1,6 @@
 # Copyright 2009-2014 Ram Rachum.
 # This program is distributed under the MIT license.
 
-'''
-This module defines the `go_up_to_project_frame` script.
-
-See its documentation for more information.
-'''
-
 from __future__ import with_statement
 
 import os.path, sys
@@ -70,6 +64,47 @@ def go_up_to_project_frame(application=wingapi.gApplication):
                                      index_of_last_file_path_in_project)
 
 
+def go_down_to_project_frame(application=wingapi.gApplication):
+    '''
+    Go down one frame in the debugger, skipping any non-project frames.
+
+    Did you ever have Wing stop on an exception, and then drop you in code that
+    belongs to an external module? This is often annoying, because you want to
+    figure out what you did wrong on *your* code, and the external module is
+    usually not to blame.
+    
+    `go-down-to-project-frame` to the rescue! Invoke this script while
+    debugging in order to be taken to the closest lower stack frame that's on a
+    project file rather than an external module.
+
+    Suggested key combination: `Alt-F12`
+    '''
+    project = application.GetProject()
+    debugger = application.GetDebugger()
+    all_project_files = set(map(_normalize_path, project.GetAllFiles()))
+    _current_run_state = debugger.GetCurrentRunState()
+    _thread_id, _frame_index = _current_run_state.GetStackFrame()
+    _stack = _current_run_state.GetStack()
+    
+    if not _stack:
+        return 
+    
+    file_paths = [_normalize_path(file_path) for file_path, _, _, _, _ in
+                  _stack]
+    file_paths_in_project_below_current_frame = filter(
+        lambda (i, file_path): file_path in all_project_files and
+                                                              i > _frame_index,
+        enumerate(file_paths)
+    )
+    if not file_paths_in_project_below_current_frame:
+        return 
+    index_of_last_file_path_in_project = \
+                               file_paths_in_project_below_current_frame[0][0]
+    
+    _current_run_state.SetStackFrame(_thread_id,
+                                     index_of_last_file_path_in_project)
+
+
 def _available(application=wingapi.gApplication):
     ''' '''
     return bool(
@@ -77,4 +112,5 @@ def _available(application=wingapi.gApplication):
     )
 
 go_up_to_project_frame.available = _available
+go_down_to_project_frame.available = _available
 

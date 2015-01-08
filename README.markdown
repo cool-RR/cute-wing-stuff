@@ -380,6 +380,22 @@ of the text.
 Suggested key combination: `Shift-F11`
 
 
+## go-down-to-project-frame ##
+
+Go down one frame in the debugger, skipping any non-project frames.
+
+Did you ever have Wing stop on an exception, and then drop you in code that
+belongs to an external module? This is often annoying, because you want to
+figure out what you did wrong on *your* code, and the external module is
+usually not to blame.
+
+`go-down-to-project-frame` to the rescue! Invoke this script while
+debugging in order to be taken to the closest lower stack frame that's on a
+project file rather than an external module.
+
+Suggested key combination: `Alt-F12`
+
+
 ## go-up-to-project-frame ##
 
 Go up one frame in the debugger, skipping any non-project frames.
