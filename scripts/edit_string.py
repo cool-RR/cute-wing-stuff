@@ -40,10 +40,16 @@ base_escape_map = {
     '\v': '\\v',
 }
 
+def my_print(s):
+    open('c:\\tits.txt', 'a').write('%s\n' % (s,))
+    
+
 
 def format_string(string, double=False, triple=False,
                   bytes_=False, raw=False, unicode_=False,
                   avoid_multiline=False, starting_column=None):
+    last_column = \
+        wingapi.gApplication.GetPreference('edit.text-wrap-column') - 1
     if not avoid_multiline:
         assert starting_column is not None
     assert bytes_ + unicode_ in (0, 1)
@@ -81,19 +87,50 @@ def format_string(string, double=False, triple=False,
             
     content = ''.join(content_list)
     
-    formatted_string = '%s%s%s%s' % (
-        ''.join((
-            ('b' if bytes_ else ''),
-            ('u' if unicode_ else ''),
-            ('r' if raw else ''),
-        )),
-        quote_string,
-        content,
-        quote_string
-    )
+    def wrap_content(content):
+        return '%s%s%s%s' % (
+            ''.join((
+                ('b' if bytes_ else ''),
+                ('u' if unicode_ else ''),
+                ('r' if raw else ''),
+            )),
+            quote_string,
+            content,
+            quote_string
+        )
+    
+    formatted_string = wrap_content(content)
+    
+    if not avoid_multiline and \
+                       (starting_column + len(formatted_string) > last_column):
+        # Splitting the string to a multiline one.
+        segment_length = last_column - starting_column - len(quote_string) * 2
+        content_segments = [content]
+        while True:
+            last_content_segment = content_segments[-1]
+            if len(last_content_segment) <= segment_length:
+                break
+            rfind_result = last_content_segment.rfind(' ', 0, segment_length)
+            my_print((last_content_segment, rfind_result))
+            if rfind_result == -1:
+                1 / 0
+            else:
+                del content_segments[-1]
+                content_segments.append(last_content_segment[:rfind_result+1])
+                content_segments.append(last_content_segment[rfind_result+1:])
+                
+        my_print(content_segments)
+        
+        separator = ('\n%s' % (' ' * (starting_column)))
+        formatted_string = separator.join(
+            map(wrap_content, content_segments)
+        )
+        
+        
     #if isinstance(formatted_string, unicode):
         #formatted_string = formatted_string.encode()
-    if not ast.literal_eval(formatted_string) == string:
+    my_print(('(%s)' % formatted_string))
+    if not ast.literal_eval('(%s)' % formatted_string) == string:
         raise Exception('Formatting unsuccessful. Tried to format this:\r\n'
                         '%s\r\n'
                         '\r\n'
@@ -118,13 +155,14 @@ def edit_string():
     app = wingapi.gApplication
     editor = app.GetActiveEditor()
     document = editor.GetDocument()
-    last_column = wingapi.gApplication.GetPreference('edit.text-wrap-column')
+    last_column = \
+                wingapi.gApplication.GetPreference('edit.text-wrap-column') - 1
     
     selection_start, selection_end = editor.GetSelection()
     starting_line = document.GetLineNumberFromPosition(selection_start)
-    starting_column = selection_start - document.GetLineStart(selection_start)
+    starting_column = selection_start - document.GetLineStart(starting_line)
     ending_line = document.GetLineNumberFromPosition(selection_end)
-    ending_column = selection_end - document.GetLineStart(selection_end)
+    ending_column = selection_end - document.GetLineStart(ending_line)
     
     widget = guiutils.wgtk.QWidget()
     layout = guiutils.wgtk.QVBoxLayout()
@@ -154,6 +192,8 @@ def edit_string():
                                                        multiline=True)
         old_string_raw = document.GetCharRange(old_string_ranges[0][0],
                                                old_string_ranges[-1][1])
+        print(old_string_ranges)
+        print(repr(('(%s)' % old_string_raw)))
         old_string = ast.literal_eval('(%s)' % old_string_raw)
         modifiers = string_head_pattern.match(old_string_raw). \
                                                      group('modifiers').lower()

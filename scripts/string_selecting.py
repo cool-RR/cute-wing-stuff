@@ -25,20 +25,11 @@ import edit
 
 import shared
 
-def my_print(s):
-    open('c:\\tits.txt', 'a').write('%s\n' % s)
-    
-
-def _is_position_on_string(editor, position):
-    '''
-    Is there a strict string in the specified position in the document?
-    
-    "Strict" here means that it's a string and it's *not* the last character of
-    the string.
-    '''
+def _is_position_on_string(editor, position, try_previous=True):
+    '''Is there a string in the specified position in the document?'''
     return (
         editor.fEditor.GetCharType(position) == edit.editor.kStringCharType or
-        (position >= 1 and
+        (try_previous and position >= 1 and
          (editor.fEditor.GetCharType(position - 1) ==
                                                   edit.editor.kStringCharType))
     )
@@ -67,7 +58,6 @@ def _find_string_from_position(editor, position, multiline=False):
     
     if multiline:
         string_ranges = [(start_marker, end_marker)]
-        my_print(string_ranges)
         document_text = shared.get_text(editor.GetDocument())
         
         ### Scanning backward: ################################################
@@ -75,14 +65,16 @@ def _find_string_from_position(editor, position, multiline=False):
         while True:
             start_of_first_string = string_ranges[0][0]
             # No backwards regex search in `re` yet, doing it manually:
-            for i in range(start_of_first_string, -1, -1):
+            for i in range(start_of_first_string - 1, 0, -1):
                 if document_text[i] not in string.whitespace:
                     candidate_end_of_additional_string = i
+                    print('Candidate: %s %s' % (i, document_text[i]))
+                    break
             else:
                 break    
                     
-            if _is_position_on_string(
-                editor, candidate_end_of_additional_string):
+            if _is_position_on_string(editor,
+                       candidate_end_of_additional_string, try_previous=False):
                 string_ranges.insert(
                     0, 
                     _find_string_from_position(
@@ -96,20 +88,18 @@ def _find_string_from_position(editor, position, multiline=False):
         #                                                                     #
         ### Finished scanning backward. #######################################
 
-        my_print(string_ranges)
-
-
         ### Scanning forward: #################################################
         #                                                                     #
         while True:
             end_of_last_string = string_ranges[-1][1]
             search_result = re.search('\S',
-                                      document_text[end_of_last_string + 1:])
+                                      document_text[end_of_last_string:])
             if search_result:
                 candidate_start_of_additional_string = \
                                    end_of_last_string + search_result.span()[0]
-                if _is_position_on_string(
-                                 editor, candidate_start_of_additional_string):
+                if _is_position_on_string(editor,
+                                          candidate_start_of_additional_string,
+                                          try_previous=False):
                     string_ranges.append(
                         _find_string_from_position(
                             editor,
@@ -119,8 +109,6 @@ def _find_string_from_position(editor, position, multiline=False):
                     continue
                     
             # (This is like an `else` clause for both the above `if`s.)
-            my_print(string_ranges)
-            
             return tuple(string_ranges)
         #                                                                     #
         ### Finished scanning forward. ########################################
