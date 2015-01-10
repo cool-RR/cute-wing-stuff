@@ -25,8 +25,11 @@ import edit
 
 import shared
 
+def my_print(s):
+    open('c:\\tits.txt', 'a').write('%s\n' % s)
+    
 
-def _is_position_on_strict_string(editor, position):
+def _is_position_on_string(editor, position):
     '''
     Is there a strict string in the specified position in the document?
     
@@ -46,24 +49,25 @@ def _find_string_from_position(editor, position, multiline=False):
     Given a character in the document known to be in a string, find its string.
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
-    assert _is_position_on_strict_string(editor, position)
+    assert _is_position_on_string(editor, position)
     document_start = 0
     document_end = editor.GetDocument().GetLength()
     start_marker = end_marker = position
     while end_marker < document_end and \
-                            _is_position_on_strict_string(editor, end_marker+1):
+                            _is_position_on_string(editor, end_marker+1):
         end_marker += 1
     while start_marker > document_start and \
-                          _is_position_on_strict_string(editor, start_marker-1):
+                          _is_position_on_string(editor, start_marker-1):
         start_marker -= 1
             
     if start_marker > document_start:
-        assert not _is_position_on_strict_string(editor, start_marker-1)
+        assert not _is_position_on_string(editor, start_marker-1)
     if end_marker < document_end:
-        assert not _is_position_on_strict_string(editor, end_marker+1)
+        assert not _is_position_on_string(editor, end_marker+1)
     
     if multiline:
         string_ranges = [(start_marker, end_marker)]
+        my_print(string_ranges)
         document_text = shared.get_text(editor.GetDocument())
         
         ### Scanning backward: ################################################
@@ -77,7 +81,7 @@ def _find_string_from_position(editor, position, multiline=False):
             else:
                 break    
                     
-            if _is_position_on_strict_string(
+            if _is_position_on_string(
                 editor, candidate_end_of_additional_string):
                 string_ranges.insert(
                     0, 
@@ -92,17 +96,19 @@ def _find_string_from_position(editor, position, multiline=False):
         #                                                                     #
         ### Finished scanning backward. #######################################
 
+        my_print(string_ranges)
+
+
         ### Scanning forward: #################################################
         #                                                                     #
-        # while True:
-        for i in range(1000):
-            open('c:\\tits.txt', 'a').write(str(string_ranges))
+        while True:
             end_of_last_string = string_ranges[-1][1]
-            search_result = re.search('\S', document_text[end_of_last_string:])
+            search_result = re.search('\S',
+                                      document_text[end_of_last_string + 1:])
             if search_result:
                 candidate_start_of_additional_string = \
                                    end_of_last_string + search_result.span()[0]
-                if _is_position_on_strict_string(
+                if _is_position_on_string(
                                  editor, candidate_start_of_additional_string):
                     string_ranges.append(
                         _find_string_from_position(
@@ -113,6 +119,8 @@ def _find_string_from_position(editor, position, multiline=False):
                     continue
                     
             # (This is like an `else` clause for both the above `if`s.)
+            my_print(string_ranges)
+            
             return tuple(string_ranges)
         #                                                                     #
         ### Finished scanning forward. ########################################
@@ -144,7 +152,7 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
     selection_start, selection_end = editor.GetSelection()
     
     for _ in [0]:
-        if _is_position_on_strict_string(editor, selection_start):
+        if _is_position_on_string(editor, selection_start):
             current_string_range = \
                              _find_string_from_position(editor, selection_start)
             if (selection_start, selection_end) == current_string_range:
@@ -168,7 +176,7 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
             base_position = selection_start
     
         for position in range(base_position, document_end+1):
-            if _is_position_on_strict_string(editor, position):
+            if _is_position_on_string(editor, position):
                 string_range = _find_string_from_position(editor, position)
                 editor.SetSelection(*string_range)
                 break
@@ -202,8 +210,8 @@ def select_prev_string(inner=False, editor=wingapi.kArgEditor,
 
     for _ in [0]:
             
-        if _is_position_on_strict_string(editor, caret_position) or \
-                      _is_position_on_strict_string(editor, caret_position - 1):
+        if _is_position_on_string(editor, caret_position) or \
+                      _is_position_on_string(editor, caret_position - 1):
             current_string_range = \
                               _find_string_from_position(editor, caret_position)
             base_position = current_string_range[0] - 1
@@ -213,7 +221,7 @@ def select_prev_string(inner=False, editor=wingapi.kArgEditor,
             base_position = caret_position
     
         for position in range(base_position, document_start-1, -1):
-            if _is_position_on_strict_string(editor, position):
+            if _is_position_on_string(editor, position):
                 string_range = _find_string_from_position(editor, position)
                 editor.SetSelection(*string_range)
                 break

@@ -147,7 +147,7 @@ def edit_string():
     layout.addLayout(sub_layout)
     
     replacing_old_string = \
-        string_selecting._is_position_on_strict_string(editor, selection_start)
+        string_selecting._is_position_on_string(editor, selection_start)
     if replacing_old_string:
         old_string_ranges = \
            string_selecting._find_string_from_position(editor, selection_start,
