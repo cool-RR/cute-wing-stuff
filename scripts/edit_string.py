@@ -42,7 +42,10 @@ base_escape_map = {
 
 
 def format_string(string, double=False, triple=False,
-                  bytes_=False, raw=False, unicode_=False):
+                  bytes_=False, raw=False, unicode_=False,
+                  avoid_multiline=False, starting_column=None):
+    if not avoid_multiline:
+        assert starting_column is not None
     assert bytes_ + unicode_ in (0, 1)
     quote_character = '"' if double else "'"
     quote_string = quote_character * (3 if triple else 1)
@@ -113,11 +116,15 @@ def _bool_to_qt_check_state(bool_):
 
 def edit_string():
     app = wingapi.gApplication
-
-
     editor = app.GetActiveEditor()
     document = editor.GetDocument()
+    last_column = wingapi.gApplication.GetPreference('edit.text-wrap-column')
+    
     selection_start, selection_end = editor.GetSelection()
+    starting_line = document.GetLineNumberFromPosition(selection_start)
+    starting_column = selection_start - document.GetLineStart(selection_start)
+    ending_line = document.GetLineNumberFromPosition(selection_end)
+    ending_column = selection_end - document.GetLineStart(selection_end)
     
     widget = guiutils.wgtk.QWidget()
     layout = guiutils.wgtk.QVBoxLayout()
@@ -131,8 +138,9 @@ def edit_string():
     raw_checkbox = guiutils.wgtk.QCheckBox('&Raw')
     double_checkbox = guiutils.wgtk.QCheckBox('&Double')
     triple_checkbox = guiutils.wgtk.QCheckBox('Tri&ple')
+    avoid_multiline_checkbox = guiutils.wgtk.QCheckBox('Avoid &multilne')
     for checkbox in (bytes_checkbox, unicode_checkbox, raw_checkbox,
-                     double_checkbox, triple_checkbox):
+                     double_checkbox, triple_checkbox, avoid_multiline_checkbox):
         sub_layout.addWidget(checkbox)
     layout.addWidget(text_edit_label)
     layout.addWidget(text_edit)
@@ -141,10 +149,12 @@ def edit_string():
     replacing_old_string = \
         string_selecting._is_position_on_strict_string(editor, selection_start)
     if replacing_old_string:
-        old_string_start, old_string_end = \
-           string_selecting._find_string_from_position(editor, selection_start)
-        old_string_raw = document.GetCharRange(old_string_start, old_string_end)
-        old_string = ast.literal_eval(old_string_raw)
+        old_string_ranges = \
+           string_selecting._find_string_from_position(editor, selection_start,
+                                                       multiline=True)
+        old_string_raw = document.GetCharRange(old_string_ranges[0][0],
+                                               old_string_ranges[-1][1])
+        old_string = ast.literal_eval('(%s)' % old_string_raw)
         modifiers = string_head_pattern.match(old_string_raw). \
                                                      group('modifiers').lower()
         quote = string_head_pattern.match(old_string_raw).group('quote')
@@ -153,6 +163,10 @@ def edit_string():
         raw_checkbox.setCheckState(_bool_to_qt_check_state('r' in modifiers))
         double_checkbox.setCheckState(_bool_to_qt_check_state('"' in quote))
         triple_checkbox.setCheckState(_bool_to_qt_check_state(len(quote) == 3))
+        avoid_multiline_checkbox.setCheckState(
+            _bool_to_qt_check_state((len(old_string_ranges) == 1) and
+                                                   ending_column > last_column)
+        )
         text_edit.setText(old_string)
         
     def ok():
@@ -163,14 +177,20 @@ def edit_string():
             raw = bool(raw_checkbox.checkState())
             double = bool(double_checkbox.checkState())
             triple = bool(triple_checkbox.checkState())
-            formatted_string = format_string(string, bytes_=bytes_,
-                                             unicode_=unicode_, raw=raw,
-                                             double=double, triple=triple)
+            avoid_multiline = bool(avoid_multiline_checkbox.checkState())
+            formatted_string = format_string(
+                string, bytes_=bytes_, unicode_=unicode_, raw=raw,
+                double=double, triple=triple, avoid_multiline=avoid_multiline,
+                starting_column=starting_column
+            )
             with shared.UndoableAction(document):
                 if replacing_old_string:
-                    document.DeleteChars(old_string_start, old_string_end - 1)
-                    document.InsertChars(old_string_start, formatted_string)
-                    new_selection = old_string_start + len(formatted_string)
+                    document.DeleteChars(old_string_ranges[0][0],
+                                         old_string_ranges[-1][1] - 1)
+                    document.InsertChars(old_string_ranges[0][0],
+                                         formatted_string)
+                    new_selection = \
+                                old_string_ranges[0][0] + len(formatted_string)
                 else:
                     document.DeleteChars(selection_start, selection_end-1)
                     document.InsertChars(selection_start, formatted_string)

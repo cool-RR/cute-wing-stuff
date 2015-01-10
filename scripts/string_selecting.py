@@ -11,6 +11,7 @@ from __future__ import with_statement
 
 import re
 import _ast
+import string
 
 import os.path, sys
 sys.path += [
@@ -35,7 +36,7 @@ def _is_position_on_strict_string(editor, position):
     return editor.fEditor.GetCharType(position) == edit.editor.kStringCharType
 
 
-def _find_string_from_position(editor, position):
+def _find_string_from_position(editor, position, multiline=False):
     '''
     Given a character in the document known to be in a string, find its string.
     '''
@@ -55,8 +56,64 @@ def _find_string_from_position(editor, position):
         assert not _is_position_on_strict_string(editor, start_marker-1)
     if end_marker < document_end:
         assert not _is_position_on_strict_string(editor, end_marker+1)
+    
+    end_marker += 1
+    
+    if multiline:
+        string_ranges = [(start_marker, end_marker)]
+        document_text = shared.get_text(editor.GetDocument())
+        
+        ### Scanning backward: ################################################
+        #                                                                     #
+        while True:
+            start_of_first_string = string_ranges[0][0]
+            # No backwards regex search in `re` yet, doing it manually:
+            for i in range(start_of_first_string, -1, -1):
+                if document_text[i] not in string.whitespace:
+                    candidate_end_of_additional_string = i
+            else:
+                break    
+                    
+            if _is_position_on_strict_string(
+                editor, candidate_end_of_additional_string):
+                string_ranges.insert(
+                    0, 
+                    _find_string_from_position(
+                        editor,
+                        candidate_end_of_additional_string
+                    )
+                )
+                continue
+            else:
+                break
+        #                                                                     #
+        ### Finished scanning backward. #######################################
 
-    return (start_marker, end_marker + 1)
+        ### Scanning forward: #################################################
+        #                                                                     #
+        while True:
+            end_of_last_string = string_ranges[-1][1]
+            search_result = re.search('\S', document_text[end_of_last_string:])
+            if search_result:
+                candidate_start_of_additional_string = \
+                                   end_of_last_string + search_result.span()[0]
+                if _is_position_on_strict_string(
+                                 editor, candidate_start_of_additional_string):
+                    string_ranges.append(
+                        _find_string_from_position(
+                            editor,
+                            candidate_start_of_additional_string
+                        )
+                    )
+                    continue
+                    
+            # (This is like an `else` clause for both the above `if`s.)
+            return tuple(string_ranges)
+        #                                                                     #
+        ### Finished scanning forward. ########################################
+        
+    else: # not multiline
+        return (start_marker, end_marker)
             
             
 def select_next_string(inner=False, editor=wingapi.kArgEditor,
