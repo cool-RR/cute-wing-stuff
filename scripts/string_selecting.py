@@ -33,7 +33,12 @@ def _is_position_on_strict_string(editor, position):
     "Strict" here means that it's a string and it's *not* the last character of
     the string.
     '''
-    return editor.fEditor.GetCharType(position) == edit.editor.kStringCharType
+    return (
+        editor.fEditor.GetCharType(position) == edit.editor.kStringCharType or
+        (position >= 1 and
+         (editor.fEditor.GetCharType(position - 1) ==
+                                                  edit.editor.kStringCharType))
+    )
 
 
 def _find_string_from_position(editor, position, multiline=False):
@@ -56,8 +61,6 @@ def _find_string_from_position(editor, position, multiline=False):
         assert not _is_position_on_strict_string(editor, start_marker-1)
     if end_marker < document_end:
         assert not _is_position_on_strict_string(editor, end_marker+1)
-    
-    end_marker += 1
     
     if multiline:
         string_ranges = [(start_marker, end_marker)]
@@ -91,7 +94,9 @@ def _find_string_from_position(editor, position, multiline=False):
 
         ### Scanning forward: #################################################
         #                                                                     #
-        while True:
+        # while True:
+        for i in range(1000):
+            open('c:\\tits.txt', 'a').write(str(string_ranges))
             end_of_last_string = string_ranges[-1][1]
             search_result = re.search('\S', document_text[end_of_last_string:])
             if search_result:
@@ -111,6 +116,7 @@ def _find_string_from_position(editor, position, multiline=False):
             return tuple(string_ranges)
         #                                                                     #
         ### Finished scanning forward. ########################################
+        
         
     else: # not multiline
         return (start_marker, end_marker)
