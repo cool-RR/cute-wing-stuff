@@ -112,7 +112,7 @@ def format_string(string, double=False, triple=False, bytes_=False, raw=False,
                 break
             rfind_result = last_content_segment.rfind(' ', 0, segment_length)
             if rfind_result == -1:
-                place_to_cut = segment_length
+                place_to_cut = segment_length - 1
                 # This might cut something important but we'll cross that
                 # bridge when we get to it.
             else:
