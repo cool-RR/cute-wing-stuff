@@ -26,8 +26,8 @@ import string_selecting
 string_head_pattern = re.compile('''^(?P<modifiers>(?:b|u|)r?)'''
                                  '''(?P<quote>\'(?:\'\')?|\"(?:\"\")?)''',
                                  re.I)
-pre_content_pattern = re.compile('^(\s*)')
-post_content_pattern = re.compile('(\s*)$')
+stripping_pattern = re.compile(r'^(?P<pre_content>\s*)'
+                               r'(P<content>.*?)(P<post_content>\s*)')
 
 base_escape_map = {
     '\\': '\\\\',
@@ -52,8 +52,8 @@ def format_string(string, double=False, triple=False, bytes_=False, raw=False,
                   starting_column=None):
     if not avoid_multiline:
         assert starting_column is not None
-    if docstring_style:
-        assert triple is True
+    # if docstring_style:
+        # assert triple is True
     assert bytes_ + unicode_ in (0, 1)
     quote_character = '"' if double else "'"
     quote_string = quote_character * (3 if triple else 1)
@@ -123,19 +123,17 @@ def format_string(string, double=False, triple=False, bytes_=False, raw=False,
                 content_segments.append(last_content_segment[:rfind_result+1])
                 content_segments.append(last_content_segment[rfind_result+1:])
                 
-        my_print(content_segments)
         
         separator = ('\n%s' % (' ' * (starting_column)))
         formatted_string = separator.join(
             map(wrap_content, content_segments)
         )
-    elif docstring_style:
-        formatted_string.replace('\\n', '\n')
+    # elif docstring_style:
+        # formatted_string.replace('\\n', '\n')
         
         
     #if isinstance(formatted_string, unicode):
         #formatted_string = formatted_string.encode()
-    my_print(('(%s)' % formatted_string))
     if not ast.literal_eval('(%s)' % formatted_string) == string:
         raise Exception('Formatting unsuccessful. Tried to format this:\r\n'
                         '%s\r\n'
@@ -180,10 +178,10 @@ def edit_string():
     double_checkbox = guiutils.wgtk.QCheckBox('&Double')
     triple_checkbox = guiutils.wgtk.QCheckBox('Tri&ple')
     avoid_multiline_checkbox = guiutils.wgtk.QCheckBox('Avoid &multilne')
-    docstring_style_checkbox = guiutils.wgtk.QCheckBox('D&ocstring style')
+    # docstring_style_checkbox = guiutils.wgtk.QCheckBox('D&ocstring style')
     for checkbox in (bytes_checkbox, unicode_checkbox, raw_checkbox,
                      double_checkbox, triple_checkbox,
-                     avoid_multiline_checkbox, docstring_style_checkbox):
+                     avoid_multiline_checkbox, ): # docstring_style_checkbox):
         sub_layout.addWidget(checkbox)
     layout.addWidget(text_edit_label)
     layout.addWidget(text_edit)
@@ -197,8 +195,6 @@ def edit_string():
                                                        multiline=True)
         old_string_raw = document.GetCharRange(old_string_ranges[0][0],
                                                old_string_ranges[-1][1])
-        print(old_string_ranges)
-        print(repr(('(%s)' % old_string_raw)))
         old_string = ast.literal_eval('(%s)' % old_string_raw)
         modifiers = string_head_pattern.match(old_string_raw). \
                                                      group('modifiers').lower()
@@ -212,15 +208,17 @@ def edit_string():
             _bool_to_qt_check_state((len(old_string_ranges) == 1) and
                                                    ending_column > last_column)
         )
-        is_docstring_style = ((set(old_string_raw[-3:]) in ({'"', '"'})) and
-                              ('\n' in old_string_raw))
-        docstring_style_checkbox.setCheckState(
-            _bool_to_qt_check_state(is_docstring_style)
-        )
-        if is_docstring_style:
-            pre_content = pre_content_pattern.match(old_string)
-            post_content = post_content_pattern.match(old_string)
+        # is_docstring_style = ((set(old_string_raw[-3:]) in ({'"', '"'})) and
+                              # ('\n' in old_string_raw))
+        # docstring_style_checkbox.setCheckState(
+            # _bool_to_qt_check_state(is_docstring_style)
+        # )
+        # if is_docstring_style:
+            # pre_content, old_string, post_content = \
+                                   # stripping_pattern.match(old_string).groups()
             
+        # else:
+            # pre_content = post_content = None
             
         text_edit.setText(old_string)
         
@@ -233,13 +231,13 @@ def edit_string():
             double = bool(double_checkbox.checkState())
             triple = bool(triple_checkbox.checkState())
             avoid_multiline = bool(avoid_multiline_checkbox.checkState())
-            docstring_style = bool(docstring_style_checkbox.checkState())
+            # docstring_style = bool(docstring_style_checkbox.checkState())
             
             formatted_string = format_string(
                 string, bytes_=bytes_, unicode_=unicode_, raw=raw,
                 double=double, triple=triple, avoid_multiline=avoid_multiline,
-                starting_column=starting_column,
-                docstring_style=docstring_style
+                starting_column=old_string_ranges[0][0],
+                # docstring_style=docstring_style
             )
             with shared.UndoableAction(document):
                 if replacing_old_string:
