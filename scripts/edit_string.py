@@ -42,10 +42,6 @@ base_escape_map = {
     '\v': '\\v',
 }
 
-def my_print(s):
-    open('c:\\tits.txt', 'a').write('%s\n' % (s,))
-    
-
 
 def format_string(string, double=False, triple=False, bytes_=False, raw=False,
                   unicode_=False, avoid_multiline=False, docstring_style=False,
@@ -115,13 +111,15 @@ def format_string(string, double=False, triple=False, bytes_=False, raw=False,
             if len(last_content_segment) <= segment_length:
                 break
             rfind_result = last_content_segment.rfind(' ', 0, segment_length)
-            my_print((last_content_segment, rfind_result))
             if rfind_result == -1:
-                1 / 0
+                place_to_cut = segment_length
+                # This might cut something important but we'll cross that
+                # bridge when we get to it.
             else:
-                del content_segments[-1]
-                content_segments.append(last_content_segment[:rfind_result+1])
-                content_segments.append(last_content_segment[rfind_result+1:])
+                place_to_cut = rfind_result
+            del content_segments[-1]
+            content_segments.append(last_content_segment[:rfind_result+1])
+            content_segments.append(last_content_segment[rfind_result+1:])
                 
         
         separator = ('\n%s' % (' ' * (starting_column)))
@@ -160,10 +158,12 @@ def edit_string():
                 wingapi.gApplication.GetPreference('edit.text-wrap-column') - 1
     
     selection_start, selection_end = editor.GetSelection()
-    starting_line = document.GetLineNumberFromPosition(selection_start)
-    starting_column = selection_start - document.GetLineStart(starting_line)
-    ending_line = document.GetLineNumberFromPosition(selection_end)
-    ending_column = selection_end - document.GetLineStart(ending_line)
+    selection_start_line = document.GetLineNumberFromPosition(selection_start)
+    selection_start_column = selection_start - \
+                                    document.GetLineStart(selection_start_line)
+    selection_end_line = document.GetLineNumberFromPosition(selection_end)
+    selection_end_column = selection_end - \
+                                      document.GetLineStart(selection_end_line)
     
     widget = guiutils.wgtk.QWidget()
     layout = guiutils.wgtk.QVBoxLayout()
@@ -206,7 +206,7 @@ def edit_string():
         triple_checkbox.setCheckState(_bool_to_qt_check_state(len(quote) == 3))
         avoid_multiline_checkbox.setCheckState(
             _bool_to_qt_check_state((len(old_string_ranges) == 1) and
-                                                   ending_column > last_column)
+                                                   selection_end_column > last_column)
         )
         # is_docstring_style = ((set(old_string_raw[-3:]) in ({'"', '"'})) and
                               # ('\n' in old_string_raw))
@@ -219,6 +219,13 @@ def edit_string():
             
         # else:
             # pre_content = post_content = None
+            
+        string_starting_column = (
+            old_string_ranges[0][0] -
+            document.GetLineStart(
+                document.GetLineNumberFromPosition(old_string_ranges[0][0])
+            )
+        )
             
         text_edit.setText(old_string)
         
@@ -236,7 +243,7 @@ def edit_string():
             formatted_string = format_string(
                 string, bytes_=bytes_, unicode_=unicode_, raw=raw,
                 double=double, triple=triple, avoid_multiline=avoid_multiline,
-                starting_column=old_string_ranges[0][0],
+                starting_column=string_starting_column,
                 # docstring_style=docstring_style
             )
             with shared.UndoableAction(document):
