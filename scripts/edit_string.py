@@ -104,7 +104,8 @@ def format_string(string, double=False, triple=False, bytes_=False, raw=False,
     if not avoid_multiline and \
                        (starting_column + len(formatted_string) > last_column):
         # Splitting the string to a multiline one.
-        segment_length = last_column - starting_column - len(quote_string) * 2
+        segment_length = last_column - starting_column - \
+                 len(quote_string) * 2 - sum(map(int, (bytes_, unicode_, raw)))
         content_segments = [content]
         while True:
             last_content_segment = content_segments[-1]
@@ -112,14 +113,14 @@ def format_string(string, double=False, triple=False, bytes_=False, raw=False,
                 break
             rfind_result = last_content_segment.rfind(' ', 0, segment_length)
             if rfind_result == -1:
-                place_to_cut = segment_length - 1
+                place_to_cut = segment_length
                 # This might cut something important but we'll cross that
                 # bridge when we get to it.
             else:
                 place_to_cut = rfind_result
             del content_segments[-1]
-            content_segments.append(last_content_segment[:rfind_result+1])
-            content_segments.append(last_content_segment[rfind_result+1:])
+            content_segments.append(last_content_segment[:place_to_cut+1])
+            content_segments.append(last_content_segment[place_to_cut+1:])
                 
         
         separator = ('\n%s' % (' ' * (starting_column)))
@@ -151,6 +152,35 @@ def _bool_to_qt_check_state(bool_):
 
 
 def edit_string():
+    '''
+    Open a dialog for editing a string.
+    
+    If the caret is standing on a string, it'll edit the current string.
+    Otherwise you can enter a new string and it'll be inserted into the
+    document. The dialog has lots of checkboxes for toggling things about the
+    string: Whether it's unicode, raw, bytes, type of quote, etc.
+    
+    When is this better than editing a string in the editor?
+    
+     - When you have a mess of escape character. The dialog automatically
+       translates the escape characters for you so you don't have to think
+       about them. (Very useful when entering Windows paths that have
+       backslashes in them.)
+       
+     - When you're editing a multiline string of this style:
+        raise Exception("There's some long text here that takes up more than "
+                        "one line, and it's broken in a nice way that doesn't "
+                        "exceed 79 characters, and every time you edit it you "
+                        "see it as one block of text, while the cutting "
+                        "points will be automatically determined by the "
+                        "dialog.")
+                        
+    Note: Currently doesn't work on docstrings, and other triple-quote
+    multiline strings.
+    
+    Suggested key combination: `Ctrl-Alt-S`
+    
+    '''
     app = wingapi.gApplication
     editor = app.GetActiveEditor()
     document = editor.GetDocument()
@@ -246,7 +276,8 @@ def edit_string():
                 starting_column=string_starting_column,
                 # docstring_style=docstring_style
             )
-            with shared.UndoableAction(document):
+            with shared.UndoableAction(document), \
+                                              shared.SelectionRestorer(editor):
                 if replacing_old_string:
                     document.DeleteChars(old_string_ranges[0][0],
                                          old_string_ranges[-1][1] - 1)

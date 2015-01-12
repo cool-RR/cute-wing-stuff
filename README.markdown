@@ -326,6 +326,36 @@ for the original file will be used for the new file.
 Suggested key combination: `Insert Ctrl-D`
 
 
+## edit-string ##
+
+Open a dialog for editing a string.
+
+If the caret is standing on a string, it'll edit the current string.
+Otherwise you can enter a new string and it'll be inserted into the
+document. The dialog has lots of checkboxes for toggling things about the
+string: Whether it's unicode, raw, bytes, type of quote, etc.
+
+When is this better than editing a string in the editor?
+
+- When you have a mess of escape character. The dialog automatically
+    translates the escape characters for you so you don't have to think
+    about them. (Very useful when entering Windows paths that have
+    backslashes in them.)
+
+- When you're editing a multiline string of this style:
+    raise Exception("There's some long text here that takes up more than "
+        "one line, and it's broken in a nice way that doesn't "
+        "exceed 79 characters, and every time you edit it you "
+        "see it as one block of text, while the cutting "
+        "points will be automatically determined by the "
+        "dialog.")
+
+Note: Currently doesn't work on docstrings, and other triple-quote
+multiline strings.
+
+Suggested key combination: `Ctrl-Alt-S`
+
+
 ## flip ##
 
 Flip between `True` and `False`.
