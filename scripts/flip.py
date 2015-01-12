@@ -59,6 +59,7 @@ flip_pairs = (
     ('up', 'down'),
     ('visible', 'hidden'),
     ('above', 'below'),
+    ('pre', 'post'),
 )
 
 all_words = sum(flip_pairs, ())

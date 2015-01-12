@@ -26,6 +26,8 @@ import string_selecting
 string_head_pattern = re.compile('''^(?P<modifiers>(?:b|u|)r?)'''
                                  '''(?P<quote>\'(?:\'\')?|\"(?:\"\")?)''',
                                  re.I)
+pre_content_pattern = re.compile('^(\s*)')
+post_content_pattern = re.compile('(\s*)$')
 
 base_escape_map = {
     '\\': '\\\\',
@@ -45,16 +47,18 @@ def my_print(s):
     
 
 
-def format_string(string, double=False, triple=False,
-                  bytes_=False, raw=False, unicode_=False,
-                  avoid_multiline=False, starting_column=None):
-    last_column = \
-        wingapi.gApplication.GetPreference('edit.text-wrap-column') - 1
+def format_string(string, double=False, triple=False, bytes_=False, raw=False,
+                  unicode_=False, avoid_multiline=False, docstring_style=False,
+                  starting_column=None):
     if not avoid_multiline:
         assert starting_column is not None
+    if docstring_style:
+        assert triple is True
     assert bytes_ + unicode_ in (0, 1)
     quote_character = '"' if double else "'"
     quote_string = quote_character * (3 if triple else 1)
+    last_column = \
+        wingapi.gApplication.GetPreference('edit.text-wrap-column') - 1
     
     if raw and string.endswith(quote_character):
         raise Exception("Can't do a raw string that ends with its quote "
@@ -125,6 +129,8 @@ def format_string(string, double=False, triple=False,
         formatted_string = separator.join(
             map(wrap_content, content_segments)
         )
+    elif docstring_style:
+        formatted_string.replace('\\n', '\n')
         
         
     #if isinstance(formatted_string, unicode):
@@ -147,9 +153,6 @@ def format_string(string, double=False, triple=False,
 def _bool_to_qt_check_state(bool_):
     return guiutils.wgtk.Qt.Checked if bool_ else guiutils.wgtk.Qt.Unchecked
 
-# def shit_print(s):
-    # open('c:\\tits.txt', 'a').write(s)
-    
 
 def edit_string():
     app = wingapi.gApplication
@@ -177,8 +180,10 @@ def edit_string():
     double_checkbox = guiutils.wgtk.QCheckBox('&Double')
     triple_checkbox = guiutils.wgtk.QCheckBox('Tri&ple')
     avoid_multiline_checkbox = guiutils.wgtk.QCheckBox('Avoid &multilne')
+    docstring_style_checkbox = guiutils.wgtk.QCheckBox('D&ocstring style')
     for checkbox in (bytes_checkbox, unicode_checkbox, raw_checkbox,
-                     double_checkbox, triple_checkbox, avoid_multiline_checkbox):
+                     double_checkbox, triple_checkbox,
+                     avoid_multiline_checkbox, docstring_style_checkbox):
         sub_layout.addWidget(checkbox)
     layout.addWidget(text_edit_label)
     layout.addWidget(text_edit)
@@ -207,6 +212,16 @@ def edit_string():
             _bool_to_qt_check_state((len(old_string_ranges) == 1) and
                                                    ending_column > last_column)
         )
+        is_docstring_style = ((set(old_string_raw[-3:]) in ({'"', '"'})) and
+                              ('\n' in old_string_raw))
+        docstring_style_checkbox.setCheckState(
+            _bool_to_qt_check_state(is_docstring_style)
+        )
+        if is_docstring_style:
+            pre_content = pre_content_pattern.match(old_string)
+            post_content = post_content_pattern.match(old_string)
+            
+            
         text_edit.setText(old_string)
         
     def ok():
@@ -218,10 +233,13 @@ def edit_string():
             double = bool(double_checkbox.checkState())
             triple = bool(triple_checkbox.checkState())
             avoid_multiline = bool(avoid_multiline_checkbox.checkState())
+            docstring_style = bool(docstring_style_checkbox.checkState())
+            
             formatted_string = format_string(
                 string, bytes_=bytes_, unicode_=unicode_, raw=raw,
                 double=double, triple=triple, avoid_multiline=avoid_multiline,
-                starting_column=starting_column
+                starting_column=starting_column,
+                docstring_style=docstring_style
             )
             with shared.UndoableAction(document):
                 if replacing_old_string:
