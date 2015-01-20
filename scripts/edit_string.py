@@ -258,6 +258,8 @@ def edit_string():
         )
             
         text_edit.setText(old_string)
+    else:
+        string_starting_column = selection_start_column
         
     def ok():
         try:
