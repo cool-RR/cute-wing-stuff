@@ -257,7 +257,7 @@ def edit_string():
             )
         )
             
-        text_edit.setText(old_string)
+        text_edit.setPlainText(old_string)
     else:
         string_starting_column = selection_start_column
         
