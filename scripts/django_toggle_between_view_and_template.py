@@ -23,6 +23,9 @@ shorten_template_file_path_pattern = re.compile(
     r'''^.*template[^/]*/(.*$)'''
 )
 
+template_file_pattern = re.compile(r'''^.*\.(shpaml|html?)''')
+python_file_pattern = re.compile(r'''^.*\.pyw?''')
+
 
 def django_toggle_between_view_and_template():
     '''
@@ -59,7 +62,7 @@ def django_toggle_between_view_and_template():
             if matching_file_paths:
                 matching_file_path = matching_file_paths[0]
                 app.OpenEditor(matching_file_path, raise_window=True)
-    elif file_name.endswith('.html'):
+    elif template_file_pattern.match(file_name):
         short_file_path = shorten_template_file_path_pattern.match(
                                          file_path.replace('\\', '/')).group(1)
         specifies_our_template_pattern = re.compile(
