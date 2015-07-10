@@ -2,9 +2,9 @@
 # This program is distributed under the MIT license.
 
 '''
-This module defines constant-selecting scripts.
+This module defines scripts for selecting dotted names.
 
-See its documentation for more information.
+See their documentation for more information.
 '''
 
 from __future__ import with_statement

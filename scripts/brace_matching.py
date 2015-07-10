@@ -1,12 +1,6 @@
 # Copyright 2009-2014 Ram Rachum.
 # This program is distributed under the MIT license.
 
-'''
-This module defines brace-matching scripts.
-
-See its documentation for more information.
-'''
-
 from __future__ import with_statement
 
 import _ast

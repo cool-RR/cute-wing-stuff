@@ -1,12 +1,6 @@
 # Copyright 2009-2014 Ram Rachum.
 # This program is distributed under the MIT license.
 
-'''
-This module defines the `cute_start_select_line` script.
-
-See its documentation for more information.
-'''
-
 from __future__ import with_statement
 
 import os.path, sys
