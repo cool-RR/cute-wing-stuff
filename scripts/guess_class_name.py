@@ -50,9 +50,10 @@ def guess_class_name():
     document_text = shared.get_text(document)
     
     
-    match = existing_class_name_pattern.search(document_text)
-    if not match:
+    matches = tuple(re.finditer(existing_class_name_pattern, document_text))
+    if not matches:
         return
+    match = matches[-1]
     existing_class_name = match.group(1)
     
     n_occurrences = document_text.count(existing_class_name

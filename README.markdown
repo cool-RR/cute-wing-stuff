@@ -562,6 +562,11 @@ end, and if it was in the end, it'll be put in the beginning.
 Suggested key combination: `Insert Shift-R`
 
 
+## run-command-idempotent ##
+
+Run a command, first terminating any running instances of it.
+
+
 ## select-dotted-name ##
 
 Select the dotted name that the cursor is currently on, like `foo.bar.baz`.

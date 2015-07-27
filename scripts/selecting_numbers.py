@@ -4,7 +4,7 @@
 '''
 This module defines number-selecting scripts.
 
-See its documentation for more information.
+See their documentation for more information.
 '''
 
 from __future__ import with_statement
