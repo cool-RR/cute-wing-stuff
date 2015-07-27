@@ -107,9 +107,9 @@ def go_down_to_project_frame(application=wingapi.gApplication):
 
 def _available(application=wingapi.gApplication):
     ''' '''
-    return bool(
-        wingapi.gApplication.GetDebugger().GetCurrentRunState().GetStack()
-    )
+    debugger_run_state = \
+                        wingapi.gApplication.GetDebugger().GetCurrentRunState()
+    return bool(debugger_run_state and debugger_run_state.GetStack())
 
 go_up_to_project_frame.available = _available
 go_down_to_project_frame.available = _available
