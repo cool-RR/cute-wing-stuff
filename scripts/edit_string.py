@@ -278,20 +278,22 @@ def edit_string():
                 starting_column=string_starting_column,
                 # docstring_style=docstring_style
             )
-            with shared.UndoableAction(document), \
-                                              shared.SelectionRestorer(editor):
+            with shared.UndoableAction(document):
                 if replacing_old_string:
                     document.DeleteChars(old_string_ranges[0][0],
                                          old_string_ranges[-1][1] - 1)
                     document.InsertChars(old_string_ranges[0][0],
                                          formatted_string)
-                    new_selection = \
-                                old_string_ranges[0][0] + len(formatted_string)
+                    new_selection_start = old_string_ranges[0][0]
+                    new_selection_end = \
+                                    new_selection_start + len(formatted_string)
                 else:
                     document.DeleteChars(selection_start, selection_end-1)
                     document.InsertChars(selection_start, formatted_string)
-                    new_selection = selection_start + len(formatted_string)
-                editor.SetSelection(new_selection, new_selection)
+                    new_selection_start = new_selection_end = \
+                                        selection_start + len(formatted_string)
+                editor.SetSelection(new_selection_start,
+                                    new_selection_end)
         except Exception as exception:
             app.ShowMessageDialog('Error', str(exception),
                                   buttons=[('_OK', None)])
