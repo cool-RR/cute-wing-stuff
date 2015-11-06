@@ -14,7 +14,7 @@ import inspect
 
 import wingapi
 import config
-import sarge
+# import sarge
 
 import shared
 
@@ -25,9 +25,12 @@ def smartgit_blame(command_name, editor=wingapi.kArgEditor):
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
     filename = document.GetFilename()
-    line_number = document.GetLineNumberFromPosition(editor.GetSelection()[0])
-    sarge.run(
-        ['"C:\\Program Files (x86)\\SmartGit\\bin\\smartgitc.exe"', '--blame',
-         '"%s:"' % (filename, line_number)],
-        async=True
-    )
+    # line_number = document.GetLineNumberFromPosition(editor.GetSelection()[0])
+    # sarge.run(
+        # ['"C:\\Program Files (x86)\\SmartGit\\bin\\smartgitc.exe"', '--blame',
+         # '"%s:"' % (filename, line_number)],
+        # async=True
+    # )
+    # print(' '.join(
+        # ['"C:\\Program Files (x86)\\SmartGit\\bin\\smartgitc.exe"', '--blame',
+         # '"%s:"' % (filename, line_number)]))
