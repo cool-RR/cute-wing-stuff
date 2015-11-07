@@ -19,18 +19,18 @@ import config
 import shared
 
 
-def smartgit_blame(command_name, editor=wingapi.kArgEditor):
+def smartgit_blame(editor=wingapi.kArgEditor):
     '''Start SmartGit blame on the currently selected line.'''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
     filename = document.GetFilename()
-    # line_number = document.GetLineNumberFromPosition(editor.GetSelection()[0])
+    line_number = document.GetLineNumberFromPosition(editor.GetSelection()[0])
     # sarge.run(
         # ['"C:\\Program Files (x86)\\SmartGit\\bin\\smartgitc.exe"', '--blame',
-         # '"%s:"' % (filename, line_number)],
+         # '"%s":%s' % (filename, line_number)],
         # async=True
     # )
-    # print(' '.join(
-        # ['"C:\\Program Files (x86)\\SmartGit\\bin\\smartgitc.exe"', '--blame',
-         # '"%s:"' % (filename, line_number)]))
+    print(' '.join(
+        ['"C:\\Program Files (x86)\\SmartGit\\bin\\smartgitc.exe"', '--blame',
+         '"%s":%s' % (filename, line_number)]))
