@@ -11,26 +11,30 @@ sys.path += [
 
 
 import inspect
+import subprocess
 
 import wingapi
 import config
-# import sarge
 
 import shared
 
+SMARTGITC_EXE_PATH = '"C:\\Program Files (x86)\\SmartGit\\bin\\smartgitc.exe"'
+
 
 def smartgit_blame(editor=wingapi.kArgEditor):
-    '''Start SmartGit blame on the currently selected line.'''
+    '''
+    Start SmartGit blame on the currently selected line.
+    
+    Suggested key combination: `Insert Ctrl-B`    
+    '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
     filename = document.GetFilename()
     line_number = document.GetLineNumberFromPosition(editor.GetSelection()[0])
-    # sarge.run(
-        # ['"C:\\Program Files (x86)\\SmartGit\\bin\\smartgitc.exe"', '--blame',
-         # '"%s":%s' % (filename, line_number)],
-        # async=True
-    # )
-    print(' '.join(
-        ['"C:\\Program Files (x86)\\SmartGit\\bin\\smartgitc.exe"', '--blame',
-         '"%s":%s' % (filename, line_number)]))
+    shell_command = ' '.join([
+        SMARTGITC_EXE_PATH, '--blame',
+        '"%s":%s' % (filename, line_number)
+    ])
+    popen = subprocess.Popen(shell_command)
+    

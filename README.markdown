@@ -831,7 +831,14 @@ is on. For example, `line_offset=-1` would slash the previous line.
 Specify `at_caret=True` to use the current caret position as the slashing
 point, rather than finding one automatically.
 
-Suggested key combination: `Insert L` for default arguments, `Insert Shift-L` for line_offset=-1, and `Insert Ctrl-L` for at_caret=True.
+Suggested key combination: `Insert L` for default arguments, `Insert Shift-L` for `line_offset=-1`, and `Insert Ctrl-L` for `at_caret=True`.
+
+
+## smartgit-blame ##
+
+Start SmartGit blame on the currently selected line.
+    
+Suggested key combination: `Insert Ctrl-B`    
 
 
 ## type-super ##

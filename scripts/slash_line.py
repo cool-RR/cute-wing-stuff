@@ -33,8 +33,8 @@ def slash_line(editor=wingapi.kArgEditor, line_offset=0, at_caret=False):
     point, rather than finding one automatically.
 
     Suggested key combination: `Insert L` for default arguments,
-    `Insert Shift-L` for line_offset=-1, and `Insert Ctrl-L` for
-    at_caret=True.
+    `Insert Shift-L` for `line_offset=-1`, and `Insert Ctrl-L` for
+    `at_caret=True`.
     '''
     
     if at_caret:
