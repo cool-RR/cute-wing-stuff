@@ -34,7 +34,7 @@ def smartgit_blame(editor=wingapi.kArgEditor):
     line_number = document.GetLineNumberFromPosition(editor.GetSelection()[0])
     shell_command = ' '.join([
         SMARTGITC_EXE_PATH, '--blame',
-        '"%s":%s' % (filename, line_number)
+        '"%s:%s"' % (filename, line_number)
     ])
     popen = subprocess.Popen(shell_command)
     
