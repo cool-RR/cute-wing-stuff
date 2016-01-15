@@ -21,6 +21,25 @@ import shared
 SMARTGITC_EXE_PATH = '"C:\\Program Files (x86)\\SmartGit\\bin\\smartgitc.exe"'
 
 
+def launch_process_without_window(command):
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    return subprocess.Popen(command, startupinfo=startupinfo)
+
+def launch_smartgit(arguments):
+    return launch_process_without_window([SMARTGITC_EXE_PATH] + arguments)
+    
+
+def smartgit(project=wingapi.kArgProject):
+    '''
+    Start SmartGit for the current project.
+    
+    Suggested key combination: `Insert G`    
+    '''
+    assert isinstance(project, wingapi.CAPIProject)
+    launch_smartgit(['--open', project.ExpandEnvVars('"${WING:PROJECT_DIR}"')])
+    
+    
 def smartgit_blame(editor=wingapi.kArgEditor):
     '''
     Start SmartGit blame on the currently selected line.
@@ -32,9 +51,5 @@ def smartgit_blame(editor=wingapi.kArgEditor):
     assert isinstance(document, wingapi.CAPIDocument)
     filename = document.GetFilename()
     line_number = document.GetLineNumberFromPosition(editor.GetSelection()[0])
-    shell_command = ' '.join([
-        SMARTGITC_EXE_PATH, '--blame',
-        '"%s:%s"' % (filename, line_number)
-    ])
-    popen = subprocess.Popen(shell_command)
+    launch_smartgit(['--blame', '"%s:%s"' % (filename, line_number)])
     
