@@ -23,7 +23,7 @@ SMARTGITC_EXE_PATH = '"C:\\Program Files (x86)\\SmartGit\\bin\\smartgitc.exe"'
 
 def smartgit(project=wingapi.kArgProject):
     '''
-    Start SmartGit on the currently selected line.
+    Start SmartGit for the current project.
     
     Suggested key combination: `Insert G`    
     '''

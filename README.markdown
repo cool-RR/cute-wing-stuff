@@ -834,6 +834,13 @@ point, rather than finding one automatically.
 Suggested key combination: `Insert L` for default arguments, `Insert Shift-L` for `line_offset=-1`, and `Insert Ctrl-L` for `at_caret=True`.
 
 
+## smartgit ##
+
+Start SmartGit for the current project.
+
+Suggested key combination: `Insert G`    
+
+
 ## smartgit-blame ##
 
 Start SmartGit blame on the currently selected line.
