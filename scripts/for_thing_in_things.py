@@ -79,6 +79,8 @@ def for_thing_in_things(editor=wingapi.kArgEditor, app=wingapi.kArgApplication,
             variable_name = 'i'
         elif base_text.endswith('s'):
             variable_name = shared.plural_word_to_singular_word(base_text)
+        else:
+            raise Exception('This text doesn\'t work: %s' % base_text)
         #                                                                     #
         ### Finished analyzing base text. #####################################
         
