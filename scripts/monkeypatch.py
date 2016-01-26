@@ -155,6 +155,8 @@ if monkeypatch:
                 # perspective_name = 'Hopper KT'
             # else:
             perspective_name = 'Hopper'
+        elif computer_name == 'tardos':
+            perspective_name = 'Tardos'
         else:
             # Default
             perspective_name = 'Turing'
@@ -164,14 +166,14 @@ if monkeypatch:
         
         if shared.autopy_available:
             wingapi.gApplication.InstallTimeout(
-                1500 if computer_name == 'turing' else 3000,
+                3000 if computer_name == 'hopper' else 1500,
                 lambda: autopy.key.tap(
                     'q',
                     autopy.key.MOD_ALT | autopy.key.MOD_META
                 )
             )
             wingapi.gApplication.InstallTimeout(
-                3000 if computer_name == 'turing' else 8000,
+                3000 if computer_name == 'hopper' else 1500,
                 lambda: autopy.key.tap(
                     'w',
                     autopy.key.MOD_ALT | autopy.key.MOD_META
