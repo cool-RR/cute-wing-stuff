@@ -145,9 +145,18 @@ def _get_matches(document):
     return tuple(match for match in invocation_pattern.finditer(document_text)
                  if not keyword.iskeyword(match.groups()[0]))
 
-def _get_matches_for_arguments(document):
+def _get_matches_for_arguments(document, truncate=None):
     assert isinstance(document, wingapi.CAPIDocument)
     document_text = shared.get_text(document)
+    if truncate:
+        truncate_position, truncate_radius = truncate
+        if len(document_text) > truncate_radius * 2:
+            old_document_text = document_text
+            document_text = (
+                ' ' * abs(truncate_position - truncate_radius) +
+                document_text[truncate_position-truncate_radius
+                                            :truncate_position+truncate_radius]
+            )
     return tuple(match for match in
                  invocation_pattern_for_arguments.finditer(document_text)
                  if not keyword.iskeyword(match.groups()[0]))
@@ -156,8 +165,8 @@ def _get_invocation_positions(document):
     matches = _get_matches(document)
     return tuple(match.span(1) for match in matches)
     
-def _get_argument_batch_positions(document):
-    matches = _get_matches_for_arguments(document)
+def _get_argument_batch_positions(document, truncate=None):
+    matches = _get_matches_for_arguments(document, truncate=truncate)
     parenthesis_starts = tuple(match.span(0)[1]-1 for match in matches)
     return map(
         lambda parenthesis_start:
@@ -165,8 +174,9 @@ def _get_argument_batch_positions(document):
         parenthesis_starts
     )
     
-def _get_argument_positions(document, limit_to_keywords=False):
-    argument_batch_positions = _get_argument_batch_positions(document)
+def _get_argument_positions(document, limit_to_keywords=False, truncate=None):
+    argument_batch_positions = _get_argument_batch_positions(document,
+                                                             truncate=truncate)
     document_text = shared.get_text(document)
     raw_argument_positions = tuple(itertools.chain(
         *(_argpos(
@@ -250,7 +260,8 @@ def select_next_argument(editor=wingapi.kArgEditor,
 
     argument_positions = _get_argument_positions(
         editor.GetDocument(),
-        limit_to_keywords=limit_to_keywords
+        limit_to_keywords=limit_to_keywords,
+        truncate=(position, 3000)
     )
     #print(argument_positions)
     argument_positions = sorted(argument_positions,
@@ -281,7 +292,8 @@ def select_prev_argument(editor=wingapi.kArgEditor,
 
     argument_positions = _get_argument_positions(
         editor.GetDocument(),
-        limit_to_keywords=limit_to_keywords
+        limit_to_keywords=limit_to_keywords,
+        truncate=(position, 3000)
     )
     #print(argument_positions)
     argument_positions = sorted(argument_positions,
