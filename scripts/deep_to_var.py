@@ -67,14 +67,6 @@ django_orm_get_pattern = re.compile(
 #                                                                             #
 ### Finished defining `django_orm_get_pattern`. ###############################
 
-### Defining `re_match_group_pattern`: ########################################
-#                                                                             #
-re_match_group_pattern = re.compile(
-    r'''match\.group\(['"]([^'"]*?)['"]\)$'''
-)
-#                                                                             #
-### Finished defining `re_match_group_pattern`. ###############################
-
 instantiation_pattern = re.compile(
     r'''([A-Z]\w+)\(.*?\)$'''
 )
@@ -88,9 +80,8 @@ timezone_now_pattern = re.compile(r'''timezone\.(now)\(\)$''')
 ### Finished defining datetime module patterns. ###############################
 
 patterns = [django_orm_get_pattern, getter_pattern, attribute_pattern,
-            mapping_get_pattern, getitem_pattern, re_match_group_pattern,
-            today_pattern, now_pattern, timezone_now_pattern,
-            instantiation_pattern, iter_pattern]
+            mapping_get_pattern, getitem_pattern, today_pattern, now_pattern,
+            timezone_now_pattern, instantiation_pattern, iter_pattern]
 
 variable_name_map = {
     iter_pattern: 'iterator',
