@@ -19,34 +19,24 @@ import wingapi
 import shared
 
 
-get_verbs = ('get', 'calculate', 'identify', 'fetch', 'make', 'create',
-             'grant', 'open', 'determine', 'download', 'obtain', 'measure',
-             'choose', 'pop', 'popleft', 'popitem')
-get_verb_segment = '(?:%s)' % (
-    '|'.join(
-        '[%s%s]%s' % (verb[0], verb[0].upper(), verb[1:]) for verb in
-        get_verbs
-    )
-)
-
 ###############################################################################
 ###############################################################################
 
-attribute_pattern = re.compile(r'\.([a-zA-Z_][0-9a-zA-Z_]*)$')
+attribute_pattern = re.compile(r'''\.([a-zA-Z_][0-9a-zA-Z_]*)$''')
 getitem_pattern = re.compile(r'''\[['"]([a-zA-Z_][0-9a-zA-Z_]*)['"]\]$''')
 
 ### Defining `getter_pattern`: ################################################
 #                                                                             #
-getter_pattern = re.compile(r'%s_?([a-zA-Z_][0-9a-zA-Z_]*)\(.*\)$' %
-                                                              get_verb_segment)
+getter_pattern = re.compile(
+    r'''[0-9a-zA-Z]+_([a-zA-Z_][0-9a-zA-Z_]*)\(.*\)$'''
+)
 #                                                                             #
 ### Finished defining `getter_pattern`. #######################################
 
 ### Defining `mapping_get_pattern`: ###########################################
 #                                                                             #
 mapping_get_pattern = re.compile(
-    r'''%s\(u?r?['"]{1,3}([a-zA-Z_][0-9a-zA-Z_]*)'''
-    r'''['"]{1,3}.*\)$''' % get_verb_segment
+    r'''[0-9a-zA-Z_]+\(u?r?['"]{1,3}([a-zA-Z_][0-9a-zA-Z_]*)['"]{1,3}.*\)$'''
 )
 #                                                                             #
 ### Finished defining `mapping_get_pattern`. ##################################
@@ -71,7 +61,8 @@ django_orm_getter_verb = '(?:%s)' % (
 )
 
 django_orm_get_pattern = re.compile(
-    r'([a-zA-Z_][0-9a-zA-Z_]*)\.objects\.%s\(.*\)$' % django_orm_getter_verb
+    r'''([a-zA-Z_][0-9a-zA-Z_]*)\.objects\.%s\(.*\)$'''
+                                                       % django_orm_getter_verb
 )
 #                                                                             #
 ### Finished defining `django_orm_get_pattern`. ###############################
