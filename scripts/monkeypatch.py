@@ -107,12 +107,15 @@ if monkeypatch:
     ###########################################################################
     
     def _get_location_path(location):
-        import wingutils.location
+        try:
+            from wingbase import location as location_module
+        except ImportError: # Wing 5.x
+            from wingutils import location as location_module
         if sys.platform == 'win32':
             return location._fOSName
         else:
             return location._fOSName.encode(
-                wingutils.location.kFileSystemEncoding
+                location_module.kFileSystemEncoding
             )
         
  
