@@ -44,13 +44,14 @@ base_escape_map = {
 
 
 def format_string(string, double=False, triple=False, bytes_=False, raw=False,
-                  unicode_=False, avoid_multiline=False, docstring_style=False,
-                  starting_column=None):
+                  f_string=False, unicode_=False, avoid_multiline=False,
+                  docstring_style=False, starting_column=None):
     if not avoid_multiline:
         assert starting_column is not None
     # if docstring_style:
         # assert triple is True
     assert bytes_ + unicode_ in (0, 1)
+    assert f_string + unicode_ in (0, 1)
     quote_character = '"' if double else "'"
     quote_string = quote_character * (3 if triple else 1)
     last_column = \
@@ -90,6 +91,7 @@ def format_string(string, double=False, triple=False, bytes_=False, raw=False,
     def wrap_content(content):
         return '%s%s%s%s' % (
             ''.join((
+                ('f' if f_string else ''),
                 ('b' if bytes_ else ''),
                 ('u' if unicode_ else ''),
                 ('r' if raw else ''),
@@ -105,7 +107,8 @@ def format_string(string, double=False, triple=False, bytes_=False, raw=False,
                        (starting_column + len(formatted_string) > last_column):
         # Splitting the string to a multiline one.
         segment_length = last_column - starting_column - \
-                 len(quote_string) * 2 - sum(map(int, (bytes_, unicode_, raw)))
+                 len(quote_string) * 2 - sum(map(int, (bytes_, f_string,
+                                                       unicode_, raw)))
         content_segments = [content]
         while True:
             last_content_segment = content_segments[-1]
@@ -133,7 +136,9 @@ def format_string(string, double=False, triple=False, bytes_=False, raw=False,
         
     #if isinstance(formatted_string, unicode):
         #formatted_string = formatted_string.encode()
-    if not ast.literal_eval('(%s)' % formatted_string) == string:
+    formatted_string_without_f = (formatted_string.replace('f', '', 1) if
+                                  f_string else formatted_string)
+    if not ast.literal_eval('(%s)' % formatted_string_without_f) == string:
         raise Exception('Formatting unsuccessful. Tried to format this:\r\n'
                         '%s\r\n'
                         '\r\n'
@@ -158,7 +163,7 @@ def edit_string():
     If the caret is standing on a string, it'll edit the current string.
     Otherwise you can enter a new string and it'll be inserted into the
     document. The dialog has lots of checkboxes for toggling things about the
-    string: Whether it's unicode, raw, bytes, type of quote, etc.
+    string: Whether it's unicode, raw, bytes, f-string, type of quote, etc.
     
     When is this better than editing a string in the editor?
     
@@ -203,15 +208,18 @@ def edit_string():
     text_edit_label.setBuddy(text_edit)
     sub_layout = guiutils.wgtk.QHBoxLayout()
     bytes_checkbox = guiutils.wgtk.QCheckBox('&Bytes')
+    f_string_checkbox = guiutils.wgtk.QCheckBox('&F-string')
     unicode_checkbox = guiutils.wgtk.QCheckBox('&Unicode')
     raw_checkbox = guiutils.wgtk.QCheckBox('&Raw')
     double_checkbox = guiutils.wgtk.QCheckBox('&Double')
     triple_checkbox = guiutils.wgtk.QCheckBox('Tri&ple')
     avoid_multiline_checkbox = guiutils.wgtk.QCheckBox('Avoid &multilne')
     # docstring_style_checkbox = guiutils.wgtk.QCheckBox('D&ocstring style')
-    for checkbox in (bytes_checkbox, unicode_checkbox, raw_checkbox,
-                     double_checkbox, triple_checkbox,
-                     avoid_multiline_checkbox, ): # docstring_style_checkbox):
+    checkboxes = (
+        bytes_checkbox, f_string_checkbox, unicode_checkbox, raw_checkbox,
+        double_checkbox, triple_checkbox, avoid_multiline_checkbox
+    )
+    for checkbox in checkboxes: # docstring_style_checkbox):
         sub_layout.addWidget(checkbox)
     layout.addWidget(text_edit_label)
     layout.addWidget(text_edit)
@@ -230,6 +238,7 @@ def edit_string():
                                                      group('modifiers').lower()
         quote = string_head_pattern.match(old_string_raw).group('quote')
         bytes_checkbox.setCheckState(_bool_to_qt_check_state('b' in modifiers))
+        f_string_checkbox.setCheckState(_bool_to_qt_check_state('f' in modifiers))
         unicode_checkbox.setCheckState(_bool_to_qt_check_state('u' in modifiers))
         raw_checkbox.setCheckState(_bool_to_qt_check_state('r' in modifiers))
         double_checkbox.setCheckState(_bool_to_qt_check_state('"' in quote))
@@ -265,6 +274,7 @@ def edit_string():
         try:
             string = text_edit.toPlainText()
             bytes_ = bool(bytes_checkbox.checkState())
+            f_string = bool(f_string_checkbox.checkState())
             unicode_ = bool(unicode_checkbox.checkState())
             raw = bool(raw_checkbox.checkState())
             double = bool(double_checkbox.checkState())
@@ -273,8 +283,9 @@ def edit_string():
             # docstring_style = bool(docstring_style_checkbox.checkState())
             
             formatted_string = format_string(
-                string, bytes_=bytes_, unicode_=unicode_, raw=raw,
-                double=double, triple=triple, avoid_multiline=avoid_multiline,
+                string, bytes_=bytes_, f_string=f_string, unicode_=unicode_,
+                raw=raw, double=double, triple=triple,
+                avoid_multiline=avoid_multiline,
                 starting_column=string_starting_column,
                 # docstring_style=docstring_style
             )
