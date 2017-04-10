@@ -19,20 +19,33 @@ sys.path += [
     os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
 ]
 
-
 import wingapi
 import edit
 
 import shared
 
-def _is_position_on_string(editor, position, try_previous=True):
+def _is_position_on_string(editor, position, try_previous=True,
+                           include_f_expressions=True):
     '''Is there a string in the specified position in the document?'''
-    return (
-        editor.fEditor.GetCharType(position) == edit.editor.kStringCharType or
-        (try_previous and position >= 1 and
-         (editor.fEditor.GetCharType(position - 1) ==
-                                                  edit.editor.kStringCharType))
-    )
+    if try_previous and position >= 1:
+        previous_result = _is_position_on_string(
+            editor, position - 1, try_previous=False,
+            include_f_expressions=include_f_expressions
+        )
+        if previous_result:
+            return True
+    
+    if editor.fEditor.GetCharType(position) == edit.editor.kStringCharType:
+        return True
+    elif include_f_expressions:
+        document = editor.GetDocument()
+        for p in range(position - 1, max(0, position - 50), -1):
+            if editor.fEditor.GetCharType(p) == edit.editor.kStringCharType:
+                if document.GetCharRange(p, p + 1) == '{':
+                    return True
+                else:
+                    break
+    return False    
 
 
 def _find_string_from_position(editor, position, multiline=False):
@@ -221,7 +234,7 @@ def select_prev_string(inner=False, editor=wingapi.kArgEditor,
     
 
 string_pattern = re.compile(
-    '''^(?P<prefix>[uUbB]?[rR]?)(?P<delimiter>(\''')|(""")|(')|(")).*$''',
+    '''^(?P<prefix>[uUbBrRfF]*)(?P<delimiter>(\''')|(""")|(')|(")).*$''',
     flags=re.DOTALL
 )
 

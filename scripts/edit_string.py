@@ -23,9 +23,9 @@ import shared
 import string_selecting
 
 
-string_head_pattern = re.compile('''^(?P<modifiers>(?:b|u|)r?)'''
+string_head_pattern = re.compile('''^(?P<modifiers>[uUbBrRfF]*)'''
                                  '''(?P<quote>\'(?:\'\')?|\"(?:\"\")?)''',
-                                 re.I)
+                                 re.IGNORECASE)
 stripping_pattern = re.compile(r'^(?P<pre_content>\s*)'
                                r'(P<content>.*?)(P<post_content>\s*)')
 
