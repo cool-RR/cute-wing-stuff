@@ -136,7 +136,7 @@ def format_string(string, double=False, triple=False, bytes_=False, raw=False,
         
     #if isinstance(formatted_string, unicode):
         #formatted_string = formatted_string.encode()
-    formatted_string_without_f = (formatted_string.replace('f', '', 1) if
+    formatted_string_without_f = (re.sub('f|F', '', formatted_string) if
                                   f_string else formatted_string)
     if not ast.literal_eval('(%s)' % formatted_string_without_f) == string:
         raise Exception('Formatting unsuccessful. Tried to format this:\r\n'
