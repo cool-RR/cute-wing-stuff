@@ -55,11 +55,33 @@ def _find_string_from_position(editor, position, multiline=False):
     assert isinstance(editor, wingapi.CAPIEditor)
     assert _is_position_on_string(editor, position)
     document_start = 0
-    document_end = editor.GetDocument().GetLength()
+    document = editor.GetDocument()
+    document_end = document.GetLength()
     start_marker = end_marker = position
-    while end_marker < document_end and \
-                            _is_position_on_string(editor, end_marker+1):
-        end_marker += 1
+    
+    _inside_f_expression = True
+    while end_marker < document_end:
+        if editor.fEditor.GetCharType(position) == edit.editor.kStringCharType:
+            _inside_f_expression = False
+            end_marker += 1
+            continue
+        else:
+            if _inside_f_expression:
+                end_marker += 1
+                continue
+            if (editor.fEditor.GetCharType(position - 1) ==
+                edit.editor.kStringCharType and
+                document.GetCharRange(position - 1, position) == '{'):
+                
+                _inside_f_expression = True
+                end_marker += 1
+                continue
+            else:
+                break
+            
+    end_marker += 1 # I think, not sure 
+            
+    Now convert the 3 lines below to act like the block above
     while start_marker > document_start and \
                           _is_position_on_string(editor, start_marker-1):
         start_marker -= 1
@@ -71,7 +93,7 @@ def _find_string_from_position(editor, position, multiline=False):
     
     if multiline:
         string_ranges = [(start_marker, end_marker)]
-        document_text = shared.get_text(editor.GetDocument())
+        document_text = shared.get_text(document)
         
         ### Scanning backward: ################################################
         #                                                                     #
