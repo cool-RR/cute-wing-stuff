@@ -9,6 +9,7 @@ import collections
 import re
 import sys
 import subprocess
+import datetime as datetime_module
 
 from python_toolbox import context_management
 
@@ -397,3 +398,11 @@ def open_path_in_explorer(path):
     # return len(win32api.EnumDisplayMonitors())
     
     
+def foolog(s):
+    if not hasattr(sys, 'foolog'):
+        sys.foolog = foolog
+        foolog.file = open(r'c:\foolog.txt', 'w')
+    foolog.file.write('%s: %s\n' % (datetime_module.datetime.now(), s))
+    foolog.file.flush()
+    
+foolog('Starting foolog')

@@ -10,6 +10,7 @@ See its documentation for more information.
 from __future__ import with_statement
 
 import re
+import sys
 import _ast
 import string
 
@@ -53,17 +54,47 @@ def _find_string_from_position(editor, position, multiline=False):
     Given a character in the document known to be in a string, find its string.
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
-    assert _is_position_on_string(editor, position)
+    # assert _is_position_on_string(editor, position)
     document_start = 0
     document = editor.GetDocument()
     document_end = document.GetLength()
     start_marker = end_marker = position
     
+    ### Calculating start marker: #############################################
+    #                                                                         #
+    _inside_f_expression = (editor.fEditor.GetCharType(start_marker) ==
+                                                   edit.editor.kStringCharType)
+    depth = int(_inside_f_expression)
+    # sys.foolog('Starting to look for the start marker.')
+    while _inside_f_expression:
+        start_marker -= 1
+        
+        # sys.foolog('_inside_f_expression: %s' % (_inside_f_expression,))
+        if editor.fEditor.GetCharType(start_marker) == edit.editor.kStringCharType:
+            _inside_f_expression = False
+            continue
+        else:
+            if _inside_f_expression:
+                continue
+            elif (editor.fEditor.GetCharType(start_marker + 1) ==
+                  edit.editor.kStringCharType and
+                  document.GetCharRange(start_marker + 1, start_marker + 2) == '}'):
+                
+                _inside_f_expression = True
+                continue
+            else:
+                break
+    start_marker += 1
+    #                                                                         #
+    ### Finished calculating start marker. ####################################
+
     ### Calculating end marker: ###############################################
     #                                                                         #
+    sys.foolog('Starting to look for the end marker.')
     _inside_f_expression = True
     while end_marker < document_end:
-        if editor.fEditor.GetCharType(position) == edit.editor.kStringCharType:
+        sys.foolog('end_marker: %s  _inside_f_expression: %s' % (end_marker, _inside_f_expression,))
+        if editor.fEditor.GetCharType(end_marker) == edit.editor.kStringCharType:
             _inside_f_expression = False
             end_marker += 1
             continue
@@ -71,42 +102,17 @@ def _find_string_from_position(editor, position, multiline=False):
             if _inside_f_expression:
                 end_marker += 1
                 continue
-            elif (editor.fEditor.GetCharType(position - 1) ==
+            elif (editor.fEditor.GetCharType(end_marker - 1) ==
                   edit.editor.kStringCharType and
-                  document.GetCharRange(position - 1, position) == '{'):
+                  document.GetCharRange(end_marker - 1, end_marker) == '{'):
                 
                 _inside_f_expression = True
                 end_marker += 1
                 continue
             else:
                 break
-    end_marker += 1 # I think, not sure 
     #                                                                         #
     ### Finished calculating end marker. ######################################
-            
-    ### Calculating start marker: #############################################
-    #                                                                         #
-    _inside_f_expression = True
-    while start_marker > document_start:
-        if editor.fEditor.GetCharType(position) == edit.editor.kStringCharType:
-            _inside_f_expression = False
-            start_marker -= 1
-            continue
-        else:
-            if _inside_f_expression:
-                start_marker -= 1
-                continue
-            elif (editor.fEditor.GetCharType(position + 1) ==
-                  edit.editor.kStringCharType and
-                  document.GetCharRange(position + 1, position + 2) == '}'):
-                
-                _inside_f_expression = True
-                start_marker -= 1
-                continue
-            else:
-                break
-    #                                                                         #
-    ### Finished calculating start marker. ####################################
     
     if start_marker > document_start:
         assert not _is_position_on_string(editor, start_marker-1)
