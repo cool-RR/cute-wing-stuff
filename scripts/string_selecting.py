@@ -25,144 +25,18 @@ import edit
 
 import shared
 
-def _is_position_on_string(editor):
+string_pattern = re.compile(
+    '''^(?P<prefix>[uUbBrRfF]*)(?P<delimiter>(\''')|(""")|(')|(")).*$''',
+    flags=re.DOTALL
+)
+
+
+def _is_position_on_string(editor, position):
     '''Is there a string in the specified position in the document?'''
     token, _ = shared.get_token_and_span_for_position(editor, position)
-    
+    return bool(string_pattern.match(token))
 
 
-def _find_string_from_position(editor, position, multiline=False):
-    '''
-    Given a character in the document known to be in a string, find its string.
-    '''
-    assert isinstance(editor, wingapi.CAPIEditor)
-    # assert _is_position_on_string(editor, position)
-    document_start = 0
-    document = editor.GetDocument()
-    document_end = document.GetLength()
-    start_marker = end_marker = position
-    
-    ### Calculating start marker: #############################################
-    #                                                                         #
-    _inside_f_expression = (editor.fEditor.GetCharType(start_marker) ==
-                                                   edit.editor.kStringCharType)
-    depth = int(_inside_f_expression)
-    # sys.foolog('Starting to look for the start marker.')
-    while _inside_f_expression:
-        start_marker -= 1
-        
-        # sys.foolog('_inside_f_expression: %s' % (_inside_f_expression,))
-        if editor.fEditor.GetCharType(start_marker) == edit.editor.kStringCharType:
-            _inside_f_expression = False
-            continue
-        else:
-            if _inside_f_expression:
-                continue
-            elif (editor.fEditor.GetCharType(start_marker + 1) ==
-                  edit.editor.kStringCharType and
-                  document.GetCharRange(start_marker + 1, start_marker + 2) == '}'):
-                
-                _inside_f_expression = True
-                continue
-            else:
-                break
-    start_marker += 1
-    #                                                                         #
-    ### Finished calculating start marker. ####################################
-
-    ### Calculating end marker: ###############################################
-    #                                                                         #
-    sys.foolog('Starting to look for the end marker.')
-    _inside_f_expression = True
-    while end_marker < document_end:
-        sys.foolog('end_marker: %s  _inside_f_expression: %s' % (end_marker, _inside_f_expression,))
-        if editor.fEditor.GetCharType(end_marker) == edit.editor.kStringCharType:
-            _inside_f_expression = False
-            end_marker += 1
-            continue
-        else:
-            if _inside_f_expression:
-                end_marker += 1
-                continue
-            elif (editor.fEditor.GetCharType(end_marker - 1) ==
-                  edit.editor.kStringCharType and
-                  document.GetCharRange(end_marker - 1, end_marker) == '{'):
-                
-                _inside_f_expression = True
-                end_marker += 1
-                continue
-            else:
-                break
-    #                                                                         #
-    ### Finished calculating end marker. ######################################
-    
-    if start_marker > document_start:
-        assert not _is_position_on_string(editor, start_marker-1)
-    if end_marker < document_end:
-        assert not _is_position_on_string(editor, end_marker+1)
-    
-    if multiline:
-        string_ranges = [(start_marker, end_marker)]
-        document_text = shared.get_text(document)
-        
-        ### Scanning backward: ################################################
-        #                                                                     #
-        while True:
-            start_of_first_string = string_ranges[0][0]
-            # No backwards regex search in `re` yet, doing it manually:
-            for i in range(start_of_first_string - 1, 0, -1):
-                if document_text[i] not in string.whitespace:
-                    candidate_end_of_additional_string = i
-                    print('Candidate: %s %s' % (i, document_text[i]))
-                    break
-            else:
-                break    
-                    
-            if _is_position_on_string(editor,
-                       candidate_end_of_additional_string, try_previous=False):
-                string_ranges.insert(
-                    0, 
-                    _find_string_from_position(
-                        editor,
-                        candidate_end_of_additional_string
-                    )
-                )
-                continue
-            else:
-                break
-        #                                                                     #
-        ### Finished scanning backward. #######################################
-
-        ### Scanning forward: #################################################
-        #                                                                     #
-        while True:
-            end_of_last_string = string_ranges[-1][1]
-            search_result = re.search('\S',
-                                      document_text[end_of_last_string:])
-            if search_result:
-                candidate_start_of_additional_string = \
-                                   end_of_last_string + search_result.span()[0]
-                if _is_position_on_string(editor,
-                                          candidate_start_of_additional_string,
-                                          try_previous=False):
-                    string_ranges.append(
-                        _find_string_from_position(
-                            editor,
-                            candidate_start_of_additional_string
-                        )
-                    )
-                    continue
-                    
-            # (This is like an `else` clause for both the above `if`s.)
-            return tuple(string_ranges)
-        #                                                                     #
-        ### Finished scanning forward. ########################################
-        
-        
-    else: # not multiline
-        return (start_marker, end_marker)
-            
-            
 def select_next_string(inner=False, editor=wingapi.kArgEditor,
                        app=wingapi.kArgApplication):
     '''
@@ -265,10 +139,6 @@ def select_prev_string(inner=False, editor=wingapi.kArgEditor,
         _innerize_selected_string(editor)
     
 
-string_pattern = re.compile(
-    '''^(?P<prefix>[uUbBrRfF]*)(?P<delimiter>(\''')|(""")|(')|(")).*$''',
-    flags=re.DOTALL
-)
 
 def _innerize_selected_string(editor):
     '''Given that a string is selected, select only its contents.'''
