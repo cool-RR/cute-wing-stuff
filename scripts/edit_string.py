@@ -229,7 +229,7 @@ def edit_string():
                string_selecting._is_position_on_string(editor, selection_start)
     if replacing_old_string:
         old_string_token, old_string_range = string_selecting. \
-                            _find_string_from_position(editor, selection_start)
+                           _find_strings_from_position(editor, selection_start)
         gotta do the multiline
         old_string_raw = document.GetCharRange(old_string_ranges[0][0],
                                                old_string_ranges[-1][1])
