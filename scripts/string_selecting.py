@@ -25,33 +25,10 @@ import edit
 
 import shared
 
-def _get_token_for_position(editor, position):
-    
-def _is_position_on_string(editor, position, try_previous=True,
-                           include_f_expressions=True):
+def _is_position_on_string(editor):
     '''Is there a string in the specified position in the document?'''
+    token, _ = shared.get_token_and_span_for_position(editor, position)
     
-    
-    
-    if try_previous and position >= 1:
-        previous_result = _is_position_on_string(
-            editor, position - 1, try_previous=False,
-            include_f_expressions=include_f_expressions
-        )
-        if previous_result:
-            return True
-    
-    if editor.fEditor.GetCharType(position) == edit.editor.kStringCharType:
-        return True
-    elif include_f_expressions:
-        document = document()
-        for p in range(position - 1, max(0, position - 50), -1):
-            if editor.fEditor.GetCharType(p) == edit.editor.kStringCharType:
-                if document.GetCharRange(p, p + 1) == '{':
-                    return True
-                else:
-                    break
-    return False    
 
 
 def _find_string_from_position(editor, position, multiline=False):

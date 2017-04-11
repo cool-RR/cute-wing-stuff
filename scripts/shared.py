@@ -399,7 +399,7 @@ def open_path_in_explorer(path):
     # return len(win32api.EnumDisplayMonitors())
     
     
-def get_token_for_position(editor, position):
+def get_token_and_span_for_position(editor, position):
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     file_name = document.GetFilename()
@@ -409,10 +409,16 @@ def get_token_for_position(editor, position):
     logical_line = analysis.fAnalysis.GetLogical(line_number)
     tokens = logical_line.ftokens
     relative_line_number = line_number - logical_line.fFirstLine
-    return binary_search.binary_search(
+    
+    token, (x, y) = binary_search.binary_search(
         tokens, (relative_line_number, column_number),
         function=lambda token, span: span, rounding=binary_search.LOW
     )
+    
+    start = document.GetLineStart(x + logical_line.fFirstLine) + y
+    end = start + len(token)
+    return token, (start, end)
+    
 
 
 def foolog(s):
