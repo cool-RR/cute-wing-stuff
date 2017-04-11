@@ -11,6 +11,7 @@ import sys
 import subprocess
 import datetime as datetime_module
 
+from python_toolbox import binary_search
 from python_toolbox import context_management
 
 try:
@@ -398,11 +399,28 @@ def open_path_in_explorer(path):
     # return len(win32api.EnumDisplayMonitors())
     
     
+def get_token_for_position(editor, position):
+    assert isinstance(editor, wingapi.CAPIEditor)
+    document = editor.GetDocument()
+    file_name = document.GetFilename()
+    analysis = wingapi.gApplication.GetAnalysis(file_name)
+    line_number = document.GetLineNumberFromPosition(position)
+    column_number = document.GetLineStart(line_number) - position
+    logical_line = analysis.fAnalysis.GetLogical(line_number)
+    tokens = logical_line.ftokens
+    relative_line_number = line_number - logical_line.fFirstLine
+    return binary_search.binary_search(
+        tokens, (relative_line_number, column_number),
+        function=lambda token, span: span, rounding=binary_search.LOW
+    )
+
+
 def foolog(s):
     if not hasattr(sys, 'foolog'):
-        sys.foolog = foolog
         foolog.file = open(r'c:\foolog.txt', 'w')
-    foolog.file.write('%s: %s\n' % (datetime_module.datetime.now(), s))
-    foolog.file.flush()
+        sys.foolog = foolog
+    sys.foolog.file.write('%s: %s\n' % (datetime_module.datetime.now(), s))
+    sys.foolog.file.flush()
     
 foolog('Starting foolog')
+

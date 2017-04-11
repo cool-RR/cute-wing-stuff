@@ -25,9 +25,14 @@ import edit
 
 import shared
 
+def _get_token_for_position(editor, position):
+    
 def _is_position_on_string(editor, position, try_previous=True,
                            include_f_expressions=True):
     '''Is there a string in the specified position in the document?'''
+    
+    
+    
     if try_previous and position >= 1:
         previous_result = _is_position_on_string(
             editor, position - 1, try_previous=False,
@@ -39,7 +44,7 @@ def _is_position_on_string(editor, position, try_previous=True,
     if editor.fEditor.GetCharType(position) == edit.editor.kStringCharType:
         return True
     elif include_f_expressions:
-        document = editor.GetDocument()
+        document = document()
         for p in range(position - 1, max(0, position - 50), -1):
             if editor.fEditor.GetCharType(p) == edit.editor.kStringCharType:
                 if document.GetCharRange(p, p + 1) == '{':
@@ -302,4 +307,9 @@ def _innerize_selected_string(editor):
                                                              else selection_end
     editor.SetSelection(fixed_start, fixed_end)                               
         
+def fok():
+    document = wingapi.gApplication.GetActiveDocument()
+    analysis = wingapi.gApplication.GetAnalysis(document.GetFilename())
+    sys.foolog(analysis)
+    sys.foolog(vars(analysis))
     
