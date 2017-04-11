@@ -54,7 +54,7 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
     selection_start, selection_end = editor.GetSelection()
     
     for _ in [0]:
-        token, span = shared.get_token_and_span_for_position(editor, position)
+        token, span = shared.get_token_and_span_for_position(editor, selection_start)
         if shared.string_pattern.match(token):
             current_string_range = span
             if (selection_start, selection_end) == current_string_range:

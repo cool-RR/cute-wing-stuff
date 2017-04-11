@@ -412,7 +412,9 @@ def get_token_and_span_for_position(editor, position):
     line_number = document.GetLineNumberFromPosition(position)
     column_number = document.GetLineStart(line_number) - position
     logical_line = analysis.fAnalysis.GetLogical(line_number)
-    tokens = logical_line.ftokens
+    if logical_line is None:
+        return (None, (None, None))
+    tokens = logical_line.fTokens
     relative_line_number = line_number - logical_line.fFirstLine
     
     token, (x, y) = binary_search.binary_search(
@@ -432,7 +434,9 @@ def get_tokens_of_consecutive_strings_and_span_for_position(editor, position):
     line_number = document.GetLineNumberFromPosition(position)
     column_number = document.GetLineStart(line_number) - position
     logical_line = analysis.fAnalysis.GetLogical(line_number)
-    tokens = logical_line.ftokens
+    if logical_line is None:
+        return (None, (None, None))
+    tokens = logical_line.fTokens
     relative_line_number = line_number - logical_line.fFirstLine
     
     current_token_index = binary_search.binary_search_by_index(
