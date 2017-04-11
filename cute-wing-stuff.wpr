@@ -25,5 +25,12 @@ proj.directory-list = [{'dirloc': loc('.'),
                         'filter': '*',
                         'include_hidden': False,
                         'recursive': True,
+                        'watch_for_changes': True},
+                       {'dirloc': loc('../../../../../Program Files (x86)/Wing IDE 6.0'),
+                        'excludes': (),
+                        'filter': u'*',
+                        'include_hidden': False,
+                        'recursive': True,
                         'watch_for_changes': True}]
 proj.file-type = 'shared'
+proj.main-file = loc('../../../../../Program Files (x86)/Wing IDE 6.0/bin/wing.py')
