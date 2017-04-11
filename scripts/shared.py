@@ -25,6 +25,11 @@ import wingapi
 
 _ignore_scripts = True
 
+string_pattern = re.compile(
+    '''^(?P<prefix>[uUbBrRfF]*)(?P<delimiter>(\''')|(""")|(')|(")).*$''',
+    flags=re.DOTALL
+)
+
 
 class SelectionRestorer(context_management.ContextManager):
     '''
@@ -418,6 +423,41 @@ def get_token_and_span_for_position(editor, position):
     start = document.GetLineStart(x + logical_line.fFirstLine) + y
     end = start + len(token)
     return token, (start, end)
+
+def get_tokens_of_consecutive_strings_and_span_for_position(editor, position):
+    assert isinstance(editor, wingapi.CAPIEditor)
+    document = editor.GetDocument()
+    file_name = document.GetFilename()
+    analysis = wingapi.gApplication.GetAnalysis(file_name)
+    line_number = document.GetLineNumberFromPosition(position)
+    column_number = document.GetLineStart(line_number) - position
+    logical_line = analysis.fAnalysis.GetLogical(line_number)
+    tokens = logical_line.ftokens
+    relative_line_number = line_number - logical_line.fFirstLine
+    
+    current_token_index = binary_search.binary_search_by_index(
+        tokens, (relative_line_number, column_number),
+        function=lambda token, span: span, rounding=binary_search.LOW
+    )
+    start_token_index = end_token_index = current_token_index
+    
+    while start_token_index != 0:
+        if string_pattern.match(token[start_token_index - 1][0]):
+            start_token_index -= 1
+    while end_token_index != len(tokens) - 1:
+        if string_pattern.match(token[end_token_index + 1][0]):
+            end_token_index += 1
+            
+    tokens, relative_spans = \
+                          zip(*tokens[start_token_index : end_token_index + 1])
+    
+    start = document.GetLineStart(
+         relative_spans[0][0] + logical_line.fFirstLine) + relative_spans[0][1]
+    end = (
+        document.GetLineStart(relative_spans[1][0] + logical_line.fFirstLine) +
+        relative_spans[1][1] + len(tokens[-1])
+    )
+    return tokens, (start, end)
     
 
 

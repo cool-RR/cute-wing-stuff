@@ -228,18 +228,26 @@ def edit_string():
     replacing_old_string = \
                string_selecting._is_position_on_string(editor, selection_start)
     if replacing_old_string:
-        old_string_token, old_string_range = string_selecting. \
-                           _find_strings_from_position(editor, selection_start)
-        gotta do the multiline
-        old_string_raw = document.GetCharRange(old_string_ranges[0][0],
-                                               old_string_ranges[-1][1])
-        old_string = ast.literal_eval('(%s)' % old_string_raw)
-        modifiers = string_head_pattern.match(old_string_raw). \
+        old_string_tokens, old_string_range = (
+            string_selecting.
+            get_tokens_of_consecutive_strings_and_span_for_position(
+                editor, selection_start
+            )
+        )
+        old_string_tokens_without_f = [
+            re.sub('(^[urb]*)f([urb]*)', r'\1\2', old_string_token,
+            flags=re.IGNORECASE) for old_string_token in old_string_tokens
+        ]
+        old_string = \
+               ast.literal_eval('(%s)' % ' '.join(old_string_tokens_without_f))
+        modifiers = string_head_pattern.match(old_string_tokens[0]). \
                                                      group('modifiers').lower()
-        quote = string_head_pattern.match(old_string_raw).group('quote')
+        quote = string_head_pattern.match(old_string_tokens[0]).group('quote')
         bytes_checkbox.setCheckState(_bool_to_qt_check_state('b' in modifiers))
-        f_string_checkbox.setCheckState(_bool_to_qt_check_state('f' in modifiers))
-        unicode_checkbox.setCheckState(_bool_to_qt_check_state('u' in modifiers))
+        f_string_checkbox.setCheckState(
+                                     _bool_to_qt_check_state('f' in modifiers))
+        unicode_checkbox.setCheckState(_bool_to_qt_check_state(
+                                                             'u' in modifiers))
         raw_checkbox.setCheckState(_bool_to_qt_check_state('r' in modifiers))
         double_checkbox.setCheckState(_bool_to_qt_check_state('"' in quote))
         triple_checkbox.setCheckState(_bool_to_qt_check_state(len(quote) == 3))

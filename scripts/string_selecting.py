@@ -25,16 +25,11 @@ import edit
 
 import shared
 
-string_pattern = re.compile(
-    '''^(?P<prefix>[uUbBrRfF]*)(?P<delimiter>(\''')|(""")|(')|(")).*$''',
-    flags=re.DOTALL
-)
-
 
 def _is_position_on_string(editor, position):
     '''Is there a string in the specified position in the document?'''
     token, _ = shared.get_token_and_span_for_position(editor, position)
-    return bool(string_pattern.match(token))
+    return bool(shared.string_pattern.match(token))
 
 
 def select_next_string(inner=False, editor=wingapi.kArgEditor,
@@ -145,7 +140,7 @@ def _innerize_selected_string(editor):
     assert isinstance(editor, wingapi.CAPIEditor)
     selection_start, selection_end = editor.GetSelection()
     string = editor.GetDocument().GetCharRange(selection_start, selection_end)
-    match = string_pattern.match(string)
+    match = shared.string_pattern.match(string)
     assert match
     delimiter = match.group('delimiter')
     prefix = match.group('prefix')
