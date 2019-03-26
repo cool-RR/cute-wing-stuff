@@ -52,3 +52,4 @@ proj.file-type = 'shared'
 proj.launch-config = {loc('../../../Desktop/foo.py'): ('custom',
         (u'',
          'launch-pgMYftlVmBESR2bV'))}
+proj.main-file = loc('../../../../../Program Files (x86)/Wing Pro 7.0/bootstrap/wing.py')
