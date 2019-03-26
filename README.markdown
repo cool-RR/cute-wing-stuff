@@ -252,6 +252,13 @@ I also suggest you bind `Ctrl-Right-Up` and `Ctrl-Right-Down` to
 have bookmark-traversing commands available.)
 
 
+## debug-toggle-value-tips ##
+
+Show or hide value tips while debugging. 
+
+Suggested key combination: `Shift-space`
+    
+
 ## deep-to-var ##
     
 Create a variable from a deep expression.
