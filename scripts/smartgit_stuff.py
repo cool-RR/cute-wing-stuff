@@ -18,7 +18,7 @@ import config
 
 import shared
 
-SMARTGITC_EXE_PATH = '"C:\\Program Files (x86)\\SmartGit\\bin\\smartgitc.exe"'
+SMARTGITC_EXE_PATH = '"C:\\Program Files\\SmartGit\\bin\\smartgitc.exe"'
 
 
 def launch_process_without_window(command):
