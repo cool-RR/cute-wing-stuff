@@ -154,10 +154,10 @@ if monkeypatch:
         if computer_name == 'turing':
             perspective_name = 'Turing'
         elif computer_name == 'hopper':
-            # if shared.get_n_monitors() == 2:
-                # perspective_name = 'Hopper KT'
-            # else:
-            perspective_name = 'Hopper'
+            if shared.get_n_monitors() == 2:
+                perspective_name = 'Samsung'
+            else:
+                perspective_name = 'Hopper'
         elif computer_name == 'tardos':
             perspective_name = 'Tardos'
         else:
