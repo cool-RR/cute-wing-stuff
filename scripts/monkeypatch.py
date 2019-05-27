@@ -6,8 +6,8 @@ from __future__ import with_statement
 
 import os.path, sys
 sys.path += [
-    os.path.dirname(__file__), 
-    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+    os.path.dirname(__file__),
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'),
 ]
 
 
@@ -35,17 +35,17 @@ except ImportError:
     monkeypatch = False
 else:
     monkeypatch = cute_wing_stuff_local_settings.monkeypatch
-    
-    
+
+
 if monkeypatch:
-    
+
     ###########################################################################
-    
+
     # Todo: Perhaps remove this when Wing learns to kill all debug processes
     # when launching a named entry point.
-    
+
     import debug.client.cmdmanager
-    
+
     old_debug_named_entry_point = \
               debug.client.cmdmanager.CDebuggerCommands.debug_named_entry_point
     def debug_named_entry_point(self, name):
@@ -57,16 +57,16 @@ if monkeypatch:
         #                                                                     #
         #######################################################################
         return old_debug_named_entry_point(self, name)
-    
+
     debug.client.cmdmanager.CDebuggerCommands.debug_named_entry_point = \
                                                         debug_named_entry_point
-        
+
 
     ###########################################################################
 
     # Monkeypatching `ExpandFileFragment` so Wing won't show .pyc, .pyo and
     # .pyd files when browsing using `open-from-keyboard`:
-    
+
     def ExpandFileFragment(entry):
         """ Try to expand given entry for possible matches, completing as far
         as we can """
@@ -77,7 +77,7 @@ if monkeypatch:
             file_list = location.ListDir(os.path.expanduser(dirname), log_error=False)
         except OSError:
             file_list = []
-      
+
         allfiles = []
         for file in file_list:
             # This is the only modified part.
@@ -97,15 +97,15 @@ if monkeypatch:
                 if os.path.isdir(match) and match[-1] != os.sep:
                     match = match + os.sep
                 allfiles.append(match)
-      
+
         return allfiles
 
-    
+
     old_ExpandFileFragment = guiutils.widgets_qt4.ExpandFileFragment
     guiutils.widgets_qt4.ExpandFileFragment = ExpandFileFragment
-    
+
     ###########################################################################
-    
+
     def _get_location_path(location):
         try:
             from wingbase import location as location_module
@@ -117,20 +117,20 @@ if monkeypatch:
             return location._fOSName.encode(
                 location_module.kFileSystemEncoding
             )
-        
- 
+
+
     def _open(self, filenames):
         from wingide.topcommands import location, logging, prefs
         # Get file location object
         loc_list = [location.CreateFromName(name) for name in filenames]
-    
+
         for loc in loc_list:
             if loc.IsDirectory():
                 path = _get_location_path(loc)
                 shared.open_path_in_explorer(path)
             else:
                 opened = False
-    
+
                 # If so configured, open any project as a project if possible; if fail
                 # to do so, then open it as text
                 if not self.fGuiMgr.fPrefMgr.GetValue(prefs.kOpenProjectsAsText):
@@ -138,17 +138,17 @@ if monkeypatch:
                     if parts[-1] == 'wpr' or parts[-1] == 'wpu':
                         self.fSingletons.fWingIDEApp.fProjMgr.OpenProject(loc)
                         opened = True
-    
+
                 if not opened:
                     # Open the file into active document window
                     win = self.fGuiMgr.GetActiveDocumentWindow()
                     src_text = self.fGuiMgr.DisplayDocument(loc, blank_if_not_found=True,
                                                             win=win, sticky=True)
-                    
+
     wingide.topcommands.CApplicationControlCommands._open = _open
-    
+
     ###########################################################################
-    
+
     def set_perspective_nicely(*args, **kwargs):
         computer_name = os.environ['COMPUTERNAME'].lower()
         if computer_name == 'turing':
@@ -163,10 +163,10 @@ if monkeypatch:
         else:
             # Default
             perspective_name = 'Turing'
-        
+
         wingapi.gApplication.ExecuteCommand('perspective-restore',
                                             name=perspective_name)
-        
+
         if shared.autopy_available:
             wingapi.gApplication.InstallTimeout(
                 3000 if computer_name == 'hopper' else 1500,
@@ -182,53 +182,52 @@ if monkeypatch:
                     autopy.key.MOD_ALT | autopy.key.MOD_META
                 )
             )
-            
-            
-        
-    wingapi.gApplication.connect(
-        'project-open',
-        lambda _: wingapi.gApplication.InstallTimeout(0,
-                                                      set_perspective_nicely)
-    )
-    
+
+
+
+    # wingapi.gApplication.connect(
+        # 'project-open',
+        # lambda _: wingapi.gApplication.InstallTimeout(0,
+                                                      # set_perspective_nicely)
+    # )
+
     ###########################################################################
-    
+
 
     if shared.autopy_available:
         import autopy.key
-        
+
         def analyze_text_modified(*args):
             flag, text = args[3:5]
             if flag == 2 and text[-1] in string_module.whitespace:
                 shared.clip_ahk()
-                
+
         cache.textcache.CTextCache.class_connect('text-modified',
                                                  analyze_text_modified)
-    
+
 
         #######################################################################
-        
+
         import singleton
-        
+
         commands_to_clip_after = set(
             ['introduce_variable', 'rename_symbol', 'extract_def',
              'arg_to_attr', 'deep_to_var']
         )
-            
+
         def command_executed(command_manager, command, args):
             if command.name in commands_to_clip_after:
                 shared.clip_ahk()
-        
+
         wingapi.gApplication.fSingletons.fCmdMgr.connect('cmd-executed',
                                                          command_executed)
-        
+
         #######################################################################
-        
+
         def args_needed(*args, **kwargs):
             shared.clip_ahk()
-            
+
         wingapi.gApplication.fSingletons.fCmdMgr.connect('args-needed',
                                                          args_needed)
-        
-        
-        
+
+
