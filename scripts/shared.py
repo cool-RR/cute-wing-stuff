@@ -341,7 +341,9 @@ def line_position_to_character_position(document, line_number, line_position):
 def plural_word_to_singular_word(plural_word):
     ''' '''
     assert isinstance(plural_word, (str, unicode))
-    if plural_word.endswith('ies'):
+    if plural_word.endswith('matrices'):
+        return plural_word[:-3] + 'x'
+    elif plural_word.endswith('ies'):
         return plural_word[:-3] + 'y'
     elif plural_word.endswith('sses'):
         return plural_word[:-2]
