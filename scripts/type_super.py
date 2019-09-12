@@ -19,13 +19,13 @@ import shared
 def type_super():
     '''
     Type `super(MyClass, self).my_method()`
-    
+
     `MyClass` and `my_method` will be copied with the current class and method
     of the active scope.
-    
+
     Suggested key combination: `Insert Ctrl-S`
     '''
-    
+
     app = wingapi.gApplication
     editor = app.GetActiveEditor()
     document = editor.GetDocument()
@@ -41,8 +41,8 @@ def type_super():
                         selection[0]+len(super_text))
     if shared.autopy_available:
         import autopy.key
-        autopy.key.toggle(autopy.key.K_META, False)
-        autopy.key.toggle(autopy.key.K_CONTROL, False)
-        autopy.key.toggle(autopy.key.K_ALT, False)
-        autopy.key.toggle(autopy.key.K_SHIFT, False)
-        autopy.key.tap('(', [autopy.key.Modifier.SHIFT])    
+        autopy.key.toggle(autopy.key.Modifier.META, False)
+        autopy.key.toggle(autopy.key.Modifier.CONTROL, False)
+        autopy.key.toggle(autopy.key.Modifier.ALT, False)
+        autopy.key.toggle(autopy.key.Modifier.SHIFT, False)
+        autopy.key.tap('(', [autopy.key.Modifier.SHIFT])
