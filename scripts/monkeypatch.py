@@ -172,14 +172,14 @@ if monkeypatch:
                 3000 if computer_name == 'hopper' else 1500,
                 lambda: autopy.key.tap(
                     'q',
-                    autopy.key.MOD_ALT | autopy.key.MOD_META
+                    [autopy.key.Modifier.ALT, autopy.key.Modifier.META]
                 )
             )
             wingapi.gApplication.InstallTimeout(
                 3000 if computer_name == 'hopper' else 1500,
                 lambda: autopy.key.tap(
                     'w',
-                    autopy.key.MOD_ALT | autopy.key.MOD_META
+                    [autopy.key.Modifier.ALT, autopy.key.Modifier.META]
                 )
             )
 

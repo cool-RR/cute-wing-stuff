@@ -29,11 +29,11 @@ def _type_string(string):
     import autopy.key
     for character in string:
         if character in _characters_that_need_shift:
-            autopy.key.tap(character, autopy.key.MOD_SHIFT)
+            autopy.key.tap(character, [autopy.key.Modifier.SHIFT])
         else:
-            autopy.key.tap(character)
-        autopy.key.tap(135) # F24 for making AHK not interfere
-        autopy.key.tap(35) # `End` for making AHK not interfere
+            autopy.key.tap(character, [])
+        # autopy.key.tap(135) # F24 for making AHK not interfere
+        autopy.key.tap(autopy.key.Code.END, []) # `End` for making AHK not interfere
 
 
 def _cute_general_replace(command_name,
@@ -59,9 +59,9 @@ def _cute_general_replace(command_name,
             #autopy.key.tap(autopy.key.K_ESCAPE)
             #autopy.key.toggle(autopy.key.K_ALT, False)
             #autopy.key.tap(TAB_KEY)
-            #autopy.key.tap('l', autopy.key.MOD_ALT)
-            #autopy.key.tap('v', autopy.key.MOD_CONTROL)
-            #autopy.key.tap('a', autopy.key.MOD_CONTROL)
+            #autopy.key.tap('l', autopy.key.Modifier.ALT)
+            #autopy.key.tap('v', autopy.key.Modifier.CONTROL)
+            #autopy.key.tap('a', autopy.key.Modifier.CONTROL)
             
         
     else: # not selection

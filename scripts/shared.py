@@ -359,7 +359,7 @@ def clip_ahk():
     Cause AHK to think that a new word is being typed, for its auto-completion.
     '''
     assert autopy_available
-    autopy.key.tap(135) # F24 for making AHK think it's a new word
+    # autopy.key.tap(135) # F24 for making AHK think it's a new word
     
     
 def get_text(document):

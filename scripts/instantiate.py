@@ -55,4 +55,4 @@ def instantiate(editor=wingapi.kArgEditor):
         
         if shared.autopy_available:
             import autopy.key
-            autopy.key.tap('(', autopy.key.MOD_SHIFT)
+            autopy.key.tap('(', [autopy.key.Modifier.SHIFT])

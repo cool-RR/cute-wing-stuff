@@ -45,4 +45,4 @@ def type_super():
         autopy.key.toggle(autopy.key.K_CONTROL, False)
         autopy.key.toggle(autopy.key.K_ALT, False)
         autopy.key.toggle(autopy.key.K_SHIFT, False)
-        autopy.key.tap('(', autopy.key.MOD_SHIFT)    
+        autopy.key.tap('(', [autopy.key.Modifier.SHIFT])    
