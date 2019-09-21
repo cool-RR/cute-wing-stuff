@@ -32,7 +32,7 @@ def _type_string(string):
             autopy.key.tap(character, [autopy.key.Modifier.SHIFT])
         else:
             autopy.key.tap(character, [])
-        # autopy.key.tap(135) # F24 for making AHK not interfere
+        shared.clip_ahk()
         autopy.key.tap(autopy.key.Code.END, []) # `End` for making AHK not interfere
 
 

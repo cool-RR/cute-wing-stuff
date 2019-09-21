@@ -18,7 +18,7 @@ except ImportError:
     autopy_available = False
 else:
     autopy_available = True
-    
+
 import wingapi
 
 _ignore_scripts = True
@@ -27,17 +27,17 @@ _ignore_scripts = True
 class SelectionRestorer(context_management.ContextManager):
     '''
     Context manager for restoring selection to what it was before the suite.
-    
+
     Example:
-    
+
         with SelectionRestorer(my_editor):
             # Change the selection to whatever you want
         # The selection has been returned to what it was originally.
-       
+
     This was intended only for suites that don't change the contents of the
     editor.
     '''
-    
+
     def __init__(self, editor, line_wise=False, line_offset=0):
         assert isinstance(editor, wingapi.CAPIEditor)
         if not line_wise:
@@ -46,8 +46,8 @@ class SelectionRestorer(context_management.ContextManager):
         self.document = editor.GetDocument()
         self.line_wise = line_wise
         self.line_offset = line_offset
-        
-        
+
+
     def __enter__(self):
         start, end = self.editor.GetSelection()
         if self.line_wise:
@@ -65,7 +65,7 @@ class SelectionRestorer(context_management.ContextManager):
             self.start = start
             self.end = end
 
-                
+
     def __exit__(self, *args, **kwargs):
         if self.line_wise:
             start = line_position_to_character_position(self.document,
@@ -75,7 +75,7 @@ class SelectionRestorer(context_management.ContextManager):
         else:
             start = self.start
             end = self.end
-            
+
         if tuple(self.editor.GetSelection()) != (start, end):
             self.editor.SetSelection(start, end)
             # (Only conditionally setting selection, because if it's already
@@ -84,16 +84,16 @@ class SelectionRestorer(context_management.ContextManager):
 
 
 class ClipboardRestorer(context_management.ContextManager):
-    
+
     def __init__(self, app):
         assert isinstance(app, wingapi.CAPIApplication)
         self.app = app
         self.clipboard_data = None
-        
+
     def __enter__(self):
         self.clipboard_data = self.app.GetClipboard()
 
-                
+
     def __exit__(self, *args, **kwargs):
         self.app.SetClipboard(self.clipboard_data)
 
@@ -103,7 +103,7 @@ def scroll_to_line(editor, line_number):
     '''Scroll the `editor` to `line_number`.'''
     assert isinstance(editor, wingapi.CAPIEditor)
     file_path = editor.GetDocument().GetFilename()
-    
+
     #print('Trying to reach line number %s...' % line_number)
     first_line_number_guess = line_number - \
                                           scroll_to_line.last_offset[file_path]
@@ -120,12 +120,12 @@ def scroll_to_line(editor, line_number):
         #print ('Got offset of %s, correcting...' % offset_to_target)
         editor.ScrollToLine(first_line_number_guess - offset_to_target,
                             pos='top')
-    
+
     scroll_to_line.last_offset[file_path] = offset_to_first_guess
-    
+
     #print('Function ended with us scrolled to %s' %
                                                  #editor.GetFirstVisibleLine())
-        
+
 scroll_to_line.last_offset = collections.defaultdict(lambda: 0)
 
 
@@ -136,14 +136,14 @@ class ScrollRestorer(context_management.ContextManager):
     def __init__(self, editor):
         assert isinstance(editor, wingapi.CAPIEditor)
         self.editor = editor
-        
+
     def __enter__(self):
         self.first_line_number = self.editor.GetFirstVisibleLine()
         return self
-                
+
     def __exit__(self, *args, **kwargs):
         scroll_to_line(self.editor, self.first_line_number)
-        
+
 
 def strip_selection_if_single_line(editor):
     '''
@@ -161,44 +161,44 @@ def strip_selection_if_single_line(editor):
         new_start = start + left_strip_size
         new_end = end - right_strip_size
         editor.SetSelection(new_start, new_end)
-    
-    
+
+
 _whitespace_and_newlines_stripping_pattern = re.compile(
     r'''^(?P<leading>[ \r\n\t]*)(?P<content>.*?)(?P<trailing>[ \r\n\t]*)$''',
     flags=re.DOTALL
-)    
+)
 def strip_segment_from_whitespace_and_newlines(text, start, end):
-    
+
     selection_text = text[start:end]
     match = _whitespace_and_newlines_stripping_pattern.match(selection_text)
     assert match
     new_start = start + len(match.group('leading'))
     new_end = end - len(match.group('trailing'))
-    
+
     return new_start, new_end
-    
-        
+
+
 class UndoableAction(context_management.ContextManager):
     '''
     Context manager for marking an action that can be undone by the user.
-    
+
     Example:
-    
+
         with UndoableAction(my_document):
             # Do anything here, make any changes to the document
         # Now the user can do Ctrl-Z and have the above suite undone.
-    
+
     '''
     def __init__(self, document):
         assert isinstance(document, wingapi.CAPIDocument)
         self.document = document
-        
+
     def __enter__(self):
         self.document.BeginUndoAction()
-        
+
     def __exit__(self, *args, **kwargs):
         self.document.EndUndoAction()
-        
+
 
 
 def get_cursor_position(editor):
@@ -207,7 +207,7 @@ def get_cursor_position(editor):
     '''
     start, _ = editor.GetSelection()
     assert start == _
-    return start        
+    return start
 
 
 def select_current_word(editor=wingapi.kArgEditor):
@@ -218,7 +218,7 @@ def select_current_word(editor=wingapi.kArgEditor):
     editor.ExecuteCommand('backward-word')
     start = get_cursor_position(editor)
     length = 0
-    for length in range(1000): 
+    for length in range(1000):
         if start + length == document.GetLength():
             break
         else:
@@ -237,7 +237,7 @@ def select_current_word(editor=wingapi.kArgEditor):
 def get_indent_size_in_pos(editor, pos):
     '''
     Get the size of the indent, in spaces, in position `pos` in `editor`.
-    
+
     Returns an `int` like 4, 8, 12, etc.
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
@@ -246,16 +246,16 @@ def get_indent_size_in_pos(editor, pos):
         document.GetLineNumberFromPosition(pos)
     )
     return indent_size
-    
+
 
 def camel_case_to_lower_case(s):
     '''
     Convert a string from camel-case to lower-case.
-    
-    Example: 
-    
+
+    Example:
+
         camel_case_to_lower_case('HelloWorld') == 'hello_world'
-        
+
     '''
     return re.sub('(((?<=[a-z])[A-Z])|([A-Z](?![A-Z]|$)))', '_\\1', s).\
            lower().strip('_')
@@ -264,11 +264,11 @@ def camel_case_to_lower_case(s):
 def lower_case_to_camel_case(s):
     '''
     Convert a string from lower-case to camel-case.
-    
-    Example: 
-    
+
+    Example:
+
         camel_case_to_lower_case('hello_world') == 'HelloWorld'
-        
+
     '''
     assert isinstance(s, basestring)
     s = s.capitalize()
@@ -288,26 +288,26 @@ def _clip_to_document_range(position, document):
     else:
         return position
 
-    
+
 def _move_half_page(direction, editor=wingapi.kArgEditor):
     '''
     Move half a page, either up or down.
-    
+
     If `direction=-1`, moves up, and if `direction=1`, moves down.
-    
+
     This is essentially one half of Page-Down or Page-Up.
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
-    
+
     lines_to_move = editor.GetNumberOfVisibleLines() // 2
-    
+
     # Determining current location: ###########################################
     current_position, _ = editor.GetSelection()
     current_line = document.GetLineNumberFromPosition(current_position)
     column = current_position - document.GetLineStart(current_line)
     ###########################################################################
-    
+
     # Determining new location to go to: ######################################
     new_line = current_line + (lines_to_move * direction)
     length_of_new_line = \
@@ -321,7 +321,7 @@ def _move_half_page(direction, editor=wingapi.kArgEditor):
 
     with UndoableAction(document):
         editor.SetSelection(new_position, new_position)
-        
+
 
 def character_position_to_line_position(document, character_position,
                                         line_offset=0):
@@ -330,14 +330,14 @@ def character_position_to_line_position(document, character_position,
     line_number = document.GetLineNumberFromPosition(character_position)
     line_position = character_position - document.GetLineStart(line_number)
     return (line_number+line_offset, line_position)
-    
-    
+
+
 def line_position_to_character_position(document, line_number, line_position):
     ''' '''
     assert isinstance(document, wingapi.CAPIDocument)
     return document.GetLineStart(line_number) + line_position
-    
-    
+
+
 def plural_word_to_singular_word(plural_word):
     ''' '''
     assert isinstance(plural_word, (str, unicode))
@@ -352,16 +352,25 @@ def plural_word_to_singular_word(plural_word):
     else:
         assert plural_word.endswith('s')
         return plural_word[:-1]
-    
+
 
 def clip_ahk():
     '''
     Cause AHK to think that a new word is being typed, for its auto-completion.
     '''
-    assert autopy_available
+    import subprocess
+
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    subprocess.Popen(
+        (r'c:\windows\py.exe',
+         r'C:\Users\Administrator\Dropbox\Scripts and shortcuts\_type_f24.py'),
+        startupinfo=startupinfo
+    )
+    # assert autopy_available
     # autopy.key.tap(135) # F24 for making AHK think it's a new word
-    
-    
+
+
 def get_text(document):
     # Getting the text using `GetCharRange` instead of `GetText` because
     # `GetText` returns unicode.
@@ -375,17 +384,17 @@ def argmin(sequence, key_function=None):
     indices = range(len(sequence))
     indices.sort(key=lambda index: key_function(sequence[index]))
     return sequence[indices[0]]
-    
+
 def reset_caret_blinking(editor):
     selection = editor.GetSelection()
     editor.ExecuteCommand('forward-char')
     editor.SetSelection(*selection)
 
-    
+
 def get_file_content(file_path):
     with open(file_path) as file:
         return file.read()
-    
+
 def open_path_in_explorer(path):
     if sys.platform == 'darwin':
         subprocess.call(['open', '--', path])
@@ -393,9 +402,8 @@ def open_path_in_explorer(path):
         subprocess.call(['gnome-open', '--', path])
     elif sys.platform == 'win32':
         subprocess.call(['explorer', path])
-        
+
 # def get_n_monitors():
     # import win32api
     # return len(win32api.EnumDisplayMonitors())
-    
-    
+
