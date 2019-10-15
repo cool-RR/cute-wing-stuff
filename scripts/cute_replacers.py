@@ -51,10 +51,10 @@ def _cute_general_replace(command_name,
         app.ExecuteCommand(command_name)
         if shared.autopy_available:
             import autopy.key
-            autopy.key.toggle(autopy.key.Modifier.ALT, False)
-            autopy.key.toggle(autopy.key.Modifier.SHIFT, False)
-            autopy.key.toggle(autopy.key.Modifier.CONTROL, False)
-            autopy.key.toggle(autopy.key.Modifier.META, False)
+            autopy.key.toggle(autopy.key.Modifier.ALT, False, [])
+            autopy.key.toggle(autopy.key.Modifier.SHIFT, False, [])
+            autopy.key.toggle(autopy.key.Modifier.CONTROL, False, [])
+            autopy.key.toggle(autopy.key.Modifier.META, False, [])
             #_type_string(selection)
             #autopy.key.tap(autopy.key.Code.ESC)
             #autopy.key.toggle(autopy.key.Modifier.ALT, False)

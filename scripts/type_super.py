@@ -41,8 +41,8 @@ def type_super():
                         selection[0]+len(super_text))
     if shared.autopy_available:
         import autopy.key
-        autopy.key.toggle(autopy.key.Modifier.META, False)
-        autopy.key.toggle(autopy.key.Modifier.CONTROL, False)
-        autopy.key.toggle(autopy.key.Modifier.ALT, False)
-        autopy.key.toggle(autopy.key.Modifier.SHIFT, False)
+        autopy.key.toggle(autopy.key.Modifier.META, False, [])
+        autopy.key.toggle(autopy.key.Modifier.CONTROL, False, [])
+        autopy.key.toggle(autopy.key.Modifier.ALT, False, [])
+        autopy.key.toggle(autopy.key.Modifier.SHIFT, False, [])
         autopy.key.tap('(', [autopy.key.Modifier.SHIFT])
