@@ -36,8 +36,7 @@ def _type_string(string):
         autopy.key.tap(autopy.key.Code.END, []) # `End` for making AHK not interfere
 
 
-def _cute_general_replace(command_name):
-    editor = wingapi.gApplication.GetActiveEditor()
+def _cute_general_replace(command_name, editor):
     assert isinstance(editor, wingapi.CAPIEditor)
     app = wingapi.gApplication
     assert isinstance(app, wingapi.CAPIApplication)
@@ -80,8 +79,7 @@ def cute_query_replace():
     Suggested key combination: `Alt-Comma`
     '''
     editor = wingapi.gApplication.GetActiveEditor()
-    app = wingapi.gApplication
-    return _cute_general_replace('query-replace', editor=editor, app=app)
+    return _cute_general_replace('query-replace', editor=editor)
 
 
 def cute_replace_string():
@@ -96,5 +94,4 @@ def cute_replace_string():
     Suggested key combination: `Alt-Period`
     '''
     editor = wingapi.gApplication.GetActiveEditor()
-    app = wingapi.gApplication
-    return _cute_general_replace('replace-string', editor=editor, app=app)
+    return _cute_general_replace('replace-string', editor=editor)

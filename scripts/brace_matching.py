@@ -83,7 +83,6 @@ def previous_brace_match_inner():
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
-
     editor.SetSelection(editor.GetSelection()[0]+1, editor.GetSelection()[1]-1)
-    previous_brace_match(editor)
+    previous_brace_match()
     editor.SetSelection(editor.GetSelection()[0]+1, editor.GetSelection()[1]-1)

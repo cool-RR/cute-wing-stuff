@@ -210,7 +210,7 @@ def get_cursor_position(editor):
     return start
 
 
-def select_current_word():
+def select_current_word(editor):
     '''Select the current word that the cursor is on.'''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
@@ -289,7 +289,7 @@ def _clip_to_document_range(position, document):
         return position
 
 
-def _move_half_page(direction):
+def _move_half_page(direction, editor):
     '''
     Move half a page, either up or down.
 

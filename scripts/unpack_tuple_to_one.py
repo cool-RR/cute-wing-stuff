@@ -27,7 +27,7 @@ def unpack_tuple_to_one():
 
     Suggested key combination: `Insert U`
     '''
-
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
 

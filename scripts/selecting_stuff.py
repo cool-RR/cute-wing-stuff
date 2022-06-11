@@ -111,8 +111,7 @@ def select_expression():
 
     Suggested key combination: `Ctrl-Alt-Plus`
     '''
-    editor = wingapi.gApplication.GetActiveEditor()
-    _select_more_until_biggest_match(_is_expression, editor)
+    _select_more_until_biggest_match(_is_expression)
 
 
 def select_dotted_name():
@@ -123,8 +122,7 @@ def select_dotted_name():
 
     Suggested key combination: `Alt-Plus`
     '''
-    editor = wingapi.gApplication.GetActiveEditor()
-    _select_more_until_biggest_match(_is_dotted_name, editor)
+    _select_more_until_biggest_match(_is_dotted_name)
 
 
 def select_whitespaceless_name():
@@ -138,8 +136,7 @@ def select_whitespaceless_name():
 
     Suggested key combination: `Ctrl-Alt-Equal`
     '''
-    editor = wingapi.gApplication.GetActiveEditor()
-    _select_more_until_biggest_match(_is_whitespaceless_name, editor)
+    _select_more_until_biggest_match(_is_whitespaceless_name)
 
 
 _scope_name_pattern = re.compile(
