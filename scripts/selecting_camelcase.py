@@ -58,7 +58,7 @@ def _get_relevant_camelcase_positions(editor, caret_position):
 
 
 def select_next_camelcase(,
-                          app=wingapi.kArgApplication):
+                          ):
     '''
     Select the next (or current) camelcase in the document.
 
@@ -69,6 +69,7 @@ def select_next_camelcase(,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     document = editor.GetDocument()
 
     caret_position = editor.GetSelection()[1] + 1
@@ -81,7 +82,7 @@ def select_next_camelcase(,
 
 
 def select_prev_camelcase(,
-                          app=wingapi.kArgApplication):
+                          ):
     '''
     Select the previous camelcase in the document.
 
@@ -92,6 +93,7 @@ def select_prev_camelcase(,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     document = editor.GetDocument()
 
     caret_position = editor.GetSelection()[0]

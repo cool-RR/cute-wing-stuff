@@ -37,9 +37,10 @@ def _type_string(string):
 
 
 def _cute_general_replace(command_name,
-                          app=wingapi.kArgApplication):
+                          ):
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     assert isinstance(app, wingapi.CAPIApplication)
     selection_start, selection_end = editor.GetSelection()
     selection = editor.GetDocument().GetCharRange(selection_start,
@@ -69,7 +70,7 @@ def _cute_general_replace(command_name,
 
 
 def cute_query_replace(,
-                       app=wingapi.kArgApplication):
+                       ):
     '''
     Improved version of `query-replace` for finding and replacing in document.
 
@@ -81,11 +82,12 @@ def cute_query_replace(,
     Suggested key combination: `Alt-Comma`
     '''
     editor = wingapi.gApplication.GetActiveEditor()
+    app = wingapi.gApplication
     return _cute_general_replace('query-replace', editor=editor, app=app)
 
 
 def cute_replace_string(,
-                       app=wingapi.kArgApplication):
+                       ):
     '''
     Improved version of `replace-string` for finding and replacing in document.
 
@@ -97,4 +99,5 @@ def cute_replace_string(,
     Suggested key combination: `Alt-Period`
     '''
     editor = wingapi.gApplication.GetActiveEditor()
+    app = wingapi.gApplication
     return _cute_general_replace('replace-string', editor=editor, app=app)

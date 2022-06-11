@@ -60,7 +60,7 @@ def _get_rhs_positions(document):
 ###############################################################################
 
 
-def select_next_lhs(, app=wingapi.kArgApplication):
+def select_next_lhs(, ):
     '''
     Select the next left-hand-side of an assignment.
 
@@ -68,6 +68,7 @@ def select_next_lhs(, app=wingapi.kArgApplication):
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     _, position = editor.GetSelection()
     position += 1
 
@@ -80,7 +81,7 @@ def select_next_lhs(, app=wingapi.kArgApplication):
         editor.SetSelection(*lhs_positions[lhs_index])
 
 
-def select_prev_lhs(, app=wingapi.kArgApplication):
+def select_prev_lhs(, ):
     '''
     Select the previous left-hand-side of an assignment.
 
@@ -88,6 +89,7 @@ def select_prev_lhs(, app=wingapi.kArgApplication):
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     position, _ = editor.GetSelection()
     position -= 1
 
@@ -100,7 +102,7 @@ def select_prev_lhs(, app=wingapi.kArgApplication):
         editor.SetSelection(*lhs_positions[lhs_index])
 
 
-def select_next_rhs(, app=wingapi.kArgApplication):
+def select_next_rhs(, ):
     '''
     Select the next right-hand-side of an assignment.
 
@@ -108,6 +110,7 @@ def select_next_rhs(, app=wingapi.kArgApplication):
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     _, position = editor.GetSelection()
     position += 1
 
@@ -120,7 +123,7 @@ def select_next_rhs(, app=wingapi.kArgApplication):
         editor.SetSelection(*rhs_positions[rhs_index])
 
 
-def select_prev_rhs(, app=wingapi.kArgApplication):
+def select_prev_rhs(, ):
     '''
     Select the previous right-hand-side of an assignment.
 
@@ -128,6 +131,7 @@ def select_prev_rhs(, app=wingapi.kArgApplication):
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     position, _ = editor.GetSelection()
     position -= 1
 

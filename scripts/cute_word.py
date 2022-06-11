@@ -232,7 +232,7 @@ def _offset_word_spans(word_spans, post_offset):
 
 
 def cute_word(direction=1, extend=False, delete=False, traverse=False,
-              , app=wingapi.kArgApplication):
+              , ):
     '''
     Move, select or delete words.
 
@@ -276,6 +276,7 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
 
     assert direction in (-1, 1)
     assert (delete, extend, traverse).count(True) in (0, 1)

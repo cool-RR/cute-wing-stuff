@@ -82,7 +82,7 @@ def _get_relevant_assignment_positions(editor, caret_position):
 
 
 def select_next_operator(,
-                         app=wingapi.kArgApplication):
+                         ):
     '''
     Select the next (or current) operator in the document.
 
@@ -94,6 +94,7 @@ def select_next_operator(,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     document = editor.GetDocument()
 
     caret_position = editor.GetSelection()[1] + 1
@@ -106,7 +107,7 @@ def select_next_operator(,
 
 
 def select_prev_operator(,
-                          app=wingapi.kArgApplication):
+                          ):
     '''
     Select the previous operator in the document.
 
@@ -118,6 +119,7 @@ def select_prev_operator(,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     document = editor.GetDocument()
 
     caret_position = editor.GetSelection()[0]
@@ -130,7 +132,7 @@ def select_prev_operator(,
 
 
 def select_next_assignment(,
-                         app=wingapi.kArgApplication):
+                         ):
     '''
     Select the next (or current) assignment in the document.
 
@@ -142,6 +144,7 @@ def select_next_assignment(,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     document = editor.GetDocument()
 
     caret_position = editor.GetSelection()[1] + 1
@@ -154,7 +157,7 @@ def select_next_assignment(,
 
 
 def select_prev_assignment(,
-                          app=wingapi.kArgApplication):
+                          ):
     '''
     Select the previous assignment in the document.
 
@@ -166,6 +169,7 @@ def select_prev_assignment(,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     document = editor.GetDocument()
 
     caret_position = editor.GetSelection()[0]

@@ -119,7 +119,7 @@ def _find_string_from_position(editor, position, multiline=False):
 
 
 def select_next_string(inner=False, ,
-                       app=wingapi.kArgApplication):
+                       ):
     '''
     Select the next (or current) string, starting from caret location.
 
@@ -131,6 +131,7 @@ def select_next_string(inner=False, ,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     document = editor.GetDocument()
 
     app.ExecuteCommand('set-visit-history-anchor')
@@ -177,7 +178,7 @@ def select_next_string(inner=False, ,
 
 
 def select_prev_string(inner=False, ,
-                       app=wingapi.kArgApplication):
+                       ):
     '''
     Select the previous string, starting from caret location.
 
@@ -189,6 +190,7 @@ def select_prev_string(inner=False, ,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     document = editor.GetDocument()
 
     app.ExecuteCommand('set-visit-history-anchor')

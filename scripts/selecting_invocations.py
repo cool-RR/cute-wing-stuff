@@ -199,7 +199,7 @@ def _get_argument_positions(document, limit_to_keywords=False, truncate=None):
 
 
 def select_next_invocation(,
-                           app=wingapi.kArgApplication):
+                           ):
     '''
     Select the next invocation of a callable, e.g `foo.bar(baz)`.
 
@@ -207,6 +207,7 @@ def select_next_invocation(,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     _, position = editor.GetSelection()
     position += 1
 
@@ -221,7 +222,7 @@ def select_next_invocation(,
 
 
 def select_prev_invocation(,
-                           app=wingapi.kArgApplication):
+                           ):
     '''
     Select the previous invocation of a callable, e.g `foo.bar(baz)`.
 
@@ -229,6 +230,7 @@ def select_prev_invocation(,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     position, _ = editor.GetSelection()
     position -= 1
 
@@ -245,7 +247,7 @@ def select_prev_invocation(,
 ###############################################################################
 
 def select_next_argument(,
-                         app=wingapi.kArgApplication,
+                         ,
                          limit_to_keywords=False):
     '''
     Select the next argument to a callable.
@@ -258,6 +260,7 @@ def select_next_argument(,
 
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     _, position = editor.GetSelection()
     position += 1
 
@@ -279,7 +282,7 @@ def select_next_argument(,
 
 
 def select_prev_argument(,
-                         app=wingapi.kArgApplication,
+                         ,
                          limit_to_keywords=False):
     '''
     Select the previous argument to a callable.
@@ -291,6 +294,7 @@ def select_prev_argument(,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     position, _ = editor.GetSelection()
     position -= 1
 
@@ -312,7 +316,7 @@ def select_prev_argument(,
 
 
 def remove_invocation(,
-                      app=wingapi.kArgApplication):
+                      ):
     '''
     Remove the last invocation, turning `whatever.function(value)` to `value`.
 
@@ -320,6 +324,7 @@ def remove_invocation(,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     document = editor.GetDocument()
     with shared.UndoableAction(document):
         app.ExecuteCommand('select-prev-invocation')

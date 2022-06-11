@@ -18,7 +18,7 @@ import wingapi
 
 import shared
 
-def reverse_selection(, app=wingapi.kArgApplication):
+def reverse_selection(, ):
     '''
     Reverse the selection, putting the caret on the opposite side.
 
@@ -28,6 +28,7 @@ def reverse_selection(, app=wingapi.kArgApplication):
     Suggested key combination: `Insert Shift-R`
     '''
     editor = wingapi.gApplication.GetActiveEditor()
+    app = wingapi.gApplication
     anchor_position, caret_position = editor.GetAnchorAndCaret()
     app.ExecuteCommand('set-visit-history-anchor')
     editor.SetSelection(caret_position, anchor_position)

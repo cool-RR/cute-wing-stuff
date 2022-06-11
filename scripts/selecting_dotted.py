@@ -54,7 +54,7 @@ def _get_relevant_dotted_positions(editor, caret_position):
 
 
 def select_next_dotted(,
-                         app=wingapi.kArgApplication):
+                         ):
     '''
     Select the next (or current) dotted name in the document, like `foo.bar`.
 
@@ -62,6 +62,7 @@ def select_next_dotted(,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     document = editor.GetDocument()
 
     caret_position = editor.GetSelection()[1] + 1
@@ -74,7 +75,7 @@ def select_next_dotted(,
 
 
 def select_prev_dotted(,
-                          app=wingapi.kArgApplication):
+                          ):
     '''
     Select the previous dotted name in the document, like `foo.bar`.
 
@@ -82,6 +83,7 @@ def select_prev_dotted(,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     document = editor.GetDocument()
 
     caret_position = editor.GetSelection()[0]

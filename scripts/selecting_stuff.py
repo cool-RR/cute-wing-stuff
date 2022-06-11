@@ -156,7 +156,7 @@ def _get_scope_name_positions(document):
 
 
 def select_next_scope_name(,
-                           app=wingapi.kArgApplication):
+                           ):
     '''
     Select the next scope name like `def thing():` or `class Thing():`.
 
@@ -166,6 +166,7 @@ def select_next_scope_name(,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     _, position = editor.GetSelection()
     position += 1
 
@@ -180,7 +181,7 @@ def select_next_scope_name(,
 
 
 def select_prev_scope_name(,
-                           app=wingapi.kArgApplication):
+                           ):
     '''
     Select the previous scope name like `def thing():` or `class Thing():`.
 
@@ -190,6 +191,7 @@ def select_prev_scope_name(,
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
+    app = wingapi.gApplication
     position, _ = editor.GetSelection()
     position -= 1
 
