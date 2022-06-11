@@ -4,11 +4,16 @@
 from __future__ import with_statement
 
 import itertools
+import sys
 import re
 import os.path
 import shutil
 
-import os.path, sys; sys.path.append(os.path.dirname(__file__))
+sys.path += [
+    os.path.dirname(__file__),
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'),
+]
+
 
 import wingapi
 import wingutils.datatype
@@ -30,17 +35,17 @@ python_file_pattern = re.compile(r'''^.*\.pyw?''')
 def django_toggle_between_view_and_template():
     '''
     Toggle between a view file in Django and the corresponding template file.
-    
+
     If you're currently viewing a template file, this'll open the corresponding
     view file. If you're currently viewing a view file, this'll open the
     corresponding template file.
-    
+
     This assumes that the view file has the word `view` in it and has a
     definition for the class attribute `template_name`.
-    
+
     Suggested key combination: `Insert Quoteleft` (i.e. backtick)
     '''
-    
+
     app = wingapi.gApplication
     editor = app.GetActiveEditor()
     document = editor.GetDocument()
@@ -49,8 +54,8 @@ def django_toggle_between_view_and_template():
     document_text = shared.get_text(document)
     file_path = document.GetFilename()
     folder, file_name = os.path.split(file_path)
-    
-    
+
+
     if file_name.endswith('.py'):
         match = template_name_pattern.search(document_text)
         if match:
@@ -72,7 +77,7 @@ def django_toggle_between_view_and_template():
             file_path for file_path in all_file_paths
             if view_file_path_pattern.search(file_path)
         ]
-            
+
         matching_file_paths_iterator = (
             file_path for file_path in all_view_file_paths if
             specifies_our_template_pattern.search(
