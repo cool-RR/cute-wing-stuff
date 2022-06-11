@@ -314,7 +314,7 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False):
     text = document.GetCharRange(text_start, text_end)
 
     word_spans = _get_word_spans_in_text(text, post_offset=text_start)
-    word_starts = zip(*word_spans)[0]
+    word_starts = next(iter(zip(*word_spans)))
     #print(word_starts)
     bisector = bisect.bisect_right if direction == 1 else bisect.bisect_left
     word_start_index = bisector(word_starts, caret_position)
