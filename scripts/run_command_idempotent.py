@@ -5,8 +5,8 @@ from __future__ import with_statement
 
 import os.path, sys
 sys.path += [
-    os.path.dirname(__file__), 
-    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+    os.path.dirname(__file__),
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'),
 ]
 
 
@@ -18,15 +18,15 @@ import config
 import shared
 
 
-def run_command_idempotent(command_name, application=wingapi.kArgApplication):
+def run_command_idempotent(command_name):
     '''Run a command, first terminating any running instances of it.'''
-    assert isinstance(application, wingapi.CAPIApplication)
-    panel = application.fSingletons.fGuiMgr.ShowPanel(config.kOSCommandPanel)
+    app = wingapi.gApplication
+    assert isinstance(app, wingapi.CAPIApplication)
+    panel = app.fSingletons.fGuiMgr.ShowPanel(config.kOSCommandPanel)
     if not panel:
         return
     command = panel._FindCmdByTitle(command_name)
-    application.TerminateOSCommand(command.id)
-    application.ExecuteOSCommand(command.id)
-        
-        
-        
+    app.TerminateOSCommand(command.id)
+    app.ExecuteOSCommand(command.id)
+
+

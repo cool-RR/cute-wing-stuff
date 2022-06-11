@@ -30,12 +30,14 @@ def launch_smartgit(arguments):
     return launch_process_without_window([SMARTGITC_EXE_PATH] + arguments)
 
 
-def smartgit(project=wingapi.kArgProject):
+def smartgit():
     '''
     Start SmartGit for the current project.
 
     Suggested key combination: `Insert G`
     '''
+    app = wingapi.gApplication
+    project = app.GetProject()
     assert isinstance(project, wingapi.CAPIProject)
     launch_smartgit(['--open', project.ExpandEnvVars('"${WING:PROJECT_DIR}"')])
 
