@@ -188,9 +188,9 @@ def _get_argument_positions(document, limit_to_keywords=False, truncate=None):
                        for argument_batch_position in argument_batch_positions)
     ))
     argument_positions = map(
-        lambda (start, end):
+        lambda start_and_end:
             shared.strip_segment_from_whitespace_and_newlines(document_text,
-                                                              start, end),
+                                                              *start_and_end),
         raw_argument_positions
     )
     return argument_positions
@@ -267,7 +267,7 @@ def select_next_argument(limit_to_keywords=False):
     )
     #print(argument_positions)
     argument_positions = sorted(argument_positions,
-                                key=(lambda (start, end): end))
+                                key=(lambda start_and_end: start_and_end[1]))
     argument_ends = tuple(argument_position[1] for argument_position in
                           argument_positions)
     argument_index = bisect.bisect_left(argument_ends, position)
@@ -277,9 +277,7 @@ def select_next_argument(limit_to_keywords=False):
         editor.SetSelection(*argument_positions[argument_index])
 
 
-def select_prev_argument(,
-                         ,
-                         limit_to_keywords=False):
+def select_prev_argument(limit_to_keywords=False):
     '''
     Select the previous argument to a callable.
 
@@ -301,7 +299,7 @@ def select_prev_argument(,
     )
     #print(argument_positions)
     argument_positions = sorted(argument_positions,
-                                key=(lambda (start, end): start))
+                                key=(lambda start_and_end: start_and_end[0]))
     argument_ends = tuple(argument_position[0] for argument_position in
                           argument_positions)
     argument_index = bisect.bisect_left(argument_ends, position) - 1

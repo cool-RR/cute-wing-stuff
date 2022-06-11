@@ -5,8 +5,8 @@ from __future__ import with_statement
 
 import os.path, sys
 sys.path += [
-    os.path.dirname(__file__), 
-    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+    os.path.dirname(__file__),
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'),
 ]
 
 
@@ -31,7 +31,7 @@ def go_up_to_project_frame(application=wingapi.gApplication):
     belongs to an external module? This is often annoying, because you want to
     figure out what you did wrong on *your* code, and the external module is
     usually not to blame.
-    
+
     `go-up-to-project-frame` to the rescue! Invoke this script while debugging
     in order to be taken to the closest higher stack frame that's on a project
     file rather than an external module.
@@ -44,22 +44,22 @@ def go_up_to_project_frame(application=wingapi.gApplication):
     _current_run_state = debugger.GetCurrentRunState()
     _thread_id, _frame_index = _current_run_state.GetStackFrame()
     _stack = _current_run_state.GetStack()
-    
+
     if not _stack:
-        return 
-    
+        return
+
     file_paths = [_normalize_path(file_path) for file_path, _, _, _, _ in
                   _stack]
     file_paths_in_project_above_current_frame = filter(
-        lambda (i, file_path): file_path in all_project_files and
-                                                              i < _frame_index,
+        lambda i_and_file_path: i_and_file_path[1] in all_project_files and
+                                            i_and_file_path[0] < _frame_index,
         enumerate(file_paths)
     )
     if not file_paths_in_project_above_current_frame:
-        return 
+        return
     index_of_last_file_path_in_project = \
                                file_paths_in_project_above_current_frame[-1][0]
-    
+
     _current_run_state.SetStackFrame(_thread_id,
                                      index_of_last_file_path_in_project)
 
@@ -72,7 +72,7 @@ def go_down_to_project_frame(application=wingapi.gApplication):
     belongs to an external module? This is often annoying, because you want to
     figure out what you did wrong on *your* code, and the external module is
     usually not to blame.
-    
+
     `go-down-to-project-frame` to the rescue! Invoke this script while
     debugging in order to be taken to the closest lower stack frame that's on a
     project file rather than an external module.
@@ -85,22 +85,22 @@ def go_down_to_project_frame(application=wingapi.gApplication):
     _current_run_state = debugger.GetCurrentRunState()
     _thread_id, _frame_index = _current_run_state.GetStackFrame()
     _stack = _current_run_state.GetStack()
-    
+
     if not _stack:
-        return 
-    
+        return
+
     file_paths = [_normalize_path(file_path) for file_path, _, _, _, _ in
                   _stack]
     file_paths_in_project_below_current_frame = filter(
-        lambda (i, file_path): file_path in all_project_files and
-                                                              i > _frame_index,
+        lambda i_and_file_path: i_and_file_path[1] in all_project_files and
+                                            i_and_file_path[0] > _frame_index,
         enumerate(file_paths)
     )
     if not file_paths_in_project_below_current_frame:
-        return 
+        return
     index_of_last_file_path_in_project = \
                                file_paths_in_project_below_current_frame[0][0]
-    
+
     _current_run_state.SetStackFrame(_thread_id,
                                      index_of_last_file_path_in_project)
 
