@@ -7,8 +7,8 @@ from __future__ import with_statement
 
 import os.path, sys
 sys.path += [
-    os.path.dirname(__file__), 
-    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+    os.path.dirname(__file__),
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'),
 ]
 
 import sys
@@ -58,7 +58,7 @@ def _round(n, step=100, direction=-1):
 def _find_spans(pattern, text):
     return [(match.span()[0], match.span()[1] - 1)
                                            for match in pattern.finditer(text)]
-    
+
 
 def _get_word_spans_in_text(text, post_offset=0):
     return sorted(
@@ -70,7 +70,7 @@ def _get_word_spans_in_text(text, post_offset=0):
 @caching.cache(max_size=20)
 def _get_non_alpha_word_spans_in_text(text, post_offset=0):
     return _offset_word_spans(
-        sorted(_find_spans(punctuation_word_pattern, text) + 
+        sorted(_find_spans(punctuation_word_pattern, text) +
                _find_spans(newline_word_pattern, text)),
         post_offset=post_offset
     )
@@ -78,21 +78,21 @@ def _get_non_alpha_word_spans_in_text(text, post_offset=0):
 
 @caching.cache(max_size=20)
 def _get_alpha_word_spans_in_text(text, post_offset=0):
-    
+
     # We have three phases here. In the first phase we get words like
     # `IToldYou_soFooBar`, in the second phase we get words like `IToldYou`,
     # `soFooBar`, in the third and final phase we get words like `I`, `Told`,
     # `You`, `so`, `Foo`, `Bar`.
-    
+
     pre_pre_alpha_word_spans = _find_spans(alpha_word_pattern, text)
     pre_alpha_word_spans = collections.deque()
     alpha_word_spans = []
-    
+
     for pre_pre_alpha_word_span in pre_pre_alpha_word_spans:
         pre_pre_alpha_word = \
                     text[pre_pre_alpha_word_span[0]:pre_pre_alpha_word_span[1]]
         relative_middle_underscore_indices = []
-        
+
         ### Finding middle underscores: #######################################
         #                                                                     #
         saw_non_underscore = False
@@ -113,20 +113,20 @@ def _get_alpha_word_spans_in_text(text, post_offset=0):
                 break
         #                                                                     #
         ### Finished finding middle underscores. ##############################
-        
+
         middle_underscore_indices = map(
             lambda i: i + pre_pre_alpha_word_span[0],
             relative_middle_underscore_indices
         )
-        
+
         non_middle_underscore_indices = filter(
-            lambda i: i not in middle_underscore_indices, 
+            lambda i: i not in middle_underscore_indices,
             xrange(
-                pre_pre_alpha_word_span[0], 
-                pre_pre_alpha_word_span[1] + 1, 
+                pre_pre_alpha_word_span[0],
+                pre_pre_alpha_word_span[1] + 1,
             )
         )
-        
+
         current_word_span = None
         for i in non_middle_underscore_indices:
             if current_word_span is None:
@@ -140,19 +140,19 @@ def _get_alpha_word_spans_in_text(text, post_offset=0):
                     current_word_span = [i, i]
         if current_word_span:
             pre_alpha_word_spans.append(tuple(current_word_span))
-        
-            
+
+
     ######################################################################
     # Finished separating using middle underscores, now separating using
     # case.
-    
+
     # We're popping word spans out of `pre_alpha_word_spans` one-by-one. We
     # analyze them, sometimes we throw them into `pre_alpha_word_spans`,
     # which means they're words that are already separated by case, and
     # sometimes we throw one part of them into `alpha_word_spans`, and
     # throw the remaining substring back into `pre_alpha_word_spans`, where
     # it will be analyzed on a later run of the loop.
-    
+
     while pre_alpha_word_spans:
         pre_alpha_word_span = pre_alpha_word_spans.pop()
         pre_alpha_word = \
@@ -181,12 +181,12 @@ def _get_alpha_word_spans_in_text(text, post_offset=0):
                         could_be_upper_case = False
                     else:
                         alpha_word_spans.append((
-                            pre_alpha_word_span[0], 
+                            pre_alpha_word_span[0],
                             i - 1
                         ))
                         pre_alpha_word_spans.append((
-                            i, 
-                            pre_alpha_word_span[1], 
+                            i,
+                            pre_alpha_word_span[1],
                         ))
                         break
             else:
@@ -199,21 +199,21 @@ def _get_alpha_word_spans_in_text(text, post_offset=0):
                         could_be_camel_case = could_be_lower_case = False
                     else:
                         alpha_word_spans.append((
-                            pre_alpha_word_span[0], 
+                            pre_alpha_word_span[0],
                             i - 1
                         ))
                         pre_alpha_word_spans.append((
-                            i, 
-                            pre_alpha_word_span[1], 
+                            i,
+                            pre_alpha_word_span[1],
                         ))
                         break
-                
+
         else:
             alpha_word_spans.append(pre_alpha_word_span)
             continue
-            
+
     alpha_word_spans.sort()
-        
+
     alpha_word_spans = _offset_word_spans(alpha_word_spans, post_offset)
 
     return alpha_word_spans
@@ -231,35 +231,35 @@ def _offset_word_spans(word_spans, post_offset):
 
 
 
-def cute_word(direction=1, extend=False, delete=False, traverse=False, 
-              editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
+def cute_word(direction=1, extend=False, delete=False, traverse=False,
+              , app=wingapi.kArgApplication):
     '''
     Move, select or delete words.
-    
+
     This is a swiss-army knife command for handling "words". Unlike Wing's
     default word-handling logic, this command separates using underscores and
     case. For example, `foo_bar_baz` will be split to 3 words, and so will
     `FooBarBaz` and `FOO_BAR_BAZ`.
-    
+
     When used with no arguments, this command will move a word forward or
     backward, depending on `direction`, similarly to Wing's built-in
     `forward-word` and `backward-word` commands.
-    
+
     When used with `extend=True`, this command will extend the existing
     selection a word forward or backward, depending on `direction`, similarly
     to Wing's built-in `forward-word-extend` and `backward-word-extend`
     commands.
-    
+
     When used with `delete=True`, this command will delete a word forward or
     backward, depending on `direction`, similarly to Wing's built-in
     `forward-delete-word` and `backward-delete-word` commands.
-    
+
     When used with `traverse=True`, this command will select the next
     alphanumeric word or the previous alphanumeric word, depending on
     `direction`.
-    
+
     Suggested key combinations:
-    
+
         `Ctrl-Alt-Right` for direction=1
         `Ctrl-Alt-Left` for direction=-1
         `Ctrl-Alt-Shift-Right` for direction=1, extend=True
@@ -268,27 +268,28 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False,
         `Ctrl-Alt-Shift-Up` for direction=-1, traverse=True
         `Alt-Delete` for direction=1, delete=True
         `Alt-Backspace` for direction=-1, delete=True
-        
+
     (Tip: If you do bind to `Ctrl-Alt-Right` and `Ctrl-Alt-Left` as I suggest,
     then I also suggest you bind `Ctrl-Right-Up` and `Ctrl-Right-Down` to
     `goto-previous-bookmark` and `goto-next-bookmark` respectively, so you'll
     still have bookmark-traversing commands available.)
-    '''    
+    '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
-    
+
     assert direction in (-1, 1)
     assert (delete, extend, traverse).count(True) in (0, 1)
-    
+
     selection_start, selection_end = editor.GetSelection()
     document = editor.GetDocument()
     anchor_position, caret_position = editor.GetAnchorAndCaret()
     current_selection_direction = \
                                  1 if caret_position >= anchor_position else -1
-    
-    
+
+
     # Trying to round the text startpoint and endpoint, so it'll more likely to
     # be cached when doing many word-movings rapidly.
-    
+
     text_start = max(
         _round(selection_start - 70, step=100, direction=-1),
         0
@@ -297,13 +298,13 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False,
         _round(selection_end + 70, step=100, direction=1),
         document.GetLength()
     )
-    
+
     #caret_position = 0
     #text_start = 0
     #text_end = 100
-    
+
     text = document.GetCharRange(text_start, text_end)
-    
+
     word_spans = _get_word_spans_in_text(text, post_offset=text_start)
     word_starts = zip(*word_spans)[0]
     #print(word_starts)
@@ -319,15 +320,15 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False,
             target_word_start = 0
         else:
             target_word_start = word_starts[word_start_index - 1]
-            
-    
+
+
     #print(next_word_start)
     if traverse:
         nominal_position = caret_position
         alpha_word_spans = _get_alpha_word_spans_in_text(text,
                                                         post_offset=text_start)
         if not alpha_word_spans:
-            return 
+            return
         fixed_alpha_word_spans = [
             (word_start, word_end + 1) for (word_start, word_end) in
             alpha_word_spans
@@ -343,10 +344,10 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False,
         index_of_next_or_current = len(alpha_word_spans_before_us)
         if not alpha_word_spans_after_us:
             index_of_next_or_current -= 1
-            
+
         target_index = index_of_next_or_current if direction == 1 else \
                                            max(index_of_next_or_current - 1, 0)
-        
+
         target_alpha_word_span = fixed_alpha_word_spans[target_index]
         if direction == 1 and \
               (selection_start, selection_end) ==  target_alpha_word_span and \
@@ -371,4 +372,4 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False,
     else:
         editor.ExecuteCommand('forward-char') # Just to light up caret.
         editor.SetSelection(target_word_start, target_word_start)
-        
+

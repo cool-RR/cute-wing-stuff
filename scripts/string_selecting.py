@@ -15,8 +15,8 @@ import string
 
 import os.path, sys
 sys.path += [
-    os.path.dirname(__file__), 
-    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+    os.path.dirname(__file__),
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'),
 ]
 
 
@@ -50,16 +50,16 @@ def _find_string_from_position(editor, position, multiline=False):
     while start_marker > document_start and \
                           _is_position_on_string(editor, start_marker-1):
         start_marker -= 1
-            
+
     if start_marker > document_start:
         assert not _is_position_on_string(editor, start_marker-1)
     if end_marker < document_end:
         assert not _is_position_on_string(editor, end_marker+1)
-    
+
     if multiline:
         string_ranges = [(start_marker, end_marker)]
         document_text = shared.get_text(editor.GetDocument())
-        
+
         ### Scanning backward: ################################################
         #                                                                     #
         while True:
@@ -71,12 +71,12 @@ def _find_string_from_position(editor, position, multiline=False):
                     print('Candidate: %s %s' % (i, document_text[i]))
                     break
             else:
-                break    
-                    
+                break
+
             if _is_position_on_string(editor,
                        candidate_end_of_additional_string, try_previous=False):
                 string_ranges.insert(
-                    0, 
+                    0,
                     _find_string_from_position(
                         editor,
                         candidate_end_of_additional_string
@@ -107,28 +107,29 @@ def _find_string_from_position(editor, position, multiline=False):
                         )
                     )
                     continue
-                    
+
             # (This is like an `else` clause for both the above `if`s.)
             return tuple(string_ranges)
         #                                                                     #
         ### Finished scanning forward. ########################################
-        
-        
+
+
     else: # not multiline
         return (start_marker, end_marker)
-            
-            
-def select_next_string(inner=False, editor=wingapi.kArgEditor,
+
+
+def select_next_string(inner=False, ,
                        app=wingapi.kArgApplication):
     '''
     Select the next (or current) string, starting from caret location.
-    
+
     Provide `inner=True` to select only the contents of the string.
-    
+
     Suggested key combinations: `Ctrl-Apostrophe`
                                 `Alt-Apostrophe` for `inner=True`
 
     '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
 
@@ -136,9 +137,9 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
 
     document_start = 0
     document_end = document.GetLength()
-    
+
     selection_start, selection_end = editor.GetSelection()
-    
+
     for _ in [0]:
         if _is_position_on_string(editor, selection_start):
             current_string_range = \
@@ -155,14 +156,14 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
                                        selection_end+1) in ('"', "'"):
                 base_position = current_string_range[1] + 1
                 if base_position > document_end:
-                    return                
-            
+                    return
+
             else:
                 editor.SetSelection(*current_string_range)
                 break
         else:
             base_position = selection_start
-    
+
         for position in range(base_position, document_end+1):
             if _is_position_on_string(editor, position):
                 string_range = _find_string_from_position(editor, position)
@@ -170,22 +171,23 @@ def select_next_string(inner=False, editor=wingapi.kArgEditor,
                 break
         else:
             return
-    
+
     if inner:
         _innerize_selected_string(editor)
-    
-    
-def select_prev_string(inner=False, editor=wingapi.kArgEditor,
+
+
+def select_prev_string(inner=False, ,
                        app=wingapi.kArgApplication):
     '''
     Select the previous string, starting from caret location.
-    
+
     Provide `inner=True` to select only the contents of the string.
-    
+
     Suggested key combinations: `Ctrl-Quotedbl`
                                 `Alt-Quotedbl` for `inner=True`
 
-    '''    
+    '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
 
@@ -193,11 +195,11 @@ def select_prev_string(inner=False, editor=wingapi.kArgEditor,
 
     document_start = 0
     document_end = document.GetLength()
-    
+
     caret_position = editor.GetSelection()[1]
 
     for _ in [0]:
-            
+
         if _is_position_on_string(editor, caret_position) or \
                       _is_position_on_string(editor, caret_position - 1):
             current_string_range = \
@@ -207,7 +209,7 @@ def select_prev_string(inner=False, editor=wingapi.kArgEditor,
                 return
         else:
             base_position = caret_position
-    
+
         for position in range(base_position, document_start-1, -1):
             if _is_position_on_string(editor, position):
                 string_range = _find_string_from_position(editor, position)
@@ -215,10 +217,10 @@ def select_prev_string(inner=False, editor=wingapi.kArgEditor,
                 break
         else:
             return
-    
+
     if inner:
         _innerize_selected_string(editor)
-    
+
 
 string_pattern = re.compile(
     '''^(?P<prefix>[uUbB]?[rR]?)(?P<delimiter>(\''')|(""")|(')|(")).*$''',
@@ -237,6 +239,5 @@ def _innerize_selected_string(editor):
     fixed_start = selection_start + len(delimiter) + len(prefix)
     fixed_end = selection_end - len(delimiter) if string.endswith(delimiter) \
                                                              else selection_end
-    editor.SetSelection(fixed_start, fixed_end)                               
-        
-    
+    editor.SetSelection(fixed_start, fixed_end)
+

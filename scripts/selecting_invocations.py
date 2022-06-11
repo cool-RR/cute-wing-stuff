@@ -17,8 +17,8 @@ import bisect
 
 import os.path, sys
 sys.path += [
-    os.path.dirname(__file__), 
-    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+    os.path.dirname(__file__),
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'),
 ]
 
 from python_toolbox import caching
@@ -30,19 +30,19 @@ import shared
 
 invocation_pattern = re.compile(
     r'''(?<!def )(?<!class )(?<![A-Za-z_0-9])([A-Za-z_][A-Za-z_0-9]*) *\('''
-)    
+)
 invocation_pattern_for_arguments = re.compile(
     r'''(?<![A-Za-z_0-9])([A-Za-z_][A-Za-z_0-9]*) *\('''
-)    
-    
+)
+
 def _ast_parse(string):
     return compile(string.replace('\r', ''), '<unknown>', 'exec',
                    _ast.PyCF_ONLY_AST)
-    
+
 
 class ArgumentSearchingFailed(Exception):
     pass
-           
+
 
 
 def _collect_offsets(call_string, limit_to_keywords=False):
@@ -136,8 +136,8 @@ def _get_span_of_opening_parenthesis(document, position):
             return (position, position + i + 1)
     else:
         return (position, position)
-        
-    
+
+
 
 def _get_matches(document):
     assert isinstance(document, wingapi.CAPIDocument)
@@ -164,7 +164,7 @@ def _get_matches_for_arguments(document, truncate=None):
 def _get_invocation_positions(document):
     matches = _get_matches(document)
     return tuple(match.span(1) for match in matches)
-    
+
 def _get_argument_batch_positions(document, truncate=None):
     matches = _get_matches_for_arguments(document, truncate=truncate)
     parenthesis_starts = tuple(match.span(0)[1]-1 for match in matches)
@@ -173,7 +173,7 @@ def _get_argument_batch_positions(document, truncate=None):
                   _get_span_of_opening_parenthesis(document, parenthesis_start),
         parenthesis_starts
     )
-    
+
 def _get_argument_positions(document, limit_to_keywords=False, truncate=None):
     argument_batch_positions = _get_argument_batch_positions(document,
                                                              truncate=truncate)
@@ -198,13 +198,14 @@ def _get_argument_positions(document, limit_to_keywords=False, truncate=None):
 ###############################################################################
 
 
-def select_next_invocation(editor=wingapi.kArgEditor,
+def select_next_invocation(,
                            app=wingapi.kArgApplication):
     '''
     Select the next invocation of a callable, e.g `foo.bar(baz)`.
-    
+
     Suggested key combination: `Ctrl-Alt-8`
     '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     _, position = editor.GetSelection()
     position += 1
@@ -213,19 +214,20 @@ def select_next_invocation(editor=wingapi.kArgEditor,
     invocation_ends = tuple(invocation_position[1] for invocation_position in
                             invocation_positions)
     invocation_index = bisect.bisect_left(invocation_ends, position)
-    
+
     if 0 <= invocation_index < len(invocation_ends):
         app.ExecuteCommand('set-visit-history-anchor')
         editor.SetSelection(*invocation_positions[invocation_index])
-        
 
-def select_prev_invocation(editor=wingapi.kArgEditor,
+
+def select_prev_invocation(,
                            app=wingapi.kArgApplication):
     '''
     Select the previous invocation of a callable, e.g `foo.bar(baz)`.
-    
+
     Suggested key combination: `Ctrl-Alt-Asterisk`
-    '''    
+    '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     position, _ = editor.GetSelection()
     position -= 1
@@ -234,7 +236,7 @@ def select_prev_invocation(editor=wingapi.kArgEditor,
     invocation_starts = tuple(invocation_position[0] for invocation_position
                               in invocation_positions)
     invocation_index = bisect.bisect_left(invocation_starts, position) - 1
-    
+
     if 0 <= invocation_index < len(invocation_starts):
         app.ExecuteCommand('set-visit-history-anchor')
         editor.SetSelection(*invocation_positions[invocation_index])
@@ -242,18 +244,19 @@ def select_prev_invocation(editor=wingapi.kArgEditor,
 
 ###############################################################################
 
-def select_next_argument(editor=wingapi.kArgEditor,
+def select_next_argument(,
                          app=wingapi.kArgApplication,
                          limit_to_keywords=False):
     '''
     Select the next argument to a callable.
-    
+
     Set `limit_to_keywords=True` to go only to a keyword argument.
-    
+
     Suggested key combinations: `Ctrl-R`
                                 `Ctrl-Alt-R` for `limit_to_keywords=True`
     '''
-    
+
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     _, position = editor.GetSelection()
     position += 1
@@ -269,23 +272,24 @@ def select_next_argument(editor=wingapi.kArgEditor,
     argument_ends = tuple(argument_position[1] for argument_position in
                           argument_positions)
     argument_index = bisect.bisect_left(argument_ends, position)
-    
+
     if 0 <= argument_index < len(argument_ends):
         app.ExecuteCommand('set-visit-history-anchor')
         editor.SetSelection(*argument_positions[argument_index])
-        
 
-def select_prev_argument(editor=wingapi.kArgEditor,
+
+def select_prev_argument(,
                          app=wingapi.kArgApplication,
                          limit_to_keywords=False):
     '''
     Select the previous argument to a callable.
-    
+
     Set `limit_to_keywords=True` to go only to a keyword argument.
-    
+
     Suggested key combinations: `Ctrl-Shift-R`
                                 `Ctrl-Shift-Alt-R` for `limit_to_keywords=True`
-    '''    
+    '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     position, _ = editor.GetSelection()
     position -= 1
@@ -301,19 +305,20 @@ def select_prev_argument(editor=wingapi.kArgEditor,
     argument_ends = tuple(argument_position[0] for argument_position in
                           argument_positions)
     argument_index = bisect.bisect_left(argument_ends, position) - 1
-    
+
     if 0 <= argument_index < len(argument_ends):
         app.ExecuteCommand('set-visit-history-anchor')
         editor.SetSelection(*argument_positions[argument_index])
-        
-        
-def remove_invocation(editor=wingapi.kArgEditor,
+
+
+def remove_invocation(,
                       app=wingapi.kArgApplication):
     '''
     Remove the last invocation, turning `whatever.function(value)` to `value`.
-    
+
     Suggested key combinations: `Insert 8`
     '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     with shared.UndoableAction(document):
@@ -324,10 +329,9 @@ def remove_invocation(editor=wingapi.kArgEditor,
         opening_brace, closing_brace = editor.GetSelection()
         document.DeleteChars(closing_brace - 1, closing_brace - 1)
         document.DeleteChars(callable_start, opening_brace)
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+

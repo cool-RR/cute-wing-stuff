@@ -5,8 +5,8 @@ from __future__ import with_statement
 
 import os.path, sys
 sys.path += [
-    os.path.dirname(__file__), 
-    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+    os.path.dirname(__file__),
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'),
 ]
 
 
@@ -34,25 +34,26 @@ def _get_matches(document):
     return tuple(pattern.finditer(document_text))
 
 
-def implicit_getattr_to_explicit(editor=wingapi.kArgEditor):
+def implicit_getattr_to_explicit():
     '''
     Convert something like `foo.bar` into `getattr(foo, 'bar', None)`.
-    
+
     Also selects the `None` so it could be easily modified.
-    
+
     Suggested key combination: `Insert Shift-G`
     '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
-    
-    
+
+
     _, current_position = editor.GetSelection()
     #head = max(current_position - 100, 0)
     #tail = min(current_position + 100, document.GetLength())
-    
+
     #text = document.GetCharRange(head, tail)
-    
+
     matches = _get_matches(document)
     if not matches:
         return
@@ -71,10 +72,10 @@ def implicit_getattr_to_explicit(editor=wingapi.kArgEditor):
             #print(shared.get_text(document)[candidate[0]:candidate[1]])
         #except:
             #pass
-    
+
     new_text = 'getattr(%s, %s, None)' % (candidate.group(1),
                                           repr(candidate.group(2)))
-    wingapi.gApplication.ExecuteCommand('set-visit-history-anchor')    
+    wingapi.gApplication.ExecuteCommand('set-visit-history-anchor')
     with shared.UndoableAction(document):
         document.DeleteChars(candidate_span[0], candidate_span[1] - 1)
         document.InsertChars(candidate_span[0], new_text)

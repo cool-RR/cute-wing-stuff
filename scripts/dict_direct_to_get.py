@@ -5,8 +5,8 @@ from __future__ import with_statement
 
 import os.path, sys
 sys.path += [
-    os.path.dirname(__file__), 
-    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+    os.path.dirname(__file__),
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'),
 ]
 
 
@@ -22,40 +22,41 @@ pattern = re.compile(
     r'''.*?(?P<square_brackets>\[(?P<key>.*?)\])$'''
 )
 
-def dict_direct_to_get(editor=wingapi.kArgEditor):
+def dict_direct_to_get():
     '''
     Turn `foo[bar]` into `foo.get(bar, None)`.
-    
+
     Suggested key combination: `Insert Ctrl-G`
     '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
-    
+
     _, current_position = editor.GetSelection()
     current_line_number = document.GetLineNumberFromPosition(current_position)
-    
+
     line_start = document.GetLineStart(current_line_number)
     line_end = document.GetLineEnd(current_line_number)
-    
+
     fixed_position = max(current_position - 1, line_start)
-    
+
     line_head = document.GetCharRange(line_start, fixed_position)
     line_tail = document.GetCharRange(fixed_position, line_end)
     line_text = line_head + line_tail
-    
+
     if ']' not in line_tail:
         #print('''']' not in line_tail''')
         return
-    
+
     first_closing_bracket_position = line_tail.find(']') + len(line_head) + \
                                                                      line_start
-    
+
     text_until_closing_bracket = document.GetCharRange(
         line_start,
         first_closing_bracket_position + 1
     )
-    
+
     match = pattern.match(text_until_closing_bracket)
     if not match:
         #print('''no match''')
@@ -78,5 +79,5 @@ def dict_direct_to_get(editor=wingapi.kArgEditor):
             # The `- 1` above is necessary for \n-documents.
             document.InsertChars(line_start, new_line_text)
             editor.SetSelection(none_start, none_end)
-    
-        
+
+

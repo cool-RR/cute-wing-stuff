@@ -20,7 +20,7 @@ import shared
 range_pattern = re.compile('^(x?range)\(.*\)$')
 
 
-def for_thing_in_things(editor=wingapi.kArgEditor, app=wingapi.kArgApplication,
+def for_thing_in_things(, app=wingapi.kArgApplication,
                         comprehension=False):
     '''
     Turn `things` into `for thing in things:`.
@@ -38,6 +38,7 @@ def for_thing_in_things(editor=wingapi.kArgEditor, app=wingapi.kArgApplication,
     Suggested key combination: `Insert Ctrl-F`
                                `Insert Shift-F` for `comprehension=True`
     '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
 

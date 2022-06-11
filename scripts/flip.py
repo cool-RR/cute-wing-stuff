@@ -5,8 +5,8 @@ from __future__ import with_statement
 
 import os.path, sys
 sys.path += [
-    os.path.dirname(__file__), 
-    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+    os.path.dirname(__file__),
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'),
 ]
 
 
@@ -15,27 +15,27 @@ import wingapi
 import shared
 
 flip_pairs = (
-    ('True', 'False'), 
-    ('true', 'false'), 
-    ('enable', 'disable'), 
-    ('add', 'remove'), 
-    ('start', 'end'), 
+    ('True', 'False'),
+    ('true', 'false'),
+    ('enable', 'disable'),
+    ('add', 'remove'),
+    ('start', 'end'),
     ('head', 'tail'),
     ('low', 'high'),
-    ('first', 'last'), 
-    ('import', 'export'), 
-    ('left', 'right'), 
-    ('early', 'late'), 
+    ('first', 'last'),
+    ('import', 'export'),
+    ('left', 'right'),
+    ('early', 'late'),
     ('earliest', 'latest'),
-    ('new', 'old'), 
-    ('maximum', 'minimum'), 
-    ('max', 'min'), 
-    ('next', 'previous'), 
+    ('new', 'old'),
+    ('maximum', 'minimum'),
+    ('max', 'min'),
+    ('next', 'previous'),
     ('width', 'height'),
-    ('column', 'row'), 
-    ('horizontal', 'vertical'), 
-    ('horizontally', 'vertically'), 
-    ('on', 'off'), 
+    ('column', 'row'),
+    ('horizontal', 'vertical'),
+    ('horizontally', 'vertically'),
+    ('on', 'off'),
     ('before', 'after'),
     ('opening', 'closing'),
     ('read', 'write'),
@@ -45,11 +45,11 @@ flip_pairs = (
     ('private', 'public'),
     ('encode', 'decode'),
     ('encoding', 'decoding'),
-    ('request', 'response'), 
-    ('big', 'small'), 
-    ('color', 'grayscale'), 
-    ('get', 'set'), 
-    ('accept', 'reject'), 
+    ('request', 'response'),
+    ('big', 'small'),
+    ('color', 'grayscale'),
+    ('get', 'set'),
+    ('accept', 'reject'),
     ('enter', 'exit'),
     ('up', 'down'),
     ('visible', 'hidden'),
@@ -81,28 +81,29 @@ def _is_any_word_on_caret(document_text, caret_position, words):
     else:
         return (None, None)
 
-def flip(editor=wingapi.kArgEditor):
+def flip():
     '''
     Flip between opposite words.
-    
+
     Put the caret on a word like `True` or `start` or `new` and watch it change
     into `False` or `end` or `old`.
-    
+
     Suggested key combination: `Insert P`
     '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
-    
+
     with shared.UndoableAction(document):
         word, word_start_position = _is_any_word_on_caret(
-            shared.get_text(document), 
-            editor.GetSelection()[0], 
+            shared.get_text(document),
+            editor.GetSelection()[0],
             all_words
         )
         if not word:
             return
-        
+
         for first_word, second_word in flip_pairs:
             if first_word == word:
                 new_word = second_word
@@ -114,11 +115,10 @@ def flip(editor=wingapi.kArgEditor):
                 continue
         else:
             raise RuntimeError
-        
+
         with shared.SelectionRestorer(editor):
             document.DeleteChars(word_start_position,
                                  word_start_position + len(word) - 1)
             document.InsertChars(word_start_position, new_word)
-    
-        
- 
+
+

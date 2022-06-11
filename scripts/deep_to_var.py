@@ -5,8 +5,8 @@ from __future__ import with_statement
 
 import os.path, sys
 sys.path += [
-    os.path.dirname(__file__), 
-    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+    os.path.dirname(__file__),
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'),
 ]
 
 
@@ -87,51 +87,52 @@ variable_name_map = {
     iter_pattern: 'iterator',
 }
 
-def deep_to_var(editor=wingapi.kArgEditor):
+def deep_to_var():
     '''
     Create a variable from a deep expression.
-    
+
     When you're programming, you're often writing lines like these:
-    
+
         html_color = self._style_handler.html_color
-        
+
     Or:
-    
+
         location = context_data['location']
-        
+
     Or:
-        
+
         event_handler = super(Foobsnicator, self).get_event_handler()
-    
+
     Or:
-        
+
         user_profile = models.UserProfile.objects.get(pk=pk)
-        
+
     What's common to all these lines is that you're accessing some expression,
     sometimes a deep one, and then getting an object, and making a variable for
     that object with the same name that it has in the deep expression.
-    
+
     What this `deep-to-var` script will do for you is save you from having to
     write the `html_color = ` part, which is annoying to type because you don't
     have autocompletion for it.
-    
+
     Just write your deep expression, like `self._style_handler.html_color`,
     invoke this `deep-to-var` script, and you'll get the full line and have the
     caret put on the next line.
 
     Suggested key combination: `Insert E`
     '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
-    
+
     position, _ = editor.GetSelection()
     line_number = document.GetLineNumberFromPosition(position)
     line_start = document.GetLineStart(line_number)
     line_end = document.GetLineEnd(line_number)
     line = document.GetCharRange(line_start, line_end)
     line_stripped = line.strip()
-    
+
     variable_name = None
     match = None
     for pattern in patterns:
@@ -142,7 +143,7 @@ def deep_to_var(editor=wingapi.kArgEditor):
             else:
                 (variable_name,) = match.groups()
             break
-        
+
     if match:
         if variable_name != variable_name.lower():
             # `variable_name` has an uppercase letter, and thus is probably
@@ -151,9 +152,9 @@ def deep_to_var(editor=wingapi.kArgEditor):
         string_to_insert = '%s = ' % variable_name
         actual_line_start = line_start + \
               string_tools.get_n_identical_edge_characters(line, character=' ')
-        
+
         with shared.UndoableAction(document):
-            
+
             document.InsertChars(actual_line_start, string_to_insert)
             new_position = line_end + len(string_to_insert)
             editor.SetSelection(new_position, new_position)

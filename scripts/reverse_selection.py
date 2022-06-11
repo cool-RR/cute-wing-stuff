@@ -6,8 +6,8 @@ from __future__ import with_statement
 
 import os.path, sys
 sys.path += [
-    os.path.dirname(__file__), 
-    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+    os.path.dirname(__file__),
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'),
 ]
 
 
@@ -18,15 +18,16 @@ import wingapi
 
 import shared
 
-def reverse_selection(editor=wingapi.kArgEditor, app=wingapi.kArgApplication):
+def reverse_selection(, app=wingapi.kArgApplication):
     '''
     Reverse the selection, putting the caret on the opposite side.
-    
+
     If the caret was at the beginning of the selection, it'll be put at the
     end, and if it was in the end, it'll be put in the beginning.
-    
+
     Suggested key combination: `Insert Shift-R`
     '''
+    editor = wingapi.gApplication.GetActiveEditor()
     anchor_position, caret_position = editor.GetAnchorAndCaret()
     app.ExecuteCommand('set-visit-history-anchor')
     editor.SetSelection(caret_position, anchor_position)

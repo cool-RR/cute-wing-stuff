@@ -54,7 +54,7 @@ def _get_relevant_constant_positions(editor, caret_position):
             (next_start_position, next_end_position))
 
 
-def select_next_constant(editor=wingapi.kArgEditor,
+def select_next_constant(,
                        app=wingapi.kArgApplication):
     '''
     Select the next (or current) constant in the document.
@@ -63,6 +63,7 @@ def select_next_constant(editor=wingapi.kArgEditor,
 
     Suggested key combination: `Ctrl-Alt-O`
     '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
 
@@ -75,7 +76,7 @@ def select_next_constant(editor=wingapi.kArgEditor,
         editor.SetSelection(*next_constant_position)
 
 
-def select_prev_constant(editor=wingapi.kArgEditor,
+def select_prev_constant(,
                        app=wingapi.kArgApplication):
     '''
     Select the previous constant in the document.
@@ -84,6 +85,7 @@ def select_prev_constant(editor=wingapi.kArgEditor,
 
     Suggested key combination: `Ctrl-Alt-Shift-O`
     '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
 

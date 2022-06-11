@@ -14,8 +14,8 @@ import _ast
 
 import os.path, sys
 sys.path += [
-    os.path.dirname(__file__), 
-    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+    os.path.dirname(__file__),
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'),
 ]
 
 
@@ -48,42 +48,44 @@ def _get_relevant_dotted_positions(editor, caret_position):
             last_start_position, last_end_position = \
                                                    start_position, end_position
     else:
-        next_start_position = next_end_position = None        
+        next_start_position = next_end_position = None
     return ((last_start_position, last_end_position),
             (next_start_position, next_end_position))
 
 
-def select_next_dotted(editor=wingapi.kArgEditor,
+def select_next_dotted(,
                          app=wingapi.kArgApplication):
     '''
     Select the next (or current) dotted name in the document, like `foo.bar`.
-    
+
     Suggested key combination: `Ctrl-D`
     '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
 
     caret_position = editor.GetSelection()[1] + 1
-    
+
     _, next_dotted_position = \
                       _get_relevant_dotted_positions(editor, caret_position)
     if next_dotted_position != (None, None):
         app.ExecuteCommand('set-visit-history-anchor')
         editor.SetSelection(*next_dotted_position)
 
-    
-def select_prev_dotted(editor=wingapi.kArgEditor,
+
+def select_prev_dotted(,
                           app=wingapi.kArgApplication):
     '''
     Select the previous dotted name in the document, like `foo.bar`.
-    
+
     Suggested key combination: `Ctrl-Shift-D`
     '''
+    editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
-    
+
     caret_position = editor.GetSelection()[0]
-    
+
     prev_dotted_position, _  = \
                       _get_relevant_dotted_positions(editor, caret_position)
     if prev_dotted_position != (None, None):
