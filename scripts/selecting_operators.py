@@ -81,8 +81,7 @@ def _get_relevant_assignment_positions(editor, caret_position):
             (next_start_position, next_end_position))
 
 
-def select_next_operator(,
-                         ):
+def select_next_operator():
     '''
     Select the next (or current) operator in the document.
 
@@ -106,8 +105,7 @@ def select_next_operator(,
         editor.SetSelection(*next_operator_position)
 
 
-def select_prev_operator(,
-                          ):
+def select_prev_operator():
     '''
     Select the previous operator in the document.
 
@@ -131,8 +129,7 @@ def select_prev_operator(,
         editor.SetSelection(*prev_operator_position)
 
 
-def select_next_assignment(,
-                         ):
+def select_next_assignment():
     '''
     Select the next (or current) assignment in the document.
 
@@ -156,8 +153,7 @@ def select_next_assignment(,
         editor.SetSelection(*next_assignment_position)
 
 
-def select_prev_assignment(,
-                          ):
+def select_prev_assignment():
     '''
     Select the previous assignment in the document.
 

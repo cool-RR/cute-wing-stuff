@@ -198,8 +198,7 @@ def _get_argument_positions(document, limit_to_keywords=False, truncate=None):
 ###############################################################################
 
 
-def select_next_invocation(,
-                           ):
+def select_next_invocation():
     '''
     Select the next invocation of a callable, e.g `foo.bar(baz)`.
 
@@ -221,8 +220,7 @@ def select_next_invocation(,
         editor.SetSelection(*invocation_positions[invocation_index])
 
 
-def select_prev_invocation(,
-                           ):
+def select_prev_invocation():
     '''
     Select the previous invocation of a callable, e.g `foo.bar(baz)`.
 
@@ -246,9 +244,7 @@ def select_prev_invocation(,
 
 ###############################################################################
 
-def select_next_argument(,
-                         ,
-                         limit_to_keywords=False):
+def select_next_argument(limit_to_keywords=False):
     '''
     Select the next argument to a callable.
 
@@ -315,8 +311,7 @@ def select_prev_argument(,
         editor.SetSelection(*argument_positions[argument_index])
 
 
-def remove_invocation(,
-                      ):
+def remove_invocation():
     '''
     Remove the last invocation, turning `whatever.function(value)` to `value`.
 

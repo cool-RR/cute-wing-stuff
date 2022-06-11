@@ -54,8 +54,7 @@ def _get_relevant_constant_positions(editor, caret_position):
             (next_start_position, next_end_position))
 
 
-def select_next_constant(,
-                       ):
+def select_next_constant():
     '''
     Select the next (or current) constant in the document.
 
@@ -77,8 +76,7 @@ def select_next_constant(,
         editor.SetSelection(*next_constant_position)
 
 
-def select_prev_constant(,
-                       ):
+def select_prev_constant():
     '''
     Select the previous constant in the document.
 

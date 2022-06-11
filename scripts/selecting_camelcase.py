@@ -57,8 +57,7 @@ def _get_relevant_camelcase_positions(editor, caret_position):
             (next_start_position, next_end_position))
 
 
-def select_next_camelcase(,
-                          ):
+def select_next_camelcase():
     '''
     Select the next (or current) camelcase in the document.
 
@@ -81,8 +80,7 @@ def select_next_camelcase(,
         editor.SetSelection(*next_camelcase_position)
 
 
-def select_prev_camelcase(,
-                          ):
+def select_prev_camelcase():
     '''
     Select the previous camelcase in the document.
 

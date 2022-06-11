@@ -231,8 +231,7 @@ def _offset_word_spans(word_spans, post_offset):
 
 
 
-def cute_word(direction=1, extend=False, delete=False, traverse=False,
-              , ):
+def cute_word(direction=1, extend=False, delete=False, traverse=False):
     '''
     Move, select or delete words.
 

@@ -36,8 +36,7 @@ def _type_string(string):
         autopy.key.tap(autopy.key.Code.END, []) # `End` for making AHK not interfere
 
 
-def _cute_general_replace(command_name,
-                          ):
+def _cute_general_replace(command_name):
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     app = wingapi.gApplication
@@ -69,8 +68,7 @@ def _cute_general_replace(command_name,
         app.ExecuteCommand(command_name)
 
 
-def cute_query_replace(,
-                       ):
+def cute_query_replace():
     '''
     Improved version of `query-replace` for finding and replacing in document.
 
@@ -86,8 +84,7 @@ def cute_query_replace(,
     return _cute_general_replace('query-replace', editor=editor, app=app)
 
 
-def cute_replace_string(,
-                       ):
+def cute_replace_string():
     '''
     Improved version of `replace-string` for finding and replacing in document.
 

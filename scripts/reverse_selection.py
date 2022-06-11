@@ -18,7 +18,7 @@ import wingapi
 
 import shared
 
-def reverse_selection(, ):
+def reverse_selection():
     '''
     Reverse the selection, putting the caret on the opposite side.
 

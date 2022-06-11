@@ -17,8 +17,7 @@ import shared
 
 
 
-def cute_open_line(, line_offset=0,
-                   stand_ground=False):
+def cute_open_line(line_offset=0, stand_ground=False):
     '''
     Open a new line. (i.e. enter a newline character.)
 

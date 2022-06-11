@@ -52,8 +52,7 @@ def _get_relevant_number_positions(editor, caret_position):
             (next_start_position, next_end_position))
 
 
-def select_next_number(,
-                       ):
+def select_next_number():
     '''
     Select the next (or current) number in the document.
 
@@ -73,8 +72,7 @@ def select_next_number(,
         editor.SetSelection(*next_number_position)
 
 
-def select_prev_number(,
-                       ):
+def select_prev_number():
     '''
     Select the previous number in the document.
 

@@ -72,7 +72,7 @@ def _is_whitespaceless_name(string):
                 in whitespace_characters))
 
 
-def _select_more_until_biggest_match(condition, ):
+def _select_more_until_biggest_match(condition):
     '''`select-more` until reaching biggest text that satisfies `condition`.'''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
@@ -155,8 +155,7 @@ def _get_scope_name_positions(document):
     return tuple(match.span(1) for match in matches)
 
 
-def select_next_scope_name(,
-                           ):
+def select_next_scope_name():
     '''
     Select the next scope name like `def thing():` or `class Thing():`.
 
@@ -180,8 +179,7 @@ def select_next_scope_name(,
         editor.SetSelection(*scope_name_positions[scope_name_index])
 
 
-def select_prev_scope_name(,
-                           ):
+def select_prev_scope_name():
     '''
     Select the previous scope name like `def thing():` or `class Thing():`.
 

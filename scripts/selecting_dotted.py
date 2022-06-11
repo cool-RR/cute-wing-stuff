@@ -53,8 +53,7 @@ def _get_relevant_dotted_positions(editor, caret_position):
             (next_start_position, next_end_position))
 
 
-def select_next_dotted(,
-                         ):
+def select_next_dotted():
     '''
     Select the next (or current) dotted name in the document, like `foo.bar`.
 
@@ -74,8 +73,7 @@ def select_next_dotted(,
         editor.SetSelection(*next_dotted_position)
 
 
-def select_prev_dotted(,
-                          ):
+def select_prev_dotted():
     '''
     Select the previous dotted name in the document, like `foo.bar`.
 

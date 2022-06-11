@@ -289,7 +289,7 @@ def _clip_to_document_range(position, document):
         return position
 
 
-def _move_half_page(direction, ):
+def _move_half_page(direction):
     '''
     Move half a page, either up or down.
 

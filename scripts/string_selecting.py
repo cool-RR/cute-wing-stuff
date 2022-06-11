@@ -118,8 +118,7 @@ def _find_string_from_position(editor, position, multiline=False):
         return (start_marker, end_marker)
 
 
-def select_next_string(inner=False, ,
-                       ):
+def select_next_string(inner=False):
     '''
     Select the next (or current) string, starting from caret location.
 
@@ -177,8 +176,7 @@ def select_next_string(inner=False, ,
         _innerize_selected_string(editor)
 
 
-def select_prev_string(inner=False, ,
-                       ):
+def select_prev_string(inner=False):
     '''
     Select the previous string, starting from caret location.
 

@@ -43,7 +43,7 @@ def _get_n_identical_edge_characters(string, character=None, head=True):
         return len(string)
 
 
-def push_line_to_end(, line_offset=0):
+def push_line_to_end(line_offset=0):
     '''
     Push the current line to the end, aligning it to right border of editor.
 

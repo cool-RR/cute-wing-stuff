@@ -20,8 +20,7 @@ import shared
 range_pattern = re.compile('^(x?range)\(.*\)$')
 
 
-def for_thing_in_things(, ,
-                        comprehension=False):
+def for_thing_in_things(comprehension=False):
     '''
     Turn `things` into `for thing in things:`.
 

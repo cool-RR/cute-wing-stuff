@@ -15,7 +15,7 @@ import wingapi
 import shared
 
 
-def slash_line(, line_offset=0, at_caret=False):
+def slash_line(line_offset=0, at_caret=False):
     '''
     Slash a long line into 2 lines, putting a `\` character as a separator.
 
