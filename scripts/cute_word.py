@@ -122,16 +122,20 @@ def _get_alpha_word_spans_in_text(text, post_offset=0):
         #                                                                     #
         ### Finished finding middle underscores. ##############################
 
-        middle_underscore_indices = map(
-            lambda i: i + pre_pre_alpha_word_span[0],
-            relative_middle_underscore_indices
+        middle_underscore_indices = tuple(
+            map(
+                lambda i: i + pre_pre_alpha_word_span[0],
+                relative_middle_underscore_indices
+            )
         )
 
-        non_middle_underscore_indices = filter(
-            lambda i: i not in middle_underscore_indices,
-            range(
-                pre_pre_alpha_word_span[0],
-                pre_pre_alpha_word_span[1] + 1,
+        non_middle_underscore_indices = tuple(
+            filter(
+                lambda i: i not in middle_underscore_indices,
+                range(
+                    pre_pre_alpha_word_span[0],
+                    pre_pre_alpha_word_span[1] + 1,
+                )
             )
         )
 
