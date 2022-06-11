@@ -24,6 +24,14 @@ import wingapi
 
 import shared
 
+# Python 2 shim:
+try:
+    xrange
+except NameError:
+    pass
+else:
+    range = xrange
+
 
 punctuation_word_pattern = re.compile(
     r'''[!"#$%&'()*+,\-./:;<=>?@[\\\]^`{|}~]+'''
@@ -121,7 +129,7 @@ def _get_alpha_word_spans_in_text(text, post_offset=0):
 
         non_middle_underscore_indices = filter(
             lambda i: i not in middle_underscore_indices,
-            xrange(
+            range(
                 pre_pre_alpha_word_span[0],
                 pre_pre_alpha_word_span[1] + 1,
             )
@@ -167,7 +175,7 @@ def _get_alpha_word_spans_in_text(text, post_offset=0):
         saw_first_alpha = False
 
         for i in \
-                xrange(pre_alpha_word_span[0], pre_alpha_word_span[1] + 1):
+                range(pre_alpha_word_span[0], pre_alpha_word_span[1] + 1):
             character = text[i]
             if not character.isalpha():
                 continue
