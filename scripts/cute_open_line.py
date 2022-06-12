@@ -9,8 +9,6 @@ sys.path += [
     os.path.join(os.path.dirname(__file__), 'third_party.zip'),
 ]
 
-import contextlib
-
 import wingapi
 
 import shared
@@ -59,7 +57,7 @@ def cute_open_line(line_offset=0, stand_ground=False):
             )
         )
 
-    with contextlib.nested(*context_managers):
+    with shared.nested(*context_managers):
         if line_offset == 0:
             editor.ExecuteCommand('new-line')
         else:
