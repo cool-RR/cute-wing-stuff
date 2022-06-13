@@ -42,25 +42,26 @@ def go_up_to_project_frame(application=wingapi.gApplication):
     debugger = application.GetDebugger()
     all_project_files = set(map(_normalize_path, project.GetAllFiles()))
     _current_run_state = debugger.GetCurrentRunState()
-    _thread_id, _frame_index = _current_run_state.GetStackFrame()
+    _thread_id, (_, _frame_index) = _current_run_state.GetStackIndex()
     _stack = _current_run_state.GetStack()
-
     if not _stack:
         return
 
     file_paths = [_normalize_path(file_path) for file_path, _, _, _, _ in
                   _stack]
-    file_paths_in_project_above_current_frame = filter(
-        lambda i_and_file_path: i_and_file_path[1] in all_project_files and
-                                            i_and_file_path[0] < _frame_index,
-        enumerate(file_paths)
+    file_paths_in_project_above_current_frame = tuple(
+        filter(
+            lambda i_and_file_path: i_and_file_path[1] in all_project_files and
+                                                                  i_and_file_path[0] < _frame_index,
+            enumerate(file_paths)
+        )
     )
     if not file_paths_in_project_above_current_frame:
         return
     index_of_last_file_path_in_project = \
                                file_paths_in_project_above_current_frame[-1][0]
 
-    _current_run_state.SetStackFrame(_thread_id,
+    _current_run_state.SetStackIndex(_thread_id,
                                      index_of_last_file_path_in_project)
 
 
@@ -83,7 +84,7 @@ def go_down_to_project_frame(application=wingapi.gApplication):
     debugger = application.GetDebugger()
     all_project_files = set(map(_normalize_path, project.GetAllFiles()))
     _current_run_state = debugger.GetCurrentRunState()
-    _thread_id, _frame_index = _current_run_state.GetStackFrame()
+    _thread_id, (_, _frame_index) = _current_run_state.GetStackIndex()
     _stack = _current_run_state.GetStack()
 
     if not _stack:
@@ -91,17 +92,19 @@ def go_down_to_project_frame(application=wingapi.gApplication):
 
     file_paths = [_normalize_path(file_path) for file_path, _, _, _, _ in
                   _stack]
-    file_paths_in_project_below_current_frame = filter(
-        lambda i_and_file_path: i_and_file_path[1] in all_project_files and
-                                            i_and_file_path[0] > _frame_index,
-        enumerate(file_paths)
+    file_paths_in_project_below_current_frame = tuple(
+        filter(
+            lambda i_and_file_path: i_and_file_path[1] in all_project_files and
+                                                                  i_and_file_path[0] > _frame_index,
+            enumerate(file_paths)
+        )
     )
     if not file_paths_in_project_below_current_frame:
         return
     index_of_last_file_path_in_project = \
                                file_paths_in_project_below_current_frame[0][0]
 
-    _current_run_state.SetStackFrame(_thread_id,
+    _current_run_state.SetStackIndex(_thread_id,
                                      index_of_last_file_path_in_project)
 
 
