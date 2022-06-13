@@ -54,7 +54,7 @@ def _get_rhs_positions(document):
     stripper = lambda start_and_end: \
         shared.strip_segment_from_whitespace_and_newlines(document_text,
                                                           *start_and_end)
-    return map(stripper, (match.span('rhs') for match in matches))
+    return tuple(map(stripper, (match.span('rhs') for match in matches)))
 
 
 ###############################################################################

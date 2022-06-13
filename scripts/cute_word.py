@@ -169,7 +169,7 @@ def _get_alpha_word_spans_in_text(text, post_offset=0):
         pre_alpha_word_span = pre_alpha_word_spans.pop()
         pre_alpha_word = \
                   text[pre_alpha_word_span[0] : pre_alpha_word_span[1] + 1]
-        alpha_characters = filter(str.isalpha, pre_alpha_word)
+        alpha_characters = tuple(filter(str.isalpha, pre_alpha_word))
         if not alpha_characters:
             alpha_word_spans.append(pre_alpha_word_span)
             continue

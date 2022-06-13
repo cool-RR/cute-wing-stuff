@@ -168,10 +168,12 @@ def _get_invocation_positions(document):
 def _get_argument_batch_positions(document, truncate=None):
     matches = _get_matches_for_arguments(document, truncate=truncate)
     parenthesis_starts = tuple(match.span(0)[1]-1 for match in matches)
-    return map(
-        lambda parenthesis_start:
-                  _get_span_of_opening_parenthesis(document, parenthesis_start),
-        parenthesis_starts
+    return tuple(
+        map(
+            lambda parenthesis_start:
+                                      _get_span_of_opening_parenthesis(document, parenthesis_start),
+            parenthesis_starts
+        )
     )
 
 def _get_argument_positions(document, limit_to_keywords=False, truncate=None):
@@ -187,11 +189,12 @@ def _get_argument_positions(document, limit_to_keywords=False, truncate=None):
         )
                        for argument_batch_position in argument_batch_positions)
     ))
-    argument_positions = map(
-        lambda start_and_end:
-            shared.strip_segment_from_whitespace_and_newlines(document_text,
-                                                              *start_and_end),
-        raw_argument_positions
+    argument_positions = tuple(
+        map(
+            lambda start_and_end:
+            shared.strip_segment_from_whitespace_and_newlines(document_text, *start_and_end),
+            raw_argument_positions
+        )
     )
     return argument_positions
 
