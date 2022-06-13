@@ -25,7 +25,7 @@ import edit
 import shared
 
 
-number_pattern = re.compile(r'''-?(([0-9]+(\.[0-9]+)?)|(\.[0-9]+))''')
+number_pattern = re.compile(r'''-?(([0-9][0-9_]*(\.[0-9]+)?)|(\.[0-9]+))''')
 
 
 def _get_all_number_positions(editor):
