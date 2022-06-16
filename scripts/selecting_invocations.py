@@ -74,12 +74,14 @@ def _collect_offsets(call_string, limit_to_keywords=False):
         offsets.append(_abs_offset(a.lineno, a.col_offset))
     for kw in call.keywords:
         offsets.append(_abs_offset(kw.value.lineno, kw.value.col_offset))
-    if call.starargs:
-        offsets.append(_abs_offset(call.starargs.lineno,
-                                   call.starargs.col_offset))
-    if call.kwargs:
-        offsets.append(_abs_offset(call.kwargs.lineno,
-                                   call.kwargs.col_offset))
+    if sys.version_info.major == 2:
+        if call.starargs:
+            offsets.append(_abs_offset(call.starargs.lineno,
+                                       call.starargs.col_offset))
+        if call.kwargs:
+            offsets.append(_abs_offset(call.kwargs.lineno,
+                                       call.kwargs.col_offset))
+
     offsets.append(len(call_string))
     return offsets
 
