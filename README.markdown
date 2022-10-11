@@ -32,13 +32,13 @@ I provide `Development services in Python and Django <https://chipmunkdev.com>`_
 ## arg-to-attr ##
 
 Turn an argument to `__init__` into an instance attribute.
-    
+
 For example, you have just typed this:
 
     class MyObject(object):
         def __init__(self, crunchiness):
             <Cursor is here>
-            
+
 (Of course, you can substitute `crunchiness` for whatever your argument's name
 is.)
 
@@ -58,9 +58,9 @@ Suggested key combination: `Insert A`
 
 
 ## backward-half-page ##
-    
+
 Move half a page up.
-    
+
 This is essentially one half of Page-Up.
 
 Suggested key combination: `Alt-Page_up` (As long as you don't use Wing's folding.)
@@ -79,6 +79,20 @@ braces found in strings.
 Suggested key combination: `Alt-Bracketright`
 
 
+## colon-at-end ##
+
+Go to the end of the line and insert a colon.
+
+Suggested key combination: `Ctrl-Semicolon`
+
+
+## comma-newline-at-end ##
+
+Go to the end of the line, insert a comma and a newline.
+
+Suggested key combination: `Ctrl-Comma`
+
+
 ## comment-braces ##
 
 Create "comment braces" with a title around a piece of code.
@@ -89,10 +103,10 @@ For example, if you have this code:
     do_something_else()
     meow = frr + 7
     do_something_again()
-    
+
 You can select it, then run the `comment-braces` script with a title of
 "doing inane stuff", to get this:
-    
+
     ### Doing inane stuff: ####################################################
     #                                                                         #
     do_something()
@@ -101,7 +115,7 @@ You can select it, then run the `comment-braces` script with a title of
     do_something_again()
     #                                                                         #
     ### Finished doing inane stuff. ###########################################
-    
+
 (Don't try this inside a docstring, it works only in real code.)
 
 The title usually has a first word ending with "ing". Don't bother capitalizing
@@ -118,17 +132,17 @@ Enter a horizontal line of "#" characters going until character 79.
 Example:
 
     #######################################################################
-    
+
 Suggested key combination: `Insert H`
 
 
 ## cute-evaluate-sel-in-debug-probe ##
 
 Evaluate selection in debug probe, doing `select-more` if nothing selected.
-    
+
 Suggested key combination: `Ctrl-Alt-D`
 
-    
+
 ## cute-goto-line ##
 
 Go to a specified line number in editor, temporarily showing line numbers.
@@ -141,7 +155,7 @@ line.
 Using this script you can see exactly which line you're going to before issuing
 the command; and if usually keep line numbers hidden, then they will be hidden
 automatically after Wing has moved to the specified line.
-    
+
 Also, the caret will go to the beginning of the text on the line instead of
 Wing's default of going to column 0.
 
@@ -172,7 +186,7 @@ Suggested key combinations:
     `Ctrl-Return` for `line_offset=1`
     `Alt-Shift-Return` for `line_offset=-1, stand_ground=True`
     `Ctrl-Alt-Return` for `line_offset=1, stand_ground=True`
-    
+
 (The `Alt-Return` combination requires a AHK shim, at least on Windows.)
 
 
@@ -245,7 +259,7 @@ Suggested key combinations:
     `Ctrl-Alt-Shift-Up` for direction=-1, traverse=True
     `Alt-Delete` for direction=1, delete=True
     `Alt-Backspace` for direction=-1, delete=True
-    
+
 (Tip: If you do bind to `Ctrl-Alt-Right` and `Ctrl-Alt-Left` as I suggest, then
 I also suggest you bind `Ctrl-Right-Up` and `Ctrl-Right-Down` to
 `goto-previous-bookmark` and `goto-next-bookmark` respectively, so you'll still
@@ -253,25 +267,25 @@ have bookmark-traversing commands available.)
 
 
 ## deep-to-var ##
-    
+
 Create a variable from a deep expression.
 
 When you're programming, you're often writing lines like these:
 
     html_color = self._style_handler.html_color
-    
+
 Or:
 
     location = context_data['location']
-    
+
 Or:
-    
+
     event_handler = super(Foobsnicator, self).get_event_handler()
 
 Or:
-        
+
     user_profile = models.UserProfile.objects.get(pk=pk)
-        
+
 What's common to all these lines is that you're accessing some expression,
 sometimes a deep one, and then getting an object, and making a variable for
 that object with the same name that it has in the deep expression.
@@ -290,7 +304,7 @@ Suggested key combination: `Insert E`
 ## delete-line-and-home ##
 
 Delete the current line and send caret to beginning of text in next line.
-    
+
 When you use Wing's default `delete-line` command to delete a line, it
 sends the caret to column 0, which is annoying. This script fixes that by
 first deleting a line, then sending the caret to the beginning of the text
@@ -393,9 +407,9 @@ Suggested key combination: `Insert Ctrl-F`
 
 
 ## forward-half-page ##
-    
+
 Move half a page down.
-    
+
 This is essentially one half of Page-Down.
 
 Suggested key combination: `Alt-Page_down` (As long as you don't use Wing's
@@ -442,7 +456,7 @@ usually not to blame.
 `go-up-to-project-frame` to the rescue! Invoke this script while debugging
 in order to be taken to the closest higher stack frame that's on a project
 file rather than an external module.
-    
+
 Suggested key combination: `Alt-F11`
 
 
@@ -472,9 +486,9 @@ Suggested key combination: `Insert Shift-G`
 
 
 ## instantiate ##
-    
+
 Write `my_class_name = MyClassName()`.
-    
+
 This is used to quickly instantiate a class. Write your class name, like
 `CatNip`. It will usually be autocompleted. Then execute this script, and
 you'll have `cat_nip = CatNip()`, with the cursor positioned between the brackes.
@@ -520,18 +534,18 @@ Suggested key combination: `Alt-Bracketleft`
 ## push-line-to-end ##
 
 Push the current line to the end, aligning it to right border of editor.
-    
+
 This inserts or deletes as many spaces as necessary from the beginning of the
 line to make the end of the line exactly coincide with the right border of the
 editor. (Whose width can be configured in the `TARGET_LINE_LENGTH` constant in
 the script's module.)
 
 This is useful for creating lines of this style:
-    
+
     if first_long_condition(foo, foobar) and \
                                           second_long_condition(fubaz, bazbar):
 
-Also deletes trailing spaces.                                          
+Also deletes trailing spaces.
 
 
 ## remove-invocation ##
@@ -582,7 +596,7 @@ Select the Python expression that the cursor is currently on.
 
 This does `select-more` until the biggest possible legal Python expression is
 selected.
-    
+
 Suggested key combination: `Ctrl-Alt-Plus`
 
 
@@ -638,8 +652,8 @@ Suggested key combination: `Ctrl-D`
 Select the next invocation of a callable, e.g `foo.bar(baz)`.
 
 Suggested key combination: `Ctrl-Alt-8`
-    
-    
+
+
 ## select-next-lhs ##
 
 Select the next left-hand-side of an assignment.
@@ -699,8 +713,8 @@ Set `limit_to_keywords=True` to go only to a keyword argument.
 
 Suggested key combinations: `Ctrl-Shift-R`
                             `Ctrl-Shift-Alt-R` for `limit_to_keywords=True`
-                            
-                            
+
+
 ## select-prev-assignment ##
 
 Select the previous assignment in the document.
@@ -743,8 +757,8 @@ Suggested key combination: `Ctrl-Shift-D`
 Select the previous invocation of a callable, e.g `foo.bar(baz)`.
 
 Suggested key combination: `Ctrl-Alt-Asterisk`
-    
-    
+
+
 ## select-prev-lhs ##
 
 Select the previous left-hand-side of an assignment.
@@ -813,18 +827,18 @@ This does `select-more` until the biggest possible whitespace-less name is selec
 
 Suggested key combination: `Ctrl-Alt-Equal`
 
-    
+
 ## slash-line ##
 
 Slash a long line into 2 lines, putting a `\` character as a separator.
-    
+
 This is good for automatically formatting long lines into this style:
 
     has_corresponding_source_file = \
                                os.path.exists(corresponding_python_source_file)
     nose.selector.Selector.wantFile = \
                        types.MethodType(wantFile, None, nose.selector.Selector)
-    
+
 Specify `line_offset` to slash a line different from the one that the caret
 is on. For example, `line_offset=-1` would slash the previous line.
 
@@ -838,14 +852,14 @@ Suggested key combination: `Insert L` for default arguments, `Insert Shift-L` fo
 
 Start SmartGit for the current project.
 
-Suggested key combination: `Insert G`    
+Suggested key combination: `Insert G`
 
 
 ## smartgit-blame ##
 
 Start SmartGit blame on the currently selected line.
-    
-Suggested key combination: `Insert Ctrl-B`    
+
+Suggested key combination: `Insert Ctrl-B`
 
 
 ## type-super ##
@@ -865,7 +879,7 @@ Turn `things` into `(thing,)`.
 Useful for writing things like:
 
     (thing,) == things
-    
+
 See this blog post for more context: http://blog.ram.rachum.com/post/1198230058/python-idiom-for-taking-the-single-item-from-a-list
 
 Suggested key combination: `Insert U`
