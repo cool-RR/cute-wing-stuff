@@ -399,8 +399,8 @@ def get_file_content(file_path):
 def open_path_in_explorer(path):
     if sys.platform == 'darwin':
         subprocess.call(['open', '--', path])
-    elif sys.platform == 'linux2':
-        subprocess.call(['gnome-open', '--', path])
+    elif sys.platform in ('linux', 'linux2'):
+        subprocess.call(['open', path])
     elif sys.platform == 'win32':
         subprocess.call(['explorer', path])
 

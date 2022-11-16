@@ -121,29 +121,39 @@ if monkeypatch:
 
     def _open(self, filenames):
         from wingide.topcommands import location, logging, prefs
+
         # Get file location object
         loc_list = [location.CreateFromName(name) for name in filenames]
 
         for loc in loc_list:
-            if loc.IsDirectory():
-                path = _get_location_path(loc)
-                shared.open_path_in_explorer(path)
-            else:
-                opened = False
+            def do_open(abort, loc=loc):
+                if abort:
+                    msg = (_("File open failed") + '::'
+                           + _("Remote file %s could not be inspected.") %
+                           self.fGuiMgr.NameForLocation(loc, tstyle='prepend-fullpath use-tilde'))
+                    logger = logging.getLogger('editor')
+                    logger.error(msg)
+                elif loc.IsDirectory():
+                    path = _get_location_path(loc)
+                    shared.open_path_in_explorer(path)
+                else:
+                    opened = False
 
-                # If so configured, open any project as a project if possible; if fail
-                # to do so, then open it as text
-                if not self.fGuiMgr.fPrefMgr.GetValue(prefs.kOpenProjectsAsText):
-                    parts = loc.fUrl.split('.')
-                    if parts[-1] == 'wpr' or parts[-1] == 'wpu':
-                        self.fSingletons.fWingIDEApp.fProjMgr.OpenProject(loc)
-                        opened = True
+                    # If so configured, open any project as a project if possible; if fail
+                    # to do so, then open it as text
+                    if not self.fGuiMgr.fPrefMgr.GetValue(prefs.kOpenProjectsAsText):
+                        parts = loc.fUrl.split('.')
+                        if parts[-1] == 'wpr' or parts[-1] == 'wpu':
+                            self.fSingletons.fWingIDEApp.fProjMgr.OpenProject(loc)
+                            opened = True
 
-                if not opened:
-                    # Open the file into active document window
-                    win = self.fGuiMgr.GetActiveDocumentWindow()
-                    src_text = self.fGuiMgr.DisplayDocument(loc, blank_if_not_found=True,
-                                                            win=win, sticky=True)
+                    if not opened:
+                        # Open the file into active document window
+                        win = self.fGuiMgr.GetActiveDocumentWindow()
+                        src_text = self.fGuiMgr.DisplayDocument(loc, blank_if_not_found=True,
+                                                    win=win, sticky=True)
+            loc._WaitForInspect(do_open)
+
 
     wingide.topcommands.CApplicationControlCommands._open = _open
 
