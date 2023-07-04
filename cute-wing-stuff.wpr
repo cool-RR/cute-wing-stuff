@@ -1,14 +1,13 @@
 #!wing
-#!version=7.0
+#!version=9.0
 ##################################################################
 # Wing project file                                              #
 ##################################################################
 [project attributes]
 console.toolbox = [{'autosave': False,
-                    'cmd': '"c:\\Users\\Administrator\\Dropbox\\Scripts and '\
-                           'shortcuts\\wizmo.exe"\n',
+                    'cmd': '"c:\\Users\\Administrator\\Dropbox\\Scripts and shortcuts\\wizmo.exe"\n',
                     'env': ('project',
-                            [u'']),
+                            ['']),
                     'id': 'cmd-DgJcdoqb01Nx8xqV',
                     'io_encoding': None,
                     'key_binding': '',
@@ -18,24 +17,24 @@ console.toolbox = [{'autosave': False,
                                ''),
                     'raise_panel': True,
                     'rundir': ('project',
-                               u''),
+                               ''),
                     'title': 'wizmo'}]
 debug.launch-configs = (2,
                         {'launch-pgMYftlVmBESR2bV': ({},
         {'buildcmd': ('project',
                       None),
          'env': ('project',
-                 [u'']),
+                 ['']),
          'name': 'Launch Config',
          'pyexec': ('custom',
-                    u'c:\\Python27\\python.exe'),
+                    'c:\\Python27\\python.exe'),
          'pypath': ('project',
                     []),
          'pyrunargs': ('project',
                        '-u'),
-         'runargs': u'',
+         'runargs': '',
          'rundir': ('project',
-                    u'')})})
+                    '')})})
 proj.directory-list = [{'dirloc': loc('.'),
                         'excludes': (),
                         'filter': '*',
@@ -44,11 +43,11 @@ proj.directory-list = [{'dirloc': loc('.'),
                         'watch_for_changes': True},
                        {'dirloc': loc('../../../../../Program Files (x86)/Wing IDE 6.0'),
                         'excludes': (),
-                        'filter': u'*',
+                        'filter': '*',
                         'include_hidden': False,
                         'recursive': True,
                         'watch_for_changes': True}]
 proj.file-type = 'shared'
 proj.launch-config = {loc('../../../Desktop/foo.py'): ('custom',
-        (u'',
+        ('',
          'launch-pgMYftlVmBESR2bV'))}
