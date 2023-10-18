@@ -576,6 +576,18 @@ end, and if it was in the end, it'll be put in the beginning.
 Suggested key combination: `Insert Shift-R`
 
 
+
+## roberto ##
+
+Use ChatGPT to modify your code.
+
+Put your OpenAI API key in `~/.roberto-openai-key` first. Mark some segment of code and invoke
+`roberto`. Then in the dialog, write in text what changes you want ChatGPT to make. Then wait,
+sometimes even several minutes, for it to complete.
+
+Suggested key combination: `Insert Ctrl-Alt-R`
+
+
 ## run-command-idempotent ##
 
 Run a command, first terminating any running instances of it.

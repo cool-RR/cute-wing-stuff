@@ -41,7 +41,7 @@ proj.directory-list = [{'dirloc': loc('.'),
                         'include_hidden': False,
                         'recursive': True,
                         'watch_for_changes': True},
-                       {'dirloc': loc('../../../../../Program Files (x86)/Wing IDE 6.0'),
+                       {'dirloc': loc('../../../Program Files (x86)/Wing IDE 6.0'),
                         'excludes': (),
                         'filter': '*',
                         'include_hidden': False,
@@ -49,5 +49,8 @@ proj.directory-list = [{'dirloc': loc('.'),
                         'watch_for_changes': True}]
 proj.file-type = 'shared'
 proj.launch-config = {loc('../../../Desktop/foo.py'): ('custom',
+        ('',
+         'launch-pgMYftlVmBESR2bV')),
+                      loc('scripts/roberto.py'): ('project',
         ('',
          'launch-pgMYftlVmBESR2bV'))}

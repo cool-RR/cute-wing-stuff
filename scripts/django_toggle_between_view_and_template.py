@@ -12,6 +12,7 @@ import shutil
 sys.path += [
     os.path.dirname(__file__),
     os.path.join(os.path.dirname(__file__), 'third_party.zip'),
+    os.path.join(os.path.dirname(__file__), f'third_party_{os.name}.zip'),
 ]
 
 

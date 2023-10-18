@@ -5,8 +5,9 @@ from __future__ import with_statement
 
 import os.path, sys
 sys.path += [
-    os.path.dirname(__file__), 
-    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+    os.path.dirname(__file__),
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'),
+    os.path.join(os.path.dirname(__file__), f'third_party_{os.name}.zip'),
 ]
 
 
@@ -18,7 +19,7 @@ import shared
 def frame_show_and_home():
     '''
     Go to the line of the current frame and send caret to beginning of text.
-    
+
     When you use Wing's default `frame-show` command to go to the line of the
     current frame, it sends the caret to column 0, which is annoying. This
     script fixes that by first doing `frame-show`, then sending the caret to
@@ -28,5 +29,4 @@ def frame_show_and_home():
     '''
     wingapi.gApplication.ExecuteCommand('frame-show')
     wingapi.gApplication.ExecuteCommand('beginning-of-line-text')
-    
-    
+

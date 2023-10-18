@@ -9,12 +9,15 @@ import os.path, sys
 sys.path += [
     os.path.dirname(__file__),
     os.path.join(os.path.dirname(__file__), 'third_party.zip'),
+    os.path.join(os.path.dirname(__file__), f'third_party_{os.name}.zip'),
 ]
 
 
 import wingapi
 
 import shared
+
+
 
 
 range_pattern = re.compile('^(x?range)\(.*\)$')

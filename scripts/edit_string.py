@@ -5,8 +5,9 @@ from __future__ import with_statement
 
 import os.path, sys
 sys.path += [
-    os.path.dirname(__file__), 
-    os.path.join(os.path.dirname(__file__), 'third_party.zip'), 
+    os.path.dirname(__file__),
+    os.path.join(os.path.dirname(__file__), 'third_party.zip'),
+    os.path.join(os.path.dirname(__file__), f'third_party_{os.name}.zip'),
 ]
 
 import ast
@@ -56,13 +57,13 @@ def format_string(string, double=False, triple=False, bytes_=False, raw=False,
     quote_string = quote_character * (3 if triple else 1)
     last_column = \
         wingapi.gApplication.GetPreference('edit.text-wrap-column') - 1
-    
+
     if raw and string.endswith(quote_character):
         raise Exception("Can't do a raw string that ends with its quote "
                         "character.")
-    
+
     content_list = []
-        
+
     i = 0
     while i < len(string):
         if triple and string.startswith(quote_string, i):
@@ -85,9 +86,9 @@ def format_string(string, double=False, triple=False, bytes_=False, raw=False,
             content_list.append(base_escape_map[current_substring])
         else:
             content_list.append(current_substring)
-            
+
     content = ''.join(content_list)
-    
+
     def wrap_content(content):
         return '%s%s%s%s' % (
             ''.join((
@@ -100,9 +101,9 @@ def format_string(string, double=False, triple=False, bytes_=False, raw=False,
             content,
             quote_string
         )
-    
+
     formatted_string = wrap_content(content)
-    
+
     if not avoid_multiline and \
                        (starting_column + len(formatted_string) > last_column):
         # Splitting the string to a multiline one.
@@ -124,16 +125,16 @@ def format_string(string, double=False, triple=False, bytes_=False, raw=False,
             del content_segments[-1]
             content_segments.append(last_content_segment[:place_to_cut+1])
             content_segments.append(last_content_segment[place_to_cut+1:])
-                
-        
+
+
         separator = ('\n%s' % (' ' * (starting_column)))
         formatted_string = separator.join(
             map(wrap_content, content_segments)
         )
     # elif docstring_style:
         # formatted_string.replace('\\n', '\n')
-        
-        
+
+
     #if isinstance(formatted_string, unicode):
         #formatted_string = formatted_string.encode()
     formatted_string_without_f = (formatted_string.replace('f', '', 1) if
@@ -150,7 +151,7 @@ def format_string(string, double=False, triple=False, bytes_=False, raw=False,
                         '%s\r\n'
               % (string, formatted_string, ast.literal_eval(formatted_string), ))
     return formatted_string
-    
+
 
 def _bool_to_qt_check_state(bool_):
     return guiutils.wgtk.Qt.Checked if bool_ else guiutils.wgtk.Qt.Unchecked
@@ -159,19 +160,19 @@ def _bool_to_qt_check_state(bool_):
 def edit_string():
     '''
     Open a dialog for editing a string.
-    
+
     If the caret is standing on a string, it'll edit the current string.
     Otherwise you can enter a new string and it'll be inserted into the
     document. The dialog has lots of checkboxes for toggling things about the
     string: Whether it's unicode, raw, bytes, f-string, type of quote, etc.
-    
+
     When is this better than editing a string in the editor?
-    
+
      - When you have a mess of escape character. The dialog automatically
        translates the escape characters for you so you don't have to think
        about them. (Very useful when entering Windows paths that have
        backslashes in them.)
-       
+
      - When you're editing a multiline string of this style:
         raise Exception("There's some long text here that takes up more than "
                         "one line, and it's broken in a nice way that doesn't "
@@ -179,19 +180,19 @@ def edit_string():
                         "see it as one block of text, while the cutting "
                         "points will be automatically determined by the "
                         "dialog.")
-                        
+
     Note: Currently doesn't work on docstrings, and other triple-quote
     multiline strings.
-    
+
     Suggested key combination: `Ctrl-Alt-S`
-    
+
     '''
     app = wingapi.gApplication
     editor = app.GetActiveEditor()
     document = editor.GetDocument()
     last_column = \
                 wingapi.gApplication.GetPreference('edit.text-wrap-column') - 1
-    
+
     selection_start, selection_end = editor.GetSelection()
     selection_start_line = document.GetLineNumberFromPosition(selection_start)
     selection_start_column = selection_start - \
@@ -199,7 +200,7 @@ def edit_string():
     selection_end_line = document.GetLineNumberFromPosition(selection_end)
     selection_end_column = selection_end - \
                                       document.GetLineStart(selection_end_line)
-    
+
     widget = guiutils.wgtk.QWidget()
     layout = guiutils.wgtk.QVBoxLayout()
     widget.setLayout(layout)
@@ -224,7 +225,7 @@ def edit_string():
     layout.addWidget(text_edit_label)
     layout.addWidget(text_edit)
     layout.addLayout(sub_layout)
-    
+
     replacing_old_string = \
         string_selecting._is_position_on_string(editor, selection_start)
     if replacing_old_string:
@@ -255,21 +256,21 @@ def edit_string():
         # if is_docstring_style:
             # pre_content, old_string, post_content = \
                                    # stripping_pattern.match(old_string).groups()
-            
+
         # else:
             # pre_content = post_content = None
-            
+
         string_starting_column = (
             old_string_ranges[0][0] -
             document.GetLineStart(
                 document.GetLineNumberFromPosition(old_string_ranges[0][0])
             )
         )
-            
+
         text_edit.setPlainText(old_string)
     else:
         string_starting_column = selection_start_column
-        
+
     def ok():
         try:
             string = text_edit.toPlainText()
@@ -281,7 +282,7 @@ def edit_string():
             triple = bool(triple_checkbox.checkState())
             avoid_multiline = bool(avoid_multiline_checkbox.checkState())
             # docstring_style = bool(docstring_style_checkbox.checkState())
-            
+
             formatted_string = format_string(
                 string, bytes_=bytes_, f_string=f_string, unicode_=unicode_,
                 raw=raw, double=double, triple=triple,
@@ -315,5 +316,4 @@ def edit_string():
     ]
     dialog = guiutils.dialogs.CWidgetDialog(None, 'Edit string',
                                             'Edit string', widget, buttons)
-    dialog.RunAsModal()    
-    
+    dialog.RunAsModal()
