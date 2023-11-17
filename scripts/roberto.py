@@ -18,6 +18,9 @@ import shared
 
 GPT_3_5_TURBO = 'gpt-3.5-turbo'
 GPT_4 = 'gpt-4'
+GPT_4_TURBO = 'gpt-4-1106-preview'
+
+SELECTED_MODEL = GPT_4_TURBO
 
 TOP_WHITESPACE_PATTERN = re.compile('^(\s*)')
 BOTTOM_WHITESPACE_PATTERN = re.compile('(\s*)$')
@@ -58,7 +61,7 @@ pattern = re.compile(r'(?s)```(?:[a-z0-9]*)\n(.+)\n```')
 def _ask_chatgpt(message: str) -> str:
     import openai
     openai.api_key = (pathlib.Path.home() / '.roberto-openai-key').read_text()
-    completion = openai.ChatCompletion.create(model=GPT_4,
+    completion = openai.ChatCompletion.create(model=SELECTED_MODEL,
                                               messages=[{'role': 'user', 'content': message}])
     return completion['choices'][0]['message']['content']
 
