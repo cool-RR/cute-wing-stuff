@@ -136,9 +136,9 @@ Example:
 Suggested key combination: `Insert H`
 
 
-## cute-evaluate-sel-in-debug-probe ##
+## cute-evaluate-sel-in-debug-console ##
 
-Evaluate selection in debug probe, doing `select-more` if nothing selected.
+Evaluate selection in debug console, doing `select-more` if nothing selected.
 
 Suggested key combination: `Ctrl-Alt-D`
 

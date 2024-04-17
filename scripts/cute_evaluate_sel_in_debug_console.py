@@ -16,9 +16,9 @@ import wingapi
 import shared
 
 
-def cute_evaluate_sel_in_debug_probe():
+def cute_evaluate_sel_in_debug_console():
     '''
-    Evaluate selection in debug probe, do `select-more` if no selection.
+    Evaluate selection in debug console, do `select-more` if no selection.
 
     Suggested key combination: `Ctrl-Alt-D`
     '''
@@ -29,4 +29,4 @@ def cute_evaluate_sel_in_debug_probe():
     if selection_start == selection_end:
         editor.ExecuteCommand('select-more')
 
-    wingapi.gApplication.ExecuteCommand('evaluate-sel-in-debug-probe')
+    wingapi.gApplication.ExecuteCommand('evaluate-sel-in-debug-console')
