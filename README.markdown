@@ -643,6 +643,13 @@ uppercase letters.
 Suggested key combination: `Ctrl-Alt-C`
 
 
+## select-next-comment ##
+
+Select the next (or current) comment, starting from caret location.
+
+Suggested key combinations: `Ctrl-Alt-3`
+
+
 ## select-next-constant ##
 
 Select the next (or current) constant in the document.
@@ -746,6 +753,13 @@ Camelcase means a variable name that has a combination of lowercase and
 uppercase letters.
 
 Suggested key combination: `Ctrl-Alt-Shift-C`
+
+
+## select-prev-comment ##
+
+Select the previous comment, starting from caret location.
+
+Suggested key combinations: `Ctrl-Alt-Numbersign`
 
 
 ## select-prev-constant ##
@@ -900,3 +914,4 @@ Suggested key combination: `Insert U`
 ## wrap-lines-toggle ##
 
 Toggle whether Wing wraps lines or not.
+
