@@ -19,8 +19,9 @@ import shared
 GPT_3_5_TURBO = 'gpt-3.5-turbo'
 GPT_4 = 'gpt-4'
 GPT_4_TURBO = 'gpt-4-1106-preview'
+GPT_4O = 'gpt-4o'
 
-SELECTED_MODEL = GPT_4_TURBO
+SELECTED_MODEL = GPT_4O
 
 TOP_WHITESPACE_PATTERN = re.compile('^(\s*)')
 BOTTOM_WHITESPACE_PATTERN = re.compile('(\s*)$')
