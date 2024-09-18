@@ -854,6 +854,13 @@ This does `select-more` until the biggest possible whitespace-less name is selec
 Suggested key combination: `Ctrl-Alt-Equal`
 
 
+## show-file-in-explorer ##
+
+Show currently-open file in explorer.
+
+Suggested key combination: `Insert Comma`
+
+
 ## slash-line ##
 
 Slash a long line into 2 lines, putting a `\` character as a separator.

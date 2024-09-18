@@ -404,13 +404,25 @@ def get_file_content(file_path):
     with open(file_path) as file:
         return file.read()
 
-def open_path_in_explorer(path):
+def open_folder_in_explorer(path):
     if sys.platform == 'darwin':
         subprocess.call(['open', '--', path])
     elif sys.platform in ('linux', 'linux2'):
         subprocess.call(['open', path])
     elif sys.platform == 'win32':
         subprocess.call(['explorer', path])
+
+def show_file_in_explorer(path):
+    path = os.path.normpath(path)
+    if os.name == 'nt':  # For Windows
+        subprocess.run(['explorer', '/select,', path])
+    elif os.name == 'posix':  # For macOS and Linux
+        if os.uname().sysname == 'Darwin':  # macOS
+            subprocess.run(['open', '-R', path])
+        else:  # Linux
+            subprocess.run(['xdg-open', os.path.dirname(path)])
+    else:
+        print("Unsupported operating system")
 
 # def get_n_monitors():
     # import win32api

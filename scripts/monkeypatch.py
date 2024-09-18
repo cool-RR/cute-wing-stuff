@@ -94,7 +94,7 @@ if monkeypatch:
                     logger.error(msg)
                 elif loc.IsDirectory():
                     path = _get_location_path(loc)
-                    shared.open_path_in_explorer(path)
+                    shared.open_folder_in_explorer(path)
                 else:
                     opened = False
 
