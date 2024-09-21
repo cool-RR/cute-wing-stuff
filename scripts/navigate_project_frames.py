@@ -4,6 +4,7 @@
 from __future__ import with_statement
 
 import os.path, sys
+import re
 sys.path += [
     os.path.dirname(__file__),
     os.path.join(os.path.dirname(__file__), 'third_party.zip'),
@@ -50,13 +51,17 @@ def go_up_to_project_frame(application=wingapi.gApplication):
 
     file_paths = [_normalize_path(file_path) for file_path, _, _, _, _ in
                   _stack]
+    print(file_paths)
     file_paths_in_project_above_current_frame = tuple(
         filter(
-            lambda i_and_file_path: i_and_file_path[1] in all_project_files and
-                                                                  i_and_file_path[0] < _frame_index,
+            lambda i_and_file_path: (
+                i_and_file_path[1] in all_project_files or
+                re.search(r'[/\\]desktop[/\\]', i_and_file_path[1], flags=re.IGNORECASE)
+            ) and i_and_file_path[0] < _frame_index,
             enumerate(file_paths)
         )
     )
+    print(file_paths_in_project_above_current_frame)
     if not file_paths_in_project_above_current_frame:
         return
     index_of_last_file_path_in_project = \
@@ -95,8 +100,10 @@ def go_down_to_project_frame(application=wingapi.gApplication):
                   _stack]
     file_paths_in_project_below_current_frame = tuple(
         filter(
-            lambda i_and_file_path: i_and_file_path[1] in all_project_files and
-                                                                  i_and_file_path[0] > _frame_index,
+            lambda i_and_file_path: (
+                i_and_file_path[1] in all_project_files or
+                re.search(r'[/\\]desktop[/\\]', i_and_file_path[1], flags=re.IGNORECASE)
+            ) and i_and_file_path[0] > _frame_index,
             enumerate(file_paths)
         )
     )
