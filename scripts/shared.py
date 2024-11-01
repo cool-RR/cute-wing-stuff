@@ -373,7 +373,7 @@ def clip_ahk():
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     subprocess.Popen(
         (r'c:\windows\py.exe',
-         r'C:\Users\Administrator\Dropbox\Scripts and shortcuts\_type_f24.py'),
+         r'C:\Users\Administrator\Dropbox\bin\_type_f13.py'),
         startupinfo=startupinfo
     )
     # assert autopy_available
