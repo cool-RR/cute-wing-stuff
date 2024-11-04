@@ -367,17 +367,16 @@ def clip_ahk():
     '''
     Cause AHK to think that a new word is being typed, for its auto-completion.
     '''
-    import subprocess
-
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-    subprocess.Popen(
-        (r'c:\windows\py.exe',
-         r'C:\Users\Administrator\Dropbox\bin\_type_f13.py'),
-        startupinfo=startupinfo
-    )
-    # assert autopy_available
-    # autopy.key.tap(135) # F24 for making AHK think it's a new word
+    try:
+        subprocess.Popen(
+            (r'c:\windows\py.exe',
+             r'C:\Users\Administrator\Dropbox\bin\_type_f13.py'),
+            startupinfo=startupinfo
+        )
+    except FileNotFoundError:
+        pass
 
 
 def get_text(document):
@@ -389,7 +388,6 @@ def get_text(document):
 def argmin(sequence, key_function=None):
     if key_function is None:
         key_function = lambda x: x
-        index
     indices = range(len(sequence))
     indices.sort(key=lambda index: key_function(sequence[index]))
     return sequence[indices[0]]

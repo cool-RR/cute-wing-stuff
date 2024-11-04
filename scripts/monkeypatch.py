@@ -66,10 +66,7 @@ if monkeypatch:
     ###########################################################################
 
     def _get_location_path(location):
-        try:
-            from wingbase import location as location_module
-        except ImportError: # Wing 5.x
-            from wingutils import location as location_module
+        from wingbase import location as location_module
         if sys.platform == 'win32':
             return location._fOSName
         else:
@@ -163,40 +160,37 @@ if monkeypatch:
     ###########################################################################
 
 
-    if shared.autopy_available:
-        import autopy.key
-
-        def analyze_text_modified(*args):
-            flag, text = args[3:5]
-            if flag == 2 and text[-1] in string_module.whitespace:
-                shared.clip_ahk()
-
-        cache.textcache.CTextCache.class_connect('text-modified',
-                                                 analyze_text_modified)
-
-
-        #######################################################################
-
-        import singleton
-
-        commands_to_clip_after = set(
-            ['introduce_variable', 'rename_symbol', 'extract_def',
-             'arg_to_attr', 'deep_to_var']
-        )
-
-        def command_executed(command_manager, command, args):
-            if command.name in commands_to_clip_after:
-                shared.clip_ahk()
-
-        wingapi.gApplication.fSingletons.fCmdMgr.connect('cmd-executed',
-                                                         command_executed)
-
-        #######################################################################
-
-        def args_needed(*args, **kwargs):
+    def analyze_text_modified(*args):
+        flag, text = args[3:5]
+        if flag == 2 and text[-1] in string_module.whitespace:
             shared.clip_ahk()
 
-        wingapi.gApplication.fSingletons.fCmdMgr.connect('args-needed',
-                                                         args_needed)
+    cache.textcache.CTextCache.class_connect('text-modified',
+                                             analyze_text_modified)
+
+
+    #######################################################################
+
+    import singleton
+
+    commands_to_clip_after = set(
+        ['introduce_variable', 'rename_symbol', 'extract_def',
+         'arg_to_attr', 'deep_to_var']
+    )
+
+    def command_executed(command_manager, command, args):
+        if command.name in commands_to_clip_after:
+            shared.clip_ahk()
+
+    wingapi.gApplication.fSingletons.fCmdMgr.connect('cmd-executed',
+                                                     command_executed)
+
+    #######################################################################
+
+    def args_needed(*args, **kwargs):
+        shared.clip_ahk()
+
+    wingapi.gApplication.fSingletons.fCmdMgr.connect('args-needed',
+                                                     args_needed)
 
 
