@@ -136,6 +136,13 @@ Example:
 Suggested key combination: `Insert H`
 
 
+## copy-file-path ##
+
+Copy the full path of the current file to the clipboard.
+
+Suggested key combination: `Ctrl-Start-F`
+
+
 ## cute-evaluate-sel-in-debug-console ##
 
 Evaluate selection in debug console, doing `select-more` if nothing selected.
