@@ -29,6 +29,15 @@ I provide `Development services in Python and Django <https://chipmunkdev.com>`_
 # What do the scripts do? #
 
 
+## almost-edit-in-cursor-ide ##
+
+Almost open the current file in Cursor IDE.
+
+Saves the file, copies its path to clipboard and changes focus to the Cursor IDE.
+
+Suggested key combination: `Ctrl-Bar` (`Ctrl-Shift-\`)
+
+
 ## arg-to-attr ##
 
 Turn an argument to `__init__` into an instance attribute.
