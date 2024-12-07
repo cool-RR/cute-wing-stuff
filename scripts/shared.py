@@ -372,7 +372,7 @@ def clip_ahk():
     try:
         subprocess.Popen(
             (r'c:\windows\py.exe',
-             r'C:\Users\Administrator\Dropbox\bin\_type_f13.py'),
+             r'C:\Users\Administrator\Dropbox\bin\Windows\_type_f13.py'),
             startupinfo=startupinfo
         )
     except FileNotFoundError:
