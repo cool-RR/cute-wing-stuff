@@ -193,7 +193,7 @@ def edit_string():
     last_column = \
                 wingapi.gApplication.GetPreference('edit.text-wrap-column') - 1
 
-    selection_start, selection_end = editor.GetSelection()
+    selection_start, selection_end = shared.get_selection_unicode(editor)
     selection_start_line = document.GetLineNumberFromPosition(selection_start)
     selection_start_column = selection_start - \
                                     document.GetLineStart(selection_start_line)
@@ -304,7 +304,7 @@ def edit_string():
                     document.InsertChars(selection_start, formatted_string)
                     new_selection_start = new_selection_end = \
                                         selection_start + len(formatted_string)
-                editor.SetSelection(new_selection_start,
+                shared.set_selection_unicode(editor, new_selection_start,
                                     new_selection_end)
         except Exception as exception:
             app.ShowMessageDialog('Error', str(exception),

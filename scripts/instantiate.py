@@ -51,7 +51,7 @@ def instantiate():
         lower_case_word = shared.camel_case_to_lower_case(word)
         segment_to_insert = '%s = ' % lower_case_word
         editor.ExecuteCommand('beginning-of-line-text')
-        current_position, _ = editor.GetSelection()
+        current_position, _ = shared.get_selection_unicode(editor)
         document.InsertChars(current_position, segment_to_insert)
         editor.ExecuteCommand('end-of-line')
 

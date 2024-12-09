@@ -94,7 +94,7 @@ def roberto(user_message):
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
-    start, end = selection = editor.GetSelection()
+    start, end = selection = shared.get_selection_unicode(editor)
 
     new_code = _fix_code_with_chatgpt(document.GetFilename(),
                                       document.GetCharRange(0, document.GetLength()),
@@ -105,7 +105,7 @@ def roberto(user_message):
 
         document.DeleteChars(start, end-1)
         document.InsertChars(start, new_code)
-        editor.SetSelection(start,
+        shared.set_selection_unicode(editor, start,
                             start + len(new_code))
 
 roberto.arginfo = {

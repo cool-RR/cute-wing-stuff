@@ -68,13 +68,13 @@ def select_next_constant():
     app = wingapi.gApplication
     document = editor.GetDocument()
 
-    caret_position = editor.GetSelection()[1] + 1
+    caret_position = shared.get_selection_unicode(editor)[1] + 1
 
     _, next_constant_position = _get_relevant_constant_positions(editor,
                                                             caret_position)
     if next_constant_position != (None, None):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*next_constant_position)
+        shared.set_selection_unicode(editor, *next_constant_position)
 
 
 def select_prev_constant():
@@ -90,10 +90,10 @@ def select_prev_constant():
     app = wingapi.gApplication
     document = editor.GetDocument()
 
-    caret_position = editor.GetSelection()[0]
+    caret_position = shared.get_selection_unicode(editor)[0]
 
     prev_constant_position, _  = _get_relevant_constant_positions(editor,
                                                              caret_position)
     if prev_constant_position != (None, None):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*prev_constant_position)
+        shared.set_selection_unicode(editor, *prev_constant_position)

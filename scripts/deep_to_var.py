@@ -127,7 +127,7 @@ def deep_to_var():
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
 
-    position, _ = editor.GetSelection()
+    position, _ = shared.get_selection_unicode(editor)
     line_number = document.GetLineNumberFromPosition(position)
     line_start = document.GetLineStart(line_number)
     line_end = document.GetLineEnd(line_number)
@@ -158,5 +158,5 @@ def deep_to_var():
 
             document.InsertChars(actual_line_start, string_to_insert)
             new_position = line_end + len(string_to_insert)
-            editor.SetSelection(new_position, new_position)
+            shared.set_selection_unicode(editor, new_position, new_position)
             editor.ExecuteCommand('new-line')

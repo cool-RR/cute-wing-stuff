@@ -41,13 +41,13 @@ def _cute_general_replace(command_name, editor):
     assert isinstance(editor, wingapi.CAPIEditor)
     app = wingapi.gApplication
     assert isinstance(app, wingapi.CAPIApplication)
-    selection_start, selection_end = editor.GetSelection()
+    selection_start, selection_end = shared.get_selection_unicode(editor)
     selection = editor.GetDocument().GetCharRange(selection_start,
                                                   selection_end)
 
     if selection:
         wingapi.gApplication.SetClipboard(selection)
-        editor.SetSelection(selection_start, selection_start)
+        shared.set_selection_unicode(editor, selection_start, selection_start)
         app.ExecuteCommand(command_name)
         # if shared.autopy_available:
             # import autopy.key

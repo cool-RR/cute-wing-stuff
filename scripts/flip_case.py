@@ -46,7 +46,7 @@ def flip_case():
 
         document.DeleteChars(start, end-1)
         document.InsertChars(start, new_word)
-        editor.SetSelection(start + len(new_word),
+        shared.set_selection_unicode(editor, start + len(new_word),
                             start + len(new_word))
         #editor.ExecuteCommand('new-line')
 

@@ -97,13 +97,13 @@ def select_next_operator():
     app = wingapi.gApplication
     document = editor.GetDocument()
 
-    caret_position = editor.GetSelection()[1] + 1
+    caret_position = shared.get_selection_unicode(editor)[1] + 1
 
     _, next_operator_position = \
                       _get_relevant_operator_positions(editor, caret_position)
     if next_operator_position != (None, None):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*next_operator_position)
+        shared.set_selection_unicode(editor, *next_operator_position)
 
 
 def select_prev_operator():
@@ -121,13 +121,13 @@ def select_prev_operator():
     app = wingapi.gApplication
     document = editor.GetDocument()
 
-    caret_position = editor.GetSelection()[0]
+    caret_position = shared.get_selection_unicode(editor)[0]
 
     prev_operator_position, _  = \
                       _get_relevant_operator_positions(editor, caret_position)
     if prev_operator_position != (None, None):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*prev_operator_position)
+        shared.set_selection_unicode(editor, *prev_operator_position)
 
 
 def select_next_assignment():
@@ -145,13 +145,13 @@ def select_next_assignment():
     app = wingapi.gApplication
     document = editor.GetDocument()
 
-    caret_position = editor.GetSelection()[1] + 1
+    caret_position = shared.get_selection_unicode(editor)[1] + 1
 
     _, next_assignment_position = \
                       _get_relevant_assignment_positions(editor, caret_position)
     if next_assignment_position != (None, None):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*next_assignment_position)
+        shared.set_selection_unicode(editor, *next_assignment_position)
 
 
 def select_prev_assignment():
@@ -169,10 +169,10 @@ def select_prev_assignment():
     app = wingapi.gApplication
     document = editor.GetDocument()
 
-    caret_position = editor.GetSelection()[0]
+    caret_position = shared.get_selection_unicode(editor)[0]
 
     prev_assignment_position, _  = \
                       _get_relevant_assignment_positions(editor, caret_position)
     if prev_assignment_position != (None, None):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*prev_assignment_position)
+        shared.set_selection_unicode(editor, *prev_assignment_position)

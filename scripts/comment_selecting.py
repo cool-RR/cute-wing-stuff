@@ -132,7 +132,7 @@ def select_next_comment():
     document_start = 0
     document_end = document.GetLength()
 
-    selection_start, selection_end = editor.GetSelection()
+    selection_start, selection_end = shared.get_selection_unicode(editor)
 
     for _ in [0]:
         if _is_position_on_comment(editor, selection_start):
@@ -143,7 +143,7 @@ def select_next_comment():
                 if base_position > document_end:
                     return
             else:
-                editor.SetSelection(*current_comment_range)
+                shared.set_selection_unicode(editor, *current_comment_range)
                 break
         else:
             base_position = selection_start
@@ -151,7 +151,7 @@ def select_next_comment():
         for position in range(base_position, document_end+1):
             if _is_position_on_comment(editor, position):
                 comment_range = _find_comment_from_position(editor, position)
-                editor.SetSelection(*comment_range)
+                shared.set_selection_unicode(editor, *comment_range)
                 break
         else:
             return
@@ -173,7 +173,7 @@ def select_prev_comment():
     document_start = 0
     document_end = document.GetLength()
 
-    caret_position = editor.GetSelection()[1]
+    caret_position = shared.get_selection_unicode(editor)[1]
 
     for _ in [0]:
 
@@ -190,7 +190,7 @@ def select_prev_comment():
         for position in range(base_position, document_start-1, -1):
             if _is_position_on_comment(editor, position):
                 comment_range = _find_comment_from_position(editor, position)
-                editor.SetSelection(*comment_range)
+                shared.set_selection_unicode(editor, *comment_range)
                 break
         else:
             return

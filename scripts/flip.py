@@ -99,7 +99,7 @@ def flip():
     with shared.UndoableAction(document):
         word, word_start_position = _is_any_word_on_caret(
             shared.get_text(document),
-            editor.GetSelection()[0],
+            shared.get_selection_unicode(editor)[0],
             all_words
         )
         if not word:

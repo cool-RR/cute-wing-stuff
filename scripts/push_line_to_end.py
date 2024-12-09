@@ -66,7 +66,7 @@ def push_line_to_end(line_offset=0):
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
-    position, _ = editor.GetSelection()
+    position, _ = shared.get_selection_unicode(editor)
     line = document.GetLineNumberFromPosition(position) + line_offset
     line_start = document.GetLineStart(line)
     line_end = document.GetLineEnd(line)

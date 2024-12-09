@@ -32,4 +32,4 @@ def reverse_selection():
     app = wingapi.gApplication
     anchor_position, caret_position = editor.GetAnchorAndCaret()
     app.ExecuteCommand('set-visit-history-anchor')
-    editor.SetSelection(caret_position, anchor_position)
+    shared.set_selection_unicode(editor, caret_position, anchor_position)

@@ -34,7 +34,7 @@ def dict_direct_to_get():
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
 
-    _, current_position = editor.GetSelection()
+    _, current_position = shared.get_selection_unicode(editor)
     current_line_number = document.GetLineNumberFromPosition(current_position)
 
     line_start = document.GetLineStart(current_line_number)
@@ -79,6 +79,6 @@ def dict_direct_to_get():
             document.DeleteChars(line_start, line_end - 1)
             # The `- 1` above is necessary for \n-documents.
             document.InsertChars(line_start, new_line_text)
-            editor.SetSelection(none_start, none_end)
+            shared.set_selection_unicode(editor, none_start, none_end)
 
 

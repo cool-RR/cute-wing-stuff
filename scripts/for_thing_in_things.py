@@ -50,12 +50,12 @@ def for_thing_in_things(comprehension=False):
     assert isinstance(document, wingapi.CAPIDocument)
 
     with shared.UndoableAction(document):
-        end_position, _ = editor.GetSelection()
+        end_position, _ = shared.get_selection_unicode(editor)
         line_number = document.GetLineNumberFromPosition(end_position)
         line_start = document.GetLineStart(line_number)
         line_end = document.GetLineEnd(line_number)
         line_contents = document.GetCharRange(line_start, line_end)
-        editor.SetSelection(end_position, end_position)
+        shared.set_selection_unicode(editor, end_position, end_position)
         if ')' in document.GetCharRange(end_position - 1, end_position + 1) \
                                                  and 'range(' in line_contents:
 
@@ -69,11 +69,11 @@ def for_thing_in_things(comprehension=False):
             ) + 1
         else:
             wingapi.gApplication.ExecuteCommand('backward-word')
-            text_start_position, _ = editor.GetSelection()
+            text_start_position, _ = shared.get_selection_unicode(editor)
             wingapi.gApplication.ExecuteCommand('forward-word')
             wingapi.gApplication.ExecuteCommand('select-expression')
             shared.strip_selection_if_single_line(editor)
-            expression_start_position, _ = editor.GetSelection()
+            expression_start_position, _ = shared.get_selection_unicode(editor)
 
 
         base_text = document.GetCharRange(text_start_position, end_position)
@@ -92,12 +92,12 @@ def for_thing_in_things(comprehension=False):
 
         with shared.SelectionRestorer(editor):
             app.ExecuteCommand('beginning-of-line-text(toggle=False)')
-            home_position, _ = editor.GetSelection()
+            home_position, _ = shared.get_selection_unicode(editor)
 
         if comprehension:
             segment_to_insert = ' %s' % segment_to_insert
             document.InsertChars(expression_start_position, segment_to_insert)
-            editor.SetSelection(expression_start_position,
+            shared.set_selection_unicode(editor, expression_start_position,
                                 expression_start_position)
         else:
             document.InsertChars(home_position, segment_to_insert)

@@ -72,13 +72,13 @@ def select_next_camelcase():
     app = wingapi.gApplication
     document = editor.GetDocument()
 
-    caret_position = editor.GetSelection()[1] + 1
+    caret_position = shared.get_selection_unicode(editor)[1] + 1
 
     _, next_camelcase_position = \
                       _get_relevant_camelcase_positions(editor, caret_position)
     if next_camelcase_position != (None, None):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*next_camelcase_position)
+        shared.set_selection_unicode(editor, *next_camelcase_position)
 
 
 def select_prev_camelcase():
@@ -95,10 +95,10 @@ def select_prev_camelcase():
     app = wingapi.gApplication
     document = editor.GetDocument()
 
-    caret_position = editor.GetSelection()[0]
+    caret_position = shared.get_selection_unicode(editor)[0]
 
     prev_camelcase_position, _  = \
                       _get_relevant_camelcase_positions(editor, caret_position)
     if prev_camelcase_position != (None, None):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*prev_camelcase_position)
+        shared.set_selection_unicode(editor, *prev_camelcase_position)

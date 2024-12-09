@@ -69,13 +69,13 @@ def cute_open_line(line_offset=0, stand_ground=False):
                     return
                 last_character_of_previous_line = \
                                            document.GetLineEnd(line_number - 1)
-                editor.SetSelection(last_character_of_previous_line,
+                shared.set_selection_unicode(editor, last_character_of_previous_line,
                                     last_character_of_previous_line)
                 editor.ExecuteCommand('new-line')
             else:
                 assert line_offset == 1
                 last_character_of_line = document.GetLineEnd(line_number)
-                editor.SetSelection(last_character_of_line,
+                shared.set_selection_unicode(editor, last_character_of_line,
                                     last_character_of_line)
                 editor.ExecuteCommand('new-line')
 

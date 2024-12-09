@@ -213,7 +213,7 @@ def select_next_invocation():
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     app = wingapi.gApplication
-    _, position = editor.GetSelection()
+    _, position = shared.get_selection_unicode(editor)
     position += 1
 
     invocation_positions = _get_invocation_positions(editor.GetDocument())
@@ -223,7 +223,7 @@ def select_next_invocation():
 
     if 0 <= invocation_index < len(invocation_ends):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*invocation_positions[invocation_index])
+        shared.set_selection_unicode(editor, *invocation_positions[invocation_index])
 
 
 def select_prev_invocation():
@@ -235,7 +235,7 @@ def select_prev_invocation():
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     app = wingapi.gApplication
-    position, _ = editor.GetSelection()
+    position, _ = shared.get_selection_unicode(editor)
     position -= 1
 
     invocation_positions = _get_invocation_positions(editor.GetDocument())
@@ -245,7 +245,7 @@ def select_prev_invocation():
 
     if 0 <= invocation_index < len(invocation_starts):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*invocation_positions[invocation_index])
+        shared.set_selection_unicode(editor, *invocation_positions[invocation_index])
 
 
 ###############################################################################
@@ -263,7 +263,7 @@ def select_next_argument(limit_to_keywords=False):
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     app = wingapi.gApplication
-    _, position = editor.GetSelection()
+    _, position = shared.get_selection_unicode(editor)
     position += 1
 
     argument_positions = _get_argument_positions(
@@ -280,7 +280,7 @@ def select_next_argument(limit_to_keywords=False):
 
     if 0 <= argument_index < len(argument_ends):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*argument_positions[argument_index])
+        shared.set_selection_unicode(editor, *argument_positions[argument_index])
 
 
 def select_prev_argument(limit_to_keywords=False):
@@ -295,7 +295,7 @@ def select_prev_argument(limit_to_keywords=False):
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     app = wingapi.gApplication
-    position, _ = editor.GetSelection()
+    position, _ = shared.get_selection_unicode(editor)
     position -= 1
 
     argument_positions = _get_argument_positions(
@@ -312,7 +312,7 @@ def select_prev_argument(limit_to_keywords=False):
 
     if 0 <= argument_index < len(argument_ends):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*argument_positions[argument_index])
+        shared.set_selection_unicode(editor, *argument_positions[argument_index])
 
 
 def remove_invocation():
@@ -328,9 +328,9 @@ def remove_invocation():
     with shared.UndoableAction(document):
         app.ExecuteCommand('select-prev-invocation')
         app.ExecuteCommand('select-dotted-name')
-        callable_start, callable_end = editor.GetSelection()
+        callable_start, callable_end = shared.get_selection_unicode(editor)
         app.ExecuteCommand('brace-match')
-        opening_brace, closing_brace = editor.GetSelection()
+        opening_brace, closing_brace = shared.get_selection_unicode(editor)
         document.DeleteChars(closing_brace - 1, closing_brace - 1)
         document.DeleteChars(callable_start, opening_brace)
 

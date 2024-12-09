@@ -293,7 +293,7 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False):
     assert direction in (-1, 1)
     assert (delete, extend, traverse).count(True) in (0, 1)
 
-    selection_start, selection_end = editor.GetSelection()
+    selection_start, selection_end = shared.get_selection_unicode(editor)
     document = editor.GetDocument()
     anchor_position, caret_position = editor.GetAnchorAndCaret()
     current_selection_direction = \
@@ -367,9 +367,9 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False):
                                 target_index < len(fixed_alpha_word_spans) - 1:
             target_alpha_word_span = fixed_alpha_word_spans[target_index+1]
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*target_alpha_word_span)
+        shared.set_selection_unicode(editor, *target_alpha_word_span)
     elif extend:
-        editor.SetSelection(anchor_position, target_word_start)
+        shared.set_selection_unicode(editor, anchor_position, target_word_start)
     elif delete:
         with shared.UndoableAction(document):
             if direction == 1:
@@ -384,5 +384,5 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False):
             )
     else:
         editor.ExecuteCommand('forward-char') # Just to light up caret.
-        editor.SetSelection(target_word_start, target_word_start)
+        shared.set_selection_unicode(editor, target_word_start, target_word_start)
 

@@ -40,7 +40,7 @@ def slash_line(line_offset=0, at_caret=False):
 
     if at_caret:
         assert not line_offset
-        caret_position, _ = editor.GetSelection()
+        caret_position, _ = shared.get_selection_unicode(editor)
 
 
     max_line_length = \
@@ -50,7 +50,7 @@ def slash_line(line_offset=0, at_caret=False):
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
-    position, _ = editor.GetSelection()
+    position, _ = shared.get_selection_unicode(editor)
     line = document.GetLineNumberFromPosition(position) + line_offset
     line_start = document.GetLineStart(line)
     line_end = document.GetLineEnd(line)
@@ -82,7 +82,7 @@ def slash_line(line_offset=0, at_caret=False):
     with shared.UndoableAction(document):
         with shared.SelectionRestorer(editor, line_wise=True, line_offset=1):
             document.InsertChars(absolute_slash_position, '\\')
-            editor.SetSelection(absolute_slash_position + 1,
+            shared.set_selection_unicode(editor, absolute_slash_position + 1,
                                 absolute_slash_position + 1)
             editor.ExecuteCommand('new-line')
             wingapi.gApplication.ExecuteCommand('push-line-to-end')

@@ -25,7 +25,7 @@ def cute_evaluate_sel_in_debug_console():
 
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
-    selection_start, selection_end = editor.GetSelection()
+    selection_start, selection_end = shared.get_selection_unicode(editor)
     if selection_start == selection_end:
         editor.ExecuteCommand('select-more')
 

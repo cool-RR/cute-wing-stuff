@@ -13,6 +13,8 @@ import subprocess
 import wingapi
 import tempfile
 
+import shared
+
 def almost_edit_in_cursor_ide():
     '''
     Almost open the current file in Cursor IDE.

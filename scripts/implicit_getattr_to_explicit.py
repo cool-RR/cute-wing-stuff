@@ -49,7 +49,7 @@ def implicit_getattr_to_explicit():
     assert isinstance(document, wingapi.CAPIDocument)
 
 
-    _, current_position = editor.GetSelection()
+    _, current_position = shared.get_selection_unicode(editor)
     #head = max(current_position - 100, 0)
     #tail = min(current_position + 100, document.GetLength())
 
@@ -66,7 +66,7 @@ def implicit_getattr_to_explicit():
     candidate_span = match_spans[candidate_index]
     candidate = matches[candidate_index]
     #if candidate[0] <= current_position <= candidate[1]:
-        #editor.SetSelection(*candidate)
+        #shared.set_selection_unicode(editor, *candidate)
     #else:
         #print(candidate)
         #try:
@@ -80,5 +80,5 @@ def implicit_getattr_to_explicit():
     with shared.UndoableAction(document):
         document.DeleteChars(candidate_span[0], candidate_span[1] - 1)
         document.InsertChars(candidate_span[0], new_text)
-        editor.SetSelection(candidate_span[0]+len(new_text)-5,
+        shared.set_selection_unicode(editor, candidate_span[0]+len(new_text)-5,
                             candidate_span[0]+len(new_text)-1)

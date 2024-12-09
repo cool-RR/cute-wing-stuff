@@ -32,9 +32,9 @@ def brace_match_inner():
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
-    editor.SetSelection(editor.GetSelection()[0]-1, editor.GetSelection()[1]+1)
+    shared.set_selection_unicode(editor, shared.get_selection_unicode(editor)[0]-1, shared.get_selection_unicode(editor)[1]+1)
     editor.ExecuteCommand('brace-match')
-    editor.SetSelection(editor.GetSelection()[0]+1, editor.GetSelection()[1]-1)
+    shared.set_selection_unicode(editor, shared.get_selection_unicode(editor)[0]+1, shared.get_selection_unicode(editor)[1]-1)
 
 
 def previous_brace_match():
@@ -55,7 +55,7 @@ def previous_brace_match():
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     document_text = shared.get_text(document)
-    _, caret_position = editor.GetSelection()
+    _, caret_position = shared.get_selection_unicode(editor)
     closing_brace_position = max((
         document_text.rfind(')', 0, caret_position - 1),
         document_text.rfind(']', 0, caret_position - 1),
@@ -64,7 +64,7 @@ def previous_brace_match():
     if closing_brace_position == -1:
         return
     new_position = closing_brace_position
-    editor.SetSelection(new_position, new_position)
+    shared.set_selection_unicode(editor, new_position, new_position)
     editor.ExecuteCommand('brace-match')
 
 
@@ -84,6 +84,6 @@ def previous_brace_match_inner():
     '''
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
-    editor.SetSelection(editor.GetSelection()[0]+1, editor.GetSelection()[1]-1)
+    shared.set_selection_unicode(editor, shared.get_selection_unicode(editor)[0]+1, shared.get_selection_unicode(editor)[1]-1)
     previous_brace_match()
-    editor.SetSelection(editor.GetSelection()[0]+1, editor.GetSelection()[1]-1)
+    shared.set_selection_unicode(editor, shared.get_selection_unicode(editor)[0]+1, shared.get_selection_unicode(editor)[1]-1)

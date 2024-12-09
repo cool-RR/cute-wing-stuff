@@ -139,7 +139,7 @@ def select_next_string(inner=False):
     document_start = 0
     document_end = document.GetLength()
 
-    selection_start, selection_end = editor.GetSelection()
+    selection_start, selection_end = shared.get_selection_unicode(editor)
 
     for _ in [0]:
         if _is_position_on_string(editor, selection_start):
@@ -160,7 +160,7 @@ def select_next_string(inner=False):
                     return
 
             else:
-                editor.SetSelection(*current_string_range)
+                shared.set_selection_unicode(editor, *current_string_range)
                 break
         else:
             base_position = selection_start
@@ -168,7 +168,7 @@ def select_next_string(inner=False):
         for position in range(base_position, document_end+1):
             if _is_position_on_string(editor, position):
                 string_range = _find_string_from_position(editor, position)
-                editor.SetSelection(*string_range)
+                shared.set_selection_unicode(editor, *string_range)
                 break
         else:
             return
@@ -197,7 +197,7 @@ def select_prev_string(inner=False):
     document_start = 0
     document_end = document.GetLength()
 
-    caret_position = editor.GetSelection()[1]
+    caret_position = shared.get_selection_unicode(editor)[1]
 
     for _ in [0]:
 
@@ -214,7 +214,7 @@ def select_prev_string(inner=False):
         for position in range(base_position, document_start-1, -1):
             if _is_position_on_string(editor, position):
                 string_range = _find_string_from_position(editor, position)
-                editor.SetSelection(*string_range)
+                shared.set_selection_unicode(editor, *string_range)
                 break
         else:
             return
@@ -231,7 +231,7 @@ string_pattern = re.compile(
 def _innerize_selected_string(editor):
     '''Given that a string is selected, select only its contents.'''
     assert isinstance(editor, wingapi.CAPIEditor)
-    selection_start, selection_end = editor.GetSelection()
+    selection_start, selection_end = shared.get_selection_unicode(editor)
     string = editor.GetDocument().GetCharRange(selection_start, selection_end)
     match = string_pattern.match(string)
     assert match
@@ -240,5 +240,5 @@ def _innerize_selected_string(editor):
     fixed_start = selection_start + len(delimiter) + len(prefix)
     fixed_end = selection_end - len(delimiter) if string.endswith(delimiter) \
                                                              else selection_end
-    editor.SetSelection(fixed_start, fixed_end)
+    shared.set_selection_unicode(editor, fixed_start, fixed_end)
 

@@ -58,7 +58,7 @@ class SelectionRestorer(context_management.ContextManager):
 
 
     def __enter__(self):
-        start, end = self.editor.GetSelection()
+        start, end = get_selection_unicode(self.editor)
         if self.line_wise:
             self.start_line_wise = character_position_to_line_position(
                 self.document,
@@ -85,8 +85,8 @@ class SelectionRestorer(context_management.ContextManager):
             start = self.start
             end = self.end
 
-        if tuple(self.editor.GetSelection()) != (start, end):
-            self.editor.SetSelection(start, end)
+        if tuple(get_selection_unicode(self.editor)) != (start, end):
+            set_selection_unicode(self.editor, start, end)
             # (Only conditionally setting selection, because if it's already
             # correct it's best to leave it as it is, because when we set it
             # ourselves some things (like `select-less`) stop working.)
@@ -160,7 +160,7 @@ def strip_selection_if_single_line(editor):
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
-    start, end = editor.GetSelection()
+    start, end = get_selection_unicode(editor)
     start_line_number = document.GetLineNumberFromPosition(start)
     end_line_number = document.GetLineNumberFromPosition(end - 1)
     if start_line_number == end_line_number:
@@ -169,7 +169,7 @@ def strip_selection_if_single_line(editor):
         right_strip_size = len(selection) - len(selection.rstrip())
         new_start = start + left_strip_size
         new_end = end - right_strip_size
-        editor.SetSelection(new_start, new_end)
+        set_selection_unicode(editor, new_start, new_end)
 
 
 _whitespace_and_newlines_stripping_pattern = re.compile(
@@ -214,7 +214,7 @@ def get_cursor_position(editor):
     '''
     Get the cursor position in the given editor, assuming no text is selected.
     '''
-    start, _ = editor.GetSelection()
+    start, _ = get_selection_unicode(editor)
     assert start == _
     return start
 
@@ -239,7 +239,7 @@ def select_current_word(editor):
             else:
                 break
     end = start + length
-    editor.SetSelection(start, end)
+    set_selection_unicode(editor, start, end)
     return start, end
 
 
@@ -312,7 +312,7 @@ def _move_half_page(direction, editor):
     lines_to_move = editor.GetNumberOfVisibleLines() // 2
 
     # Determining current location: ###########################################
-    current_position, _ = editor.GetSelection()
+    current_position, _ = get_selection_unicode(editor)
     current_line = document.GetLineNumberFromPosition(current_position)
     column = current_position - document.GetLineStart(current_line)
     ###########################################################################
@@ -329,7 +329,7 @@ def _move_half_page(direction, editor):
     ###########################################################################
 
     with UndoableAction(document):
-        editor.SetSelection(new_position, new_position)
+        set_selection_unicode(editor, new_position, new_position)
 
 
 def character_position_to_line_position(document, character_position,
@@ -393,9 +393,9 @@ def argmin(sequence, key_function=None):
     return sequence[indices[0]]
 
 def reset_caret_blinking(editor):
-    selection = editor.GetSelection()
+    selection = get_selection_unicode(editor)
     editor.ExecuteCommand('forward-char')
-    editor.SetSelection(*selection)
+    set_selection_unicode(editor, *selection)
 
 
 def get_file_content(file_path):
@@ -544,7 +544,6 @@ def get_selection_unicode(editor: wingapi.CAPIEditor) -> tuple[int, int]:
     text = doc.GetText()
     utf8_start, utf8_end = editor.GetSelection()
 
-    # Convert utf-8 byte offsets to unicode offsets
     start = len(text.encode('utf-8')[:utf8_start].decode('utf-8'))
     end = len(text.encode('utf-8')[:utf8_end].decode('utf-8'))
 
@@ -558,14 +557,10 @@ def set_selection_unicode(editor: wingapi.CAPIEditor, start: int, end: int) -> N
         start: Start position as unicode character offset (0-based)
         end: End position as unicode character offset (0-based)
     """
-    # Get the document text
     doc = editor.GetDocument()
     text = doc.GetText()
 
-    # Convert unicode offsets to utf-8 byte offsets
-    utf8_text = text.encode('utf-8')
     utf8_start = len(text[:start].encode('utf-8'))
     utf8_end = len(text[:end].encode('utf-8'))
 
-    # Set the selection using utf-8 offsets
     editor.SetSelection(utf8_start, utf8_end)

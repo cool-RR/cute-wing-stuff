@@ -30,7 +30,7 @@ def cute_start_select_line():
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
-    selection_start, selection_end = editor.GetSelection()
+    selection_start, selection_end = shared.get_selection_unicode(editor)
     selection_start_line = document.GetLineNumberFromPosition(selection_start)
     selection_end_line = document.GetLineNumberFromPosition(selection_end)
 
@@ -70,7 +70,7 @@ def cute_start_select_line():
         arguments = (new_selection_end, new_selection_start)
 
     wingapi.gApplication.ExecuteCommand('start-select-line')
-    editor.SetSelection(*arguments)
+    shared.set_selection_unicode(editor, *arguments)
 
 
 

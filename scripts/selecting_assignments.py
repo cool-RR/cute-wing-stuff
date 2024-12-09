@@ -70,7 +70,7 @@ def select_next_lhs():
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     app = wingapi.gApplication
-    _, position = editor.GetSelection()
+    _, position = shared.get_selection_unicode(editor)
     position += 1
 
     lhs_positions = _get_lhs_positions(editor.GetDocument())
@@ -79,7 +79,7 @@ def select_next_lhs():
 
     if 0 <= lhs_index < len(lhs_ends):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*lhs_positions[lhs_index])
+        shared.set_selection_unicode(editor, *lhs_positions[lhs_index])
 
 
 def select_prev_lhs():
@@ -91,7 +91,7 @@ def select_prev_lhs():
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     app = wingapi.gApplication
-    position, _ = editor.GetSelection()
+    position, _ = shared.get_selection_unicode(editor)
     position -= 1
 
     lhs_positions = _get_lhs_positions(editor.GetDocument())
@@ -100,7 +100,7 @@ def select_prev_lhs():
 
     if 0 <= lhs_index < len(lhs_starts):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*lhs_positions[lhs_index])
+        shared.set_selection_unicode(editor, *lhs_positions[lhs_index])
 
 
 def select_next_rhs():
@@ -112,7 +112,7 @@ def select_next_rhs():
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     app = wingapi.gApplication
-    _, position = editor.GetSelection()
+    _, position = shared.get_selection_unicode(editor)
     position += 1
 
     rhs_positions = _get_rhs_positions(editor.GetDocument())
@@ -121,7 +121,7 @@ def select_next_rhs():
 
     if 0 <= rhs_index < len(rhs_ends):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*rhs_positions[rhs_index])
+        shared.set_selection_unicode(editor, *rhs_positions[rhs_index])
 
 
 def select_prev_rhs():
@@ -133,7 +133,7 @@ def select_prev_rhs():
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     app = wingapi.gApplication
-    position, _ = editor.GetSelection()
+    position, _ = shared.get_selection_unicode(editor)
     position -= 1
 
     rhs_positions = _get_rhs_positions(editor.GetDocument())
@@ -142,5 +142,5 @@ def select_prev_rhs():
 
     if 0 <= rhs_index < len(rhs_starts):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*rhs_positions[rhs_index])
+        shared.set_selection_unicode(editor, *rhs_positions[rhs_index])
 

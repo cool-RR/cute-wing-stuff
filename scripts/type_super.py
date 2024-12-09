@@ -40,10 +40,10 @@ def type_super():
     two_last_scopes = tuple(current_source_scopes[0][-2:])
     print(two_last_scopes)
     super_text = 'super(%s, self).%s' % two_last_scopes
-    selection = editor.GetSelection()
+    selection = shared.get_selection_unicode(editor)
     document.DeleteChars(*selection)
     document.InsertChars(selection[0], super_text)
-    editor.SetSelection(selection[0]+len(super_text),
+    shared.set_selection_unicode(editor, selection[0]+len(super_text),
                         selection[0]+len(super_text))
     if shared.autopy_available:
         import autopy.key

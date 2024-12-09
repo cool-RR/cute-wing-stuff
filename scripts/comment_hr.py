@@ -37,7 +37,7 @@ def comment_hr():
 
     with shared.UndoableAction(document):
 
-        original_start, original_end = editor.GetSelection()
+        original_start, original_end = shared.get_selection_unicode(editor)
         original_end_line_number = \
                 document.GetLineNumberFromPosition(original_end)
         original_document_length = document.GetLength()

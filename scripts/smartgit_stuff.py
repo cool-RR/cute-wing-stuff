@@ -54,5 +54,5 @@ def smartgit_blame():
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
     filename = document.GetFilename()
-    line_number = document.GetLineNumberFromPosition(editor.GetSelection()[0])
+    line_number = document.GetLineNumberFromPosition(shared.get_selection_unicode(editor)[0])
     launch_smartgit(['--blame', str('"%s:%s"' % (filename, line_number))])

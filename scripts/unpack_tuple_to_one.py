@@ -46,4 +46,4 @@ def unpack_tuple_to_one():
         document.InsertChars(start, segment_to_insert)
 
         new_position = start + len(segment_to_insert)
-        editor.SetSelection(new_position, new_position)
+        shared.set_selection_unicode(editor, new_position, new_position)

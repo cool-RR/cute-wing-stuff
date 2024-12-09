@@ -56,7 +56,7 @@ def arg_to_attr():
         result_string = 'self.%s = %s' % (variable_name, variable_name)
         document.DeleteChars(start, end - 1)
         document.InsertChars(start, result_string)
-        editor.SetSelection(start + len(result_string),
+        shared.set_selection_unicode(editor, start + len(result_string),
                             start + len(result_string))
         editor.ExecuteCommand('new-line')
 
