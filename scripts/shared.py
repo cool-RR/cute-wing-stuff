@@ -533,3 +533,39 @@ def nested(*managers):
             # have been raised and caught by an exit method
             raise exc[0]
 
+
+def get_selection_unicode(editor: wingapi.CAPIEditor) -> tuple[int, int]:
+    """Get selection from editor as unicode character offsets rather than utf-8 byte offsets.
+
+    Returns:
+        Tuple of (start, end) positions as unicode character offsets (0-based)
+    """
+    doc = editor.GetDocument()
+    text = doc.GetText()
+    utf8_start, utf8_end = editor.GetSelection()
+
+    # Convert utf-8 byte offsets to unicode offsets
+    start = len(text.encode('utf-8')[:utf8_start].decode('utf-8'))
+    end = len(text.encode('utf-8')[:utf8_end].decode('utf-8'))
+
+    return (start, end)
+
+def set_selection_unicode(editor: wingapi.CAPIEditor, start: int, end: int) -> None:
+    """Set selection in editor using unicode character offsets rather than utf-8 byte offsets.
+
+    Args:
+        editor: The editor to modify
+        start: Start position as unicode character offset (0-based)
+        end: End position as unicode character offset (0-based)
+    """
+    # Get the document text
+    doc = editor.GetDocument()
+    text = doc.GetText()
+
+    # Convert unicode offsets to utf-8 byte offsets
+    utf8_text = text.encode('utf-8')
+    utf8_start = len(text[:start].encode('utf-8'))
+    utf8_end = len(text[:end].encode('utf-8'))
+
+    # Set the selection using utf-8 offsets
+    editor.SetSelection(utf8_start, utf8_end)
