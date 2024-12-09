@@ -80,18 +80,18 @@ def _select_more_until_biggest_match(condition):
     document = editor.GetDocument()
     select_more = lambda: wingapi.gApplication.ExecuteCommand('select-more')
     is_selection_good = lambda: condition(
-        document.GetCharRange(*editor.GetSelection()).strip()
+        document.GetCharRange(*shared.get_selection_unicode(editor)).strip()
     )
 
     last_success_n_iterations = None
 
-    last_start, last_end = original_selection = editor.GetSelection()
+    last_start, last_end = original_selection = shared.get_selection_unicode(editor)
 
     with shared.ScrollRestorer(editor):
         with shared.SelectionRestorer(editor):
             for i in range(SAFETY_LIMIT):
                 select_more()
-                current_start, current_end = editor.GetSelection()
+                current_start, current_end = shared.get_selection_unicode(editor)
                 if (current_start == last_start) and (current_end == last_end):
                     break
                 if is_selection_good():
@@ -164,7 +164,7 @@ def select_next_scope_name():
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     app = wingapi.gApplication
-    _, position = editor.GetSelection()
+    _, position = shared.get_selection_unicode(editor)
     position += 1
 
     scope_name_positions = _get_scope_name_positions(editor.GetDocument())
@@ -174,7 +174,7 @@ def select_next_scope_name():
 
     if 0 <= scope_name_index < len(scope_name_ends):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*scope_name_positions[scope_name_index])
+        shared.set_selection_unicode(editor, *scope_name_positions[scope_name_index])
 
 
 def select_prev_scope_name():
@@ -188,7 +188,7 @@ def select_prev_scope_name():
     editor = wingapi.gApplication.GetActiveEditor()
     assert isinstance(editor, wingapi.CAPIEditor)
     app = wingapi.gApplication
-    position, _ = editor.GetSelection()
+    position, _ = shared.get_selection_unicode(editor)
     position -= 1
 
     scope_name_positions = _get_scope_name_positions(editor.GetDocument())
@@ -198,5 +198,5 @@ def select_prev_scope_name():
 
     if 0 <= scope_name_index < len(scope_name_starts):
         app.ExecuteCommand('set-visit-history-anchor')
-        editor.SetSelection(*scope_name_positions[scope_name_index])
+        shared.set_selection_unicode(editor, *scope_name_positions[scope_name_index])
 
