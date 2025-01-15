@@ -12,6 +12,7 @@ from __future__ import with_statement
 import re
 import _ast
 import string
+from typing import Optional
 
 import os.path, sys
 sys.path += [
@@ -26,12 +27,13 @@ import edit
 
 import shared
 
-def _is_position_on_comment(editor, position, try_previous=True):
+def _is_position_on_comment(editor, position, try_previous=True, *, text: Optional[str] = None):
     '''Is there a comment in the specified position in the document?'''
     return (
-        editor.fEditor.GetCharType(position) == edit.editor.kCommentCharType or
+        shared.get_char_type_unicode(editor, position, text=text) == edit.editor.kCommentCharType or
         (try_previous and position >= 1 and
-         (editor.fEditor.GetCharType(position - 1) == edit.editor.kCommentCharType))
+         (shared.get_char_type_unicode(editor, position - 1, text=text) ==
+                                                                      edit.editor.kCommentCharType))
     )
 
 
@@ -41,22 +43,25 @@ def _find_comment_from_position(editor, position, multiline=False):
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     assert _is_position_on_comment(editor, position)
+    document = editor.GetDocument()
+    document_text = document.GetText()
     document_start = 0
-    document_end = editor.GetDocument().GetLength()
+    document_end = len(document_text)
     start_marker = end_marker = position
-    while end_marker < document_end and _is_position_on_comment(editor, end_marker+1):
+    while end_marker < document_end and _is_position_on_comment(editor, end_marker+1,
+                                                                text=document_text):
         end_marker += 1
-    while start_marker > document_start and _is_position_on_comment(editor, start_marker-1):
+    while start_marker > document_start and _is_position_on_comment(editor, start_marker-1,
+                                                                    text=document_text):
         start_marker -= 1
 
     if start_marker > document_start:
-        assert not _is_position_on_comment(editor, start_marker-1)
+        assert not _is_position_on_comment(editor, start_marker-1, text=document_text)
     if end_marker < document_end:
-        assert not _is_position_on_comment(editor, end_marker+1)
+        assert not _is_position_on_comment(editor, end_marker+1, text=document_text)
 
     if multiline:
         comment_ranges = [(start_marker, end_marker)]
-        document_text = shared.get_text(editor.GetDocument())
 
         ### Scanning backward: ################################################
         #                                                                     #
@@ -72,12 +77,12 @@ def _find_comment_from_position(editor, position, multiline=False):
                 break
 
             if _is_position_on_comment(editor,
-                       candidate_end_of_additional_comment, try_previous=False):
+                       candidate_end_of_additional_comment, try_previous=False, text=document_text):
                 comment_ranges.insert(
                     0,
                     _find_comment_from_position(
                         editor,
-                        candidate_end_of_additional_comment
+                        candidate_end_of_additional_comment,
                     )
                 )
                 continue
@@ -97,11 +102,12 @@ def _find_comment_from_position(editor, position, multiline=False):
                                                                             search_result.span()[0])
                 if _is_position_on_comment(editor,
                                           candidate_start_of_additional_comment,
-                                          try_previous=False):
+                                          try_previous=False,
+                                          text=document_text):
                     comment_ranges.append(
                         _find_comment_from_position(
                             editor,
-                            candidate_start_of_additional_comment
+                            candidate_start_of_additional_comment,
                         )
                     )
                     continue

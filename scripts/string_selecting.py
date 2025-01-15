@@ -26,12 +26,12 @@ import edit
 
 import shared
 
-def _is_position_on_string(editor, position, try_previous=True):
+def _is_position_on_string(editor: wingapi.CAPIEditor, position, try_previous=True):
     '''Is there a string in the specified position in the document?'''
     return (
-        editor.fEditor.GetCharType(position) == edit.editor.kStringCharType or
+        shared.get_char_type_unicode(editor, position) == edit.editor.kStringCharType or
         (try_previous and position >= 1 and
-         (editor.fEditor.GetCharType(position - 1) ==
+         (shared.get_char_type_unicode(editor, position - 1) ==
                                                   edit.editor.kStringCharType))
     )
 
@@ -42,8 +42,10 @@ def _find_string_from_position(editor, position, multiline=False):
     '''
     assert isinstance(editor, wingapi.CAPIEditor)
     assert _is_position_on_string(editor, position)
+    document = editor.GetDocument()
+    document_text = document.GetText()
     document_start = 0
-    document_end = editor.GetDocument().GetLength()
+    document_end = len(document_text)
     start_marker = end_marker = position
     while end_marker < document_end and \
                             _is_position_on_string(editor, end_marker+1):
@@ -59,7 +61,6 @@ def _find_string_from_position(editor, position, multiline=False):
 
     if multiline:
         string_ranges = [(start_marker, end_marker)]
-        document_text = shared.get_text(editor.GetDocument())
 
         ### Scanning backward: ################################################
         #                                                                     #
@@ -118,7 +119,6 @@ def _find_string_from_position(editor, position, multiline=False):
     else: # not multiline
         return (start_marker, end_marker)
 
-
 def select_next_string(inner=False):
     '''
     Select the next (or current) string, starting from caret location.
@@ -136,8 +136,8 @@ def select_next_string(inner=False):
 
     app.ExecuteCommand('set-visit-history-anchor')
 
-    document_start = 0
-    document_end = document.GetLength()
+    document_text = document.GetText()
+    document_end = len(document_text)
 
     selection_start, selection_end = shared.get_selection_unicode(editor)
 
@@ -151,10 +151,8 @@ def select_next_string(inner=False):
                     return
             elif inner and 1 <= current_string_range[1] - selection_end <= 3 \
                  and 1 <= selection_start - current_string_range[0] <= 5 and \
-                 document.GetCharRange(selection_start-1,
-                                       selection_start) in ('"', "'") and \
-                 document.GetCharRange(selection_end,
-                                       selection_end+1) in ('"', "'"):
+                 document_text[selection_start - 1] in ('"', "'") and \
+                 document_text[selection_end] in ('"', "'"):
                 base_position = current_string_range[1] + 1
                 if base_position > document_end:
                     return
@@ -195,7 +193,6 @@ def select_prev_string(inner=False):
     app.ExecuteCommand('set-visit-history-anchor')
 
     document_start = 0
-    document_end = document.GetLength()
 
     caret_position = shared.get_selection_unicode(editor)[1]
 
@@ -224,7 +221,7 @@ def select_prev_string(inner=False):
 
 
 string_pattern = re.compile(
-    '''^(?P<prefix>[uUbB]?[rR]?)(?P<delimiter>(\''')|(""")|(')|(")).*$''',
+    '''^(?P<prefix>[uUbBrRfF]*)(?P<delimiter>(\''')|(""")|(')|(")).*$''',
     flags=re.DOTALL
 )
 
@@ -232,7 +229,8 @@ def _innerize_selected_string(editor):
     '''Given that a string is selected, select only its contents.'''
     assert isinstance(editor, wingapi.CAPIEditor)
     selection_start, selection_end = shared.get_selection_unicode(editor)
-    string = editor.GetDocument().GetCharRange(selection_start, selection_end)
+    document_string = shared.get_text(editor.GetDocument())
+    string = document_string[selection_start:selection_end]
     match = string_pattern.match(string)
     assert match
     delimiter = match.group('delimiter')

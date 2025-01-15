@@ -6,10 +6,11 @@
 from  __future__ import with_statement
 
 import collections
+import functools
 import re
 import sys
 import subprocess
-from functools import wraps
+from typing import Optional
 
 import os.path, sys
 sys.path += [
@@ -29,6 +30,7 @@ else:
     autopy_available = True
 
 import wingapi
+from pysource import strutils
 
 _ignore_scripts = True
 
@@ -491,7 +493,7 @@ def contextmanager(func):
         finally:
             <cleanup>
     """
-    @wraps(func)
+    @functools.wraps(func)
     def helper(*args, **kwds):
         return GeneratorContextManager(func(*args, **kwds))
     return helper
@@ -564,3 +566,12 @@ def set_selection_unicode(editor: wingapi.CAPIEditor, start: int, end: int) -> N
     utf8_end = len(text[:end].encode('utf-8'))
 
     editor.SetSelection(utf8_start, utf8_end)
+
+def get_char_type_unicode(editor: wingapi.CAPIEditor, position: int, *,
+                          text: Optional[str] = None) -> str:
+    """Get the type of the character at the given position."""
+    document = editor.GetDocument()
+    if text is None:
+        text = document.GetText()
+    fixed_position = strutils.Utf8Len(text, 0, position)
+    return editor.fEditor.GetCharType(fixed_position)
