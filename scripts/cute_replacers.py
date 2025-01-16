@@ -42,9 +42,7 @@ def _cute_general_replace(command_name, editor):
     app = wingapi.gApplication
     assert isinstance(app, wingapi.CAPIApplication)
     selection_start, selection_end = shared.get_selection_unicode(editor)
-    selection = editor.GetDocument().GetCharRange(selection_start,
-                                                  selection_end)
-
+    selection = editor.GetDocument().GetText()[selection_start : selection_end]
     if selection:
         wingapi.gApplication.SetClipboard(selection)
         shared.set_selection_unicode(editor, selection_start, selection_start)

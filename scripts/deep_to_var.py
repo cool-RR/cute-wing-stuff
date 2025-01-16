@@ -131,7 +131,7 @@ def deep_to_var():
     line_number = document.GetLineNumberFromPosition(position)
     line_start = document.GetLineStart(line_number)
     line_end = document.GetLineEnd(line_number)
-    line = document.GetCharRange(line_start, line_end)
+    line = document.GetText()[line_start : line_end]
     line_stripped = line.strip()
 
     variable_name = None

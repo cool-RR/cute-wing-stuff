@@ -12,7 +12,7 @@ from __future__ import with_statement
 import bisect
 import re
 import _ast
-
+from typing import Callable
 import os.path, sys
 sys.path += [
     os.path.dirname(__file__),
@@ -79,9 +79,9 @@ def _select_more_until_biggest_match(condition):
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     select_more = lambda: wingapi.gApplication.ExecuteCommand('select-more')
-    is_selection_good = lambda: condition(
-        document.GetCharRange(*shared.get_selection_unicode(editor)).strip()
-    )
+    def is_selection_good() -> bool:
+        start, end = shared.get_selection_unicode(editor)
+        return condition(document.GetText()[start:end].strip())
 
     last_success_n_iterations = None
 

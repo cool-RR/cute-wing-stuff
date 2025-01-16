@@ -12,13 +12,10 @@ sys.path += [
     os.path.join(os.path.dirname(__file__), f'third_party_{os.name}.zip'),
 ]
 
-
 import wingapi
+from pysource import strutils
 
 import shared
-
-
-
 
 range_pattern = re.compile('^(x?range)\(.*\)$')
 
@@ -50,13 +47,16 @@ def for_thing_in_things(comprehension=False):
     assert isinstance(document, wingapi.CAPIDocument)
 
     with shared.UndoableAction(document):
-        end_position, _ = shared.get_selection_unicode(editor)
-        line_number = document.GetLineNumberFromPosition(end_position)
-        line_start = document.GetLineStart(line_number)
-        line_end = document.GetLineEnd(line_number)
-        line_contents = document.GetCharRange(line_start, line_end)
+        end_position_utf8, _ = editor.GetSelection()
+        end_position = strutils.CharOffsetForUtf8Offset(document_text, end_position_utf8)
+        line_number_utf8 = document.GetLineNumberFromPosition(end_position_utf8)
+        line_start_utf8 = document.GetLineStart(line_number_utf8)
+        line_start = strutils.CharOffsetForUtf8Offset(document_text, line_start_utf8)
+        line_end_utf8 = document.GetLineEnd(line_number_utf8)
+        line_end = strutils.CharOffsetForUtf8Offset(document_text, line_end_utf8)
+        line_contents = document_text[line_start : line_end]
         shared.set_selection_unicode(editor, end_position, end_position)
-        if ')' in document.GetCharRange(end_position - 1, end_position + 1) \
+        if ')' in document_text[end_position - 1 : end_position + 1] \
                                                  and 'range(' in line_contents:
 
             text_start_position = document_text.find('range(', line_start)
@@ -73,10 +73,10 @@ def for_thing_in_things(comprehension=False):
             wingapi.gApplication.ExecuteCommand('forward-word')
             wingapi.gApplication.ExecuteCommand('select-expression')
             shared.strip_selection_if_single_line(editor)
-            expression_start_position, _ = shared.get_selection_unicode(editor)
+            expression_start_position_utf8, _ = editor.GetSelection()
 
 
-        base_text = document.GetCharRange(text_start_position, end_position)
+        base_text = document_text[text_start_position : end_position]
         ### Analyzing base text: ##############################################
         #                                                                     #
         if range_pattern.match(base_text):
@@ -92,19 +92,14 @@ def for_thing_in_things(comprehension=False):
 
         with shared.SelectionRestorer(editor):
             app.ExecuteCommand('beginning-of-line-text(toggle=False)')
-            home_position, _ = shared.get_selection_unicode(editor)
+            home_position_utf8, _ = editor.GetSelection()
+            home_position = strutils.CharOffsetForUtf8Offset(document_text, home_position_utf8)
 
         if comprehension:
             segment_to_insert = ' %s' % segment_to_insert
-            document.InsertChars(expression_start_position, segment_to_insert)
-            shared.set_selection_unicode(editor, expression_start_position,
-                                expression_start_position)
+            document.InsertChars(expression_start_position_utf8, segment_to_insert)
+            editor.SetSelection(expression_start_position_utf8,
+                                expression_start_position_utf8)
         else:
-            document.InsertChars(home_position, segment_to_insert)
-            editor.ExecuteCommand('end-of-line')
-            if shared.autopy_available:
-                import autopy.key
-                wingapi.gApplication.InstallTimeout(
-                    150,
-                    lambda: autopy.key.tap(':', [])
-                )
+            document.InsertChars(home_position_utf8, segment_to_insert)
+            wingapi.gApplication.ExecuteCommand('colon-at-end')

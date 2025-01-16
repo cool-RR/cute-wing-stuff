@@ -32,7 +32,7 @@ def flip_case():
     assert isinstance(document, wingapi.CAPIDocument)
     with shared.UndoableAction(document):
         start, end = shared.select_current_word(editor)
-        word = document.GetCharRange(start, end)
+        word = document.GetText()[start : end]
 
         is_lower_case = word.islower()
         is_camel_case = not is_lower_case

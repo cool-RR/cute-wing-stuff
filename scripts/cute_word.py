@@ -316,7 +316,7 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False):
     #text_start = 0
     #text_end = 100
 
-    text = document.GetCharRange(text_start, text_end)
+    text = document.GetText()[text_start : text_end]
 
     word_spans = _get_word_spans_in_text(text, post_offset=text_start)
     word_starts = next(iter(zip(*word_spans)))

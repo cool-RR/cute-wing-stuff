@@ -53,7 +53,7 @@ def implicit_getattr_to_explicit():
     #head = max(current_position - 100, 0)
     #tail = min(current_position + 100, document.GetLength())
 
-    #text = document.GetCharRange(head, tail)
+    #text = document.GetText()[head : tail]
 
     matches = _get_matches(document)
     if not matches:

@@ -52,7 +52,7 @@ def arg_to_attr():
     assert isinstance(document, wingapi.CAPIDocument)
     with shared.UndoableAction(document):
         start, end = shared.select_current_word(editor)
-        variable_name = document.GetCharRange(start, end)
+        variable_name = document.GetText()[start :  end]
         result_string = 'self.%s = %s' % (variable_name, variable_name)
         document.DeleteChars(start, end - 1)
         document.InsertChars(start, result_string)

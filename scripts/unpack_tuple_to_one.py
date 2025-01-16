@@ -36,7 +36,7 @@ def unpack_tuple_to_one():
 
     with shared.UndoableAction(document):
         start, end = shared.select_current_word(editor)
-        plural_word = document.GetCharRange(start, end)
+        plural_word = document.GetText()[start : end]
         if not plural_word.endswith('s'):
             return
         singular_word = shared.plural_word_to_singular_word(plural_word)

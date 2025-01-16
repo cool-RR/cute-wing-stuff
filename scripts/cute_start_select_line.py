@@ -39,13 +39,8 @@ def cute_start_select_line():
     ###########################################################################
     #                                                                         #
     raw_new_selection_end = document.GetLineEnd(selection_end_line)
-    two_characters_after = document.GetCharRange(
-        raw_new_selection_end,
-        min(
-            raw_new_selection_end + 2,
-            document.GetLength()
-        )
-    )
+    two_characters_after = document.GetText()[raw_new_selection_end :
+                                              min(raw_new_selection_end + 2, document.GetLength())]
     if two_characters_after:
         if two_characters_after[0] == '\n':
             new_selection_end = raw_new_selection_end + 1

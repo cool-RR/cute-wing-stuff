@@ -42,8 +42,8 @@ def dict_direct_to_get():
 
     fixed_position = max(current_position - 1, line_start)
 
-    line_head = document.GetCharRange(line_start, fixed_position)
-    line_tail = document.GetCharRange(fixed_position, line_end)
+    line_head = document.GetText()[line_start : fixed_position]
+    line_tail = document.GetText()[fixed_position : line_end]
     line_text = line_head + line_tail
 
     if ']' not in line_tail:
@@ -53,10 +53,7 @@ def dict_direct_to_get():
     first_closing_bracket_position = line_tail.find(']') + len(line_head) + \
                                                                      line_start
 
-    text_until_closing_bracket = document.GetCharRange(
-        line_start,
-        first_closing_bracket_position + 1
-    )
+    text_until_closing_bracket = document.GetText()[line_start : first_closing_bracket_position + 1]
 
     match = pattern.match(text_until_closing_bracket)
     if not match:

@@ -232,8 +232,7 @@ def edit_string():
         old_string_ranges = \
            string_selecting._find_string_from_position(editor, selection_start,
                                                        multiline=True)
-        old_string_raw = document.GetCharRange(old_string_ranges[0][0],
-                                               old_string_ranges[-1][1])
+        old_string_raw = document.GetText()[old_string_ranges[0][0] : old_string_ranges[-1][1]]
         old_string = ast.literal_eval('(%s)' % old_string_raw)
         modifiers = string_head_pattern.match(old_string_raw). \
                                                      group('modifiers').lower()

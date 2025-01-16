@@ -166,7 +166,7 @@ def strip_selection_if_single_line(editor):
     start_line_number = document.GetLineNumberFromPosition(start)
     end_line_number = document.GetLineNumberFromPosition(end - 1)
     if start_line_number == end_line_number:
-        selection = document.GetCharRange(start, end)
+        selection = document.GetText()[start : end]
         left_strip_size = len(selection) - len(selection.lstrip())
         right_strip_size = len(selection) - len(selection.rstrip())
         new_start = start + left_strip_size
@@ -233,8 +233,7 @@ def select_current_word(editor):
         if start + length == document.GetLength():
             break
         else:
-            character = document.GetCharRange(start + length,
-                                              start + length + 1)
+            character = document.GetText()[start + length : start + length + 1]
             assert len(character) == 1
             if character.isalnum() or character == '_':
                 continue
@@ -382,10 +381,8 @@ def clip_ahk():
 
 
 def get_text(document):
-    # Getting the text using `GetCharRange` instead of `GetText` because
-    # `GetText` returns unicode.
-    assert isinstance(document, wingapi.CAPIDocument)
-    return document.GetCharRange(0, document.GetLength())
+    # todo: this might not be needed anymore
+    return document.GetText()
 
 def argmin(sequence, key_function=None):
     if key_function is None:

@@ -94,11 +94,11 @@ def roberto(user_message):
     assert isinstance(editor, wingapi.CAPIEditor)
     document = editor.GetDocument()
     assert isinstance(document, wingapi.CAPIDocument)
-    start, end = selection = shared.get_selection_unicode(editor)
+    start, end = shared.get_selection_unicode(editor)
 
     new_code = _fix_code_with_chatgpt(document.GetFilename(),
-                                      document.GetCharRange(0, document.GetLength()),
-                                      document.GetCharRange(*selection),
+                                      (document_text := document.GetText()),
+                                      document_text[start : end],
                                       user_message)
 
     with shared.UndoableAction(document):

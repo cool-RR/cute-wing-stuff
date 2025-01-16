@@ -54,7 +54,7 @@ def slash_line(line_offset=0, at_caret=False):
     line = document.GetLineNumberFromPosition(position) + line_offset
     line_start = document.GetLineStart(line)
     line_end = document.GetLineEnd(line)
-    line_content = document.GetCharRange(line_start, line_end)
+    line_content = document.GetText()[line_start : line_end]
     current_line_length = line_end - line_start
 
     if current_line_length <= max_line_length:

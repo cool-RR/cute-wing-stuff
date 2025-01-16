@@ -40,7 +40,7 @@ def instantiate():
     with shared.UndoableAction(document):
         editor.ExecuteCommand('end-of-line')
         start, end = shared.select_current_word(editor)
-        word = document.GetCharRange(start, end)
+        word = document.GetText()[start : end]
 
         if '_' in word:
             raise Exception("Must use `instantiate` when the current word is "
