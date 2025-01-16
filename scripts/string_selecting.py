@@ -232,7 +232,10 @@ def _innerize_selected_string(editor):
     document_string = shared.get_text(editor.GetDocument())
     string = document_string[selection_start:selection_end]
     match = string_pattern.match(string)
-    assert match
+    if not match:
+        # This happens on f-strings because our code doesn't support them well enough. If it does,
+        # let's give up on innerizing and not show an exception.
+        return
     delimiter = match.group('delimiter')
     prefix = match.group('prefix')
     fixed_start = selection_start + len(delimiter) + len(prefix)
