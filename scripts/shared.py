@@ -372,7 +372,7 @@ def clip_ahk():
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     try:
         subprocess.Popen(
-            (r'c:\windows\py.exe',
+            (r'C:\Program Files\Python313\python.exe',
              r'C:\Users\Administrator\Dropbox\bin\Windows\_type_f13.py'),
             startupinfo=startupinfo
         )
