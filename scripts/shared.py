@@ -34,6 +34,8 @@ from pysource import strutils
 
 _ignore_scripts = True
 
+python_executable = r'C:\Program Files\Python313\python.exe'
+
 
 class SelectionRestorer(context_management.ContextManager):
     '''
@@ -372,7 +374,7 @@ def clip_ahk():
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     try:
         subprocess.Popen(
-            (r'C:\Program Files\Python313\python.exe',
+            (python_executable,
              r'C:\Users\Administrator\Dropbox\bin\Windows\_type_f13.py'),
             startupinfo=startupinfo
         )
