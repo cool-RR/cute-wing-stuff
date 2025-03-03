@@ -22,7 +22,7 @@ def posh_if_available(path_string: str) -> str:
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     posh_path = pathlib.Path(os.environ.get('DX', '')) / 'bin' / 'Common' / 'posh'
     try:
-        result = subprocess.run([shared.python_executable, str(posh_path), path_string],
+        result = subprocess.run([os.environ['PYTHONW_EXE'], str(posh_path), path_string],
                                 startupinfo=startupinfo, capture_output=True, text=True,
                                 encoding='utf-8')
     except FileNotFoundError:
