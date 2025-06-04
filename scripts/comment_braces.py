@@ -17,6 +17,8 @@ import wingapi
 
 import shared
 
+LINE_WIDTH = 100
+
 
 def _decapitalize(string):
     '''Decapitalize a string's first letter.'''
@@ -96,11 +98,11 @@ def comment_braces(title):
         end_title_head = (' ' * indent_size) + '###' + raw_end_title
 
         start_title = \
-            start_title_head + '#' * (79 - len(start_title_head)) + '\n'
+            start_title_head + '#' * (LINE_WIDTH - len(start_title_head)) + '\n'
         end_title = \
-            end_title_head + '#' * (79 - len(end_title_head)) + '\n'
+            end_title_head + '#' * (LINE_WIDTH - len(end_title_head)) + '\n'
         tips_string = \
-            (' ' * indent_size) + '#' + (' ' * (79 - indent_size - 2)) + '#\n'
+            (' ' * indent_size) + '#' + (' ' * (LINE_WIDTH - indent_size - 2)) + '#\n'
 
         start_line_number = document.GetLineNumberFromPosition(original_start)
         start_line_first_char = document.GetLineStart(start_line_number)
