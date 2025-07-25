@@ -408,6 +408,13 @@ this script, you'll get `SomethingLikeThis`. Do it again and you'll get
 Suggested key combination: `Insert C`
 
 
+## font-size ##
+
+Quickly change editor font size with `font_big()` and `font_small()` functions.
+
+`font_big()` sets the editor font size to 9 points, while `font_small()` sets it to 7 points. Both functions use the Consolas font.
+
+
 ## for-thing-in-things ##
 
 Turn `things` into `for thing in things:`.
