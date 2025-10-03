@@ -295,7 +295,13 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False):
 
     selection_start, selection_end = shared.get_selection_unicode(editor)
     document = editor.GetDocument()
-    anchor_position, caret_position = editor.GetAnchorAndCaret()
+    anchor_position_utf8, caret_position_utf8 = editor.GetAnchorAndCaret()
+
+    # Convert UTF-8 byte offsets to unicode character positions
+    text_full = document.GetText()
+    anchor_position = len(text_full.encode('utf-8')[:anchor_position_utf8].decode('utf-8'))
+    caret_position = len(text_full.encode('utf-8')[:caret_position_utf8].decode('utf-8'))
+
     current_selection_direction = \
                                  1 if caret_position >= anchor_position else -1
 
@@ -373,14 +379,18 @@ def cute_word(direction=1, extend=False, delete=False, traverse=False):
     elif delete:
         with shared.UndoableAction(document):
             if direction == 1:
-                target_word_start -= 1
+                delete_start = caret_position
+                delete_end = target_word_start - 1
             else: # direction == -1
-                caret_position -= 1
+                delete_start = target_word_start
+                delete_end = caret_position - 1
+
+            # Convert unicode positions to UTF-8 byte offsets for DeleteChars
+            delete_start_utf8 = len(text_full[:max(delete_start, 0)].encode('utf-8'))
+            delete_end_utf8 = len(text_full[:max(delete_end, 0)].encode('utf-8'))
+
             document.DeleteChars(
-                *sorted((
-                    max(caret_position, 0),
-                    max(target_word_start, 0)
-                ))
+                *sorted((delete_start_utf8, delete_end_utf8))
             )
     else:
         editor.ExecuteCommand('forward-char') # Just to light up caret.
